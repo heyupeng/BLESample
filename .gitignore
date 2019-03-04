@@ -1,0 +1,18 @@
+.DS_Store
+
+# 忽略XCode本地用户配置信息
+*.xcuserstate
+*.xcuserdatad
+*.xcuserdata
+*.xcuserdata/
+xcshareddata/
+.metadata/
+*.xcscheme
+*.pbxuser
+
+*.xcworkspace
+
+
+# 忽略cocoapods 相关文件
+Pods/
+Podfile.lock
