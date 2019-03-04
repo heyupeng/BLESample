@@ -1,1 +1,1 @@
-#BlueToothTest
+#Bluetooth sample
