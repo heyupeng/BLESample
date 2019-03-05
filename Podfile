@@ -5,4 +5,6 @@ use_frameworks!
 
 target ‘BLESample’ do
   
+  pod 'SSZipArchive', '~> 1.7'
+  
 end

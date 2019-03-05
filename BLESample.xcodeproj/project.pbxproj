@@ -61,7 +61,6 @@
 		04279C41222CC40E001FC02C /* BLESampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BLESampleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		04279C45222CC40E001FC02C /* BLESampleUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BLESampleUITests.m; sourceTree = "<group>"; };
 		04279C47222CC40E001FC02C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-        04279CDC222CF5EB001FC02C /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		04FBA8F3256764FD00D9EB91 /* NSString+YPHexString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+YPHexString.h"; sourceTree = "<group>"; };
 		04FBA8F4256764FD00D9EB91 /* NSObject+YPProperies.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+YPProperies.h"; sourceTree = "<group>"; };
 		04FBA8F5256764FD00D9EB91 /* UIColor+YPColours.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+YPColours.m"; sourceTree = "<group>"; };
@@ -166,23 +165,23 @@
 		04FBA8F2256764FD00D9EB91 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
-				04FBA8F3256764FD00D9EB91 /* NSString+YPHexString.h */,
 				04FBA8F4256764FD00D9EB91 /* NSObject+YPProperies.h */,
-				04FBA8F5256764FD00D9EB91 /* UIColor+YPColours.m */,
-				04FBA8F6256764FD00D9EB91 /* YPExtension.h */,
-				04FBA8F7256764FD00D9EB91 /* YPTimeZone.m */,
-				04FBA8F8256764FD00D9EB91 /* NSString+MessageDigest.h */,
-				04FBA8F9256764FD00D9EB91 /* UIWebView+YPJS2OC.m */,
-				04FBA8FA256764FD00D9EB91 /* UITableView+Extension.m */,
-				04FBA8FB256764FD00D9EB91 /* UIDevice */,
 				04FBA8FE256764FD00D9EB91 /* NSObject+YPProperies.m */,
+				04FBA8F8256764FD00D9EB91 /* NSString+MessageDigest.h */,
+				04FBA903256764FD00D9EB91 /* NSString+MessageDigest.m */,
+				04FBA901256764FD00D9EB91 /* NSString+YPExtensi.h */,
+				04FBA8F3256764FD00D9EB91 /* NSString+YPHexString.h */,
 				04FBA8FF256764FD00D9EB91 /* NSString+YPHexString.m */,
 				04FBA900256764FD00D9EB91 /* UIColor+YPColours.h */,
-				04FBA901256764FD00D9EB91 /* NSString+YPExtensi.h */,
-				04FBA902256764FD00D9EB91 /* UIWebView+YPJS2OC.h */,
-				04FBA903256764FD00D9EB91 /* NSString+MessageDigest.m */,
-				04FBA904256764FD00D9EB91 /* YPTimeZone.h */,
+				04FBA8F5256764FD00D9EB91 /* UIColor+YPColours.m */,
+				04FBA8FB256764FD00D9EB91 /* UIDevice */,
 				04FBA905256764FD00D9EB91 /* UITableView+Extension.h */,
+				04FBA8FA256764FD00D9EB91 /* UITableView+Extension.m */,
+				04FBA902256764FD00D9EB91 /* UIWebView+YPJS2OC.h */,
+				04FBA8F9256764FD00D9EB91 /* UIWebView+YPJS2OC.m */,
+				04FBA8F6256764FD00D9EB91 /* YPExtension.h */,
+				04FBA904256764FD00D9EB91 /* YPTimeZone.h */,
+				04FBA8F7256764FD00D9EB91 /* YPTimeZone.m */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
