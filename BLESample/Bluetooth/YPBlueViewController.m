@@ -58,7 +58,7 @@
 - (void)initialData {
     _dataSource = [NSMutableArray new];
     
-    _deviceName = @"SMI-X5";
+    _deviceName = @"SMI-X";
 }
 
 - (void)initUI {
@@ -220,7 +220,7 @@
     
     NSDictionary * serviceData = [device.advertisementData objectForKey: CBAdvertisementDataServiceDataKey];
     NSData * fe95 = [serviceData objectForKey:[CBUUID UUIDWithString:@"FE95"]];
-    NSString * ip = [NSString hexStringFromData:fe95];
+    NSString * ip = [fe95 hexString];
     if (ip.length > 14) {
         ip = [ip substringFromIndex: ip.length - 12 - 2];
         ip = [ip substringToIndex: ip.length - 2];
@@ -250,12 +250,13 @@
 //    viewController.deviceManager = device;
 //    viewController.title = @"Services";
 //    [self.navigationController pushViewController:viewController animated:YES];
+//    return;
 
-    YPCmdViewController * viewController = [[YPCmdViewController alloc] init];
-    viewController.blueManager = _blueManager;
-    viewController.deviceManager = device;
-    viewController.title = @"Cmd";
-    [self.navigationController pushViewController:viewController animated:YES];
+    YPCmdViewController * cmdVC = [[YPCmdViewController alloc] init];
+    cmdVC.blueManager = _blueManager;
+    cmdVC.deviceManager = device;
+    cmdVC.title = @"Cmd";
+    [self.navigationController pushViewController:cmdVC animated:YES];
 
 }
 

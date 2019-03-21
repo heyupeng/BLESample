@@ -99,7 +99,7 @@
 
 /** ============== **/
 - (void)addNotificationObserver {
-//    [NSNotificationCenter defaultCenter] addObserver:self selector:@selector(no) name:<#(nullable NSNotificationName)#> object:<#(nullable id)#>
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutBlueManager) name:YPBLE_DidConnectedDevice object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutDeviceManager:) name: YPDevice_DidDiscoverServices object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutDeviceManager:) name: YPDevice_DidDiscoverCharacteristics object:nil];
 
@@ -172,7 +172,7 @@
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ %@", valueString, [character value]];
     
     if ([UUID.UUIDString isEqualToString:@"2A19"]) {
-        long value = [[NSString hexStringFromData:[character value]] hexStringToLongValue];
+        long value = [[[character value] hexString] hexStringToLongValue];
         cell.detailTextLabel.text = [NSString stringWithFormat:@"%ld %% %@", value, [character value]];
         [_deviceManager IntToCBUUID:0x2a19];
         [_deviceManager CBUUIDToInt:UUID];

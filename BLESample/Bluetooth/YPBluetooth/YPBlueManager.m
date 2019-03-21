@@ -137,7 +137,7 @@ static YPBlueManager *shareManager;
 - (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral {
     NSLog(@"connect device: %@", peripheral);
     
-//    [peripheral discoverServices:nil];
+    [peripheral discoverServices:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName: YPBLE_DidConnectedDevice object:peripheral];
 }
 
