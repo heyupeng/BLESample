@@ -56,6 +56,24 @@ static NSString * const hrsSensorLocationCharacteristicUUIDString = @"00002A38-0
     [self.centralManager connectPeripheral:peripheral options:nil];
 }
 
+- (CBCharacteristic *)findCharacteristicWithUUID:(CBUUID *)uuid service:(CBService *)service {
+    for (CBCharacteristic * characteristic in service.characteristics) {
+        if ([characteristic.UUID isEqual:uuid]) {
+            return characteristic;
+        };
+    }
+    return nil;
+}
+
+- (CBService *)findServiceWithUUID:(CBUUID *)uuid services: (NSArray *)services {
+    for (CBService * service in services) {
+        if ([service.UUID isEqual:uuid]) {
+            return service;
+        };
+    }
+    return nil;
+}
+
 -(void)searchDFURequiredCharacteristics:(CBService *)service
 {
     isDFUControlPointCharacteristic = NO;
@@ -63,21 +81,48 @@ static NSString * const hrsSensorLocationCharacteristicUUIDString = @"00002A38-0
     isDFUVersionCharacteristicFound = NO;
     for (CBCharacteristic *characteristic in service.characteristics) {
         // NSLog(@"Found characteristic %@",characteristic.UUID);
-        if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:dfuControlPointCharacteristicUUIDString]]) {
+        if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:legacyDFUControlPointCharacteristicUUIDString]]) {
             // NSLog(@"Control Point characteristic found");
             isDFUControlPointCharacteristic = YES;
             self.dfuControlPointCharacteristic = characteristic;
         }
-        if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:dfuPacketCharacteristicUUIDString]]) {
+        if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:legacyDFUPacketCharacteristicUUIDString]]) {
             // NSLog(@"Packet Characteristic is found");
             isDFUPacketCharacteristicFound = YES;
             self.dfuPacketCharacteristic = characteristic;
         }
-        if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:dfuVersionCharacteritsicUUIDString]]) {
+        if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:legacyDFUVersionCharacteritsicUUIDString]]) {
             // NSLog(@"Version Characteristic is found");
             isDFUVersionCharacteristicFound = YES;
             self.dfuVersionCharacteristic = characteristic;
         }    }
+}
+
+-(void)searchSecureDFUCharacteristics:(CBService *)service
+{
+    isDFUControlPointCharacteristic = NO;
+    isDFUPacketCharacteristicFound = NO;
+    isDFUVersionCharacteristicFound = NO;
+    
+    for (CBCharacteristic *characteristic in service.characteristics) {
+        // NSLog(@"Found characteristic %@",characteristic.UUID);
+        if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:secureDFUControlPointCharacteristicUUIDString]]) {
+            // NSLog(@"Control Point characteristic found");
+            isDFUControlPointCharacteristic = YES;
+            self.dfuControlPointCharacteristic = characteristic;
+        }
+        if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:secureDFUPacketCharacteristicUUIDString]]) {
+            // NSLog(@"Packet Characteristic is found");
+            isDFUPacketCharacteristicFound = YES;
+            self.dfuPacketCharacteristic = characteristic;
+        }
+    }
+    
+    if (!isDFUControlPointCharacteristic) {
+        isDFUControlPointCharacteristic = YES;
+        isDFUControlPointCharacteristic = YES;
+        self.dfuControlPointCharacteristic = self.dfuPacketCharacteristic = [self findCharacteristicWithUUID:[CBUUID UUIDWithString:buttonlessWithoutBonds] service:service];
+    }
 }
 
 #pragma mark - CentralManager delegates
@@ -111,12 +156,21 @@ static NSString * const hrsSensorLocationCharacteristicUUIDString = @"00002A38-0
 {
     isDFUServiceFound = NO;
     // NSLog(@"didDiscoverServices, found %lu services",(unsigned long)peripheral.services.count);
-    for (CBService *service in peripheral.services) {
-        // NSLog(@"discovered service %@",service.UUID);
-        if ([service.UUID isEqual:[CBUUID UUIDWithString:dfuServiceUUIDString]]) {
+    
+    NSArray * uuidStrings = @[legacyDFUServiceUUIDString, secureDFUServiceUUIDString];
+    CBService * DFUService;
+    for (NSString * UUIDString in uuidStrings) {
+         DFUService = [self findServiceWithUUID:[CBUUID UUIDWithString:UUIDString] services:peripheral.services];
+        if (DFUService) {
             // NSLog(@"DFU Service is found");
             isDFUServiceFound = YES;
+            _DFUServiceType = (DFUServiceType)[uuidStrings indexOfObject:UUIDString];
+            break;
         }
+    }
+    
+    for (CBService *service in peripheral.services) {
+        // NSLog(@"discovered service %@",service.UUID);
         [self.bluetoothPeripheral discoverCharacteristics:nil forService:service];
     }
     if (!isDFUServiceFound) {
@@ -129,7 +183,8 @@ static NSString * const hrsSensorLocationCharacteristicUUIDString = @"00002A38-0
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error
 {
     // NSLog(@"didDiscoverCharacteristicsForService");
-    if ([service.UUID isEqual:[CBUUID UUIDWithString:dfuServiceUUIDString]]) {
+    if ([service.UUID isEqual:[CBUUID UUIDWithString:legacyDFUServiceUUIDString]]) {
+        
         [self searchDFURequiredCharacteristics:service];
         if (isDFUControlPointCharacteristic && isDFUPacketCharacteristicFound && isDFUVersionCharacteristicFound) {
             [self.bluetoothPeripheral readValueForCharacteristic:self.dfuVersionCharacteristic];
@@ -149,6 +204,12 @@ static NSString * const hrsSensorLocationCharacteristicUUIDString = @"00002A38-0
             [self.bleDelegate onError:errorMessage];
         }
     }
+    // 2019-03
+    else if (_DFUServiceType == secureDFUService && [service.UUID isEqual:[CBUUID UUIDWithString:secureDFUServiceUUIDString]]) {
+       
+        [self searchSecureDFUCharacteristics:service];
+        [self.bleDelegate onDeviceConnected:self.bluetoothPeripheral withPacketCharacteristic:self.dfuPacketCharacteristic andControlPointCharacteristic:self.dfuControlPointCharacteristic];
+    }
     else if ([service.UUID isEqual:HR_Service_UUID]) {
         for (CBCharacteristic *characteristic in service.characteristics)
         {
@@ -162,18 +223,20 @@ static NSString * const hrsSensorLocationCharacteristicUUIDString = @"00002A38-0
 
 -(void) peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
 {
+    NSLog(@"didUpdateValue:%@ %@", characteristic.UUID.UUIDString, characteristic.value);
+
     // NSLog(@"didUpdateValueForCharacteristic");
     if (error) {
         NSString *errorMessage = [NSString stringWithFormat:@"Error on BLE Notification\n Message: %@",[error localizedDescription]];
         // NSLog(@"Error in Notification state: %@",[error localizedDescription]);
-        if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:dfuVersionCharacteritsicUUIDString]]) {
+        if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:legacyDFUVersionCharacteritsicUUIDString]]) {
             // NSLog(@"Error in Reading DfuVersionCharacteritsic. Please enable Service Changed Indication in your firmware, reset Bluetooth from IOS Settings and then try again");
             errorMessage = [NSString stringWithFormat:@"Error on BLE Notification\n Message: %@\n Please enable Service Changed Indication in your firmware, reset Bluetooth from IOS Settings and then try again",[error localizedDescription]];
             [self.bleDelegate onReadDfuVersion:0];
         }
         [self.bleDelegate onError:errorMessage];
     }
-    else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:dfuVersionCharacteritsicUUIDString]]) {
+    else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:legacyDFUVersionCharacteritsicUUIDString]]) {
         const uint8_t *version = [characteristic.value bytes];
         
         if (version == NULL) {

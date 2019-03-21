@@ -24,10 +24,24 @@
 
 @interface Utility : NSObject
 
-extern NSString * const dfuServiceUUIDString;
-extern NSString * const dfuControlPointCharacteristicUUIDString;
-extern NSString * const dfuPacketCharacteristicUUIDString;
-extern NSString * const dfuVersionCharacteritsicUUIDString;
+typedef enum {
+    legacyDFUService = 0,
+    secureDFUService = 1,
+}DFUServiceType;
+
+// Legacy DFU
+extern NSString * const legacyDFUServiceUUIDString;
+extern NSString * const legacyDFUControlPointCharacteristicUUIDString;
+extern NSString * const legacyDFUPacketCharacteristicUUIDString;
+extern NSString * const legacyDFUVersionCharacteritsicUUIDString;
+
+// Secure DFU
+extern NSString * const secureDFUServiceUUIDString;
+extern NSString * const secureDFUControlPointCharacteristicUUIDString;
+extern NSString * const secureDFUPacketCharacteristicUUIDString;
+
+// Buttonless DFU
+extern NSString * const buttonlessWithoutBonds;
 
 extern NSString * const ANCSServiceUUIDString;
 extern NSString * const TimerServiceUUIDString;

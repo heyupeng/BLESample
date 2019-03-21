@@ -25,10 +25,20 @@
 
 @implementation Utility
 
-NSString * const dfuServiceUUIDString = @"00001530-1212-EFDE-1523-785FEABCD123";
-NSString * const dfuControlPointCharacteristicUUIDString = @"00001531-1212-EFDE-1523-785FEABCD123";
-NSString * const dfuPacketCharacteristicUUIDString = @"00001532-1212-EFDE-1523-785FEABCD123";
-NSString * const dfuVersionCharacteritsicUUIDString = @"00001534-1212-EFDE-1523-785FEABCD123";
+// Legacy DFU
+NSString * const legacyDFUServiceUUIDString = @"00001530-1212-EFDE-1523-785FEABCD123";
+NSString * const legacyDFUControlPointCharacteristicUUIDString = @"00001531-1212-EFDE-1523-785FEABCD123";
+NSString * const legacyDFUPacketCharacteristicUUIDString = @"00001532-1212-EFDE-1523-785FEABCD123";
+NSString * const legacyDFUVersionCharacteritsicUUIDString = @"00001534-1212-EFDE-1523-785FEABCD123";
+
+// Secure DFU
+NSString * const secureDFUServiceUUIDString = @"FE59";
+NSString * const secureDFUControlPointCharacteristicUUIDString = @"8EC90001-F315-4F60-9FB8-838830DAEA50";
+NSString * const secureDFUPacketCharacteristicUUIDString = @"8EC90002-F315-4F60-9FB8-838830DAEA50";
+
+// Buttonless DFU
+NSString * const buttonlessWithoutBonds = @"8EC90003-F315-4F60-9FB8-838830DAEA50";
+
 
 NSString * const ANCSServiceUUIDString = @"7905F431-B5CE-4E99-A40F-4B1E122D00D0";
 NSString * const TimerServiceUUIDString = @"1805";

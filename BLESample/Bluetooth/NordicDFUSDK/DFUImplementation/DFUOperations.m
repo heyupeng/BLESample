@@ -385,7 +385,7 @@ NSDate *startTime, *finishTime;
 
 -(void)processDFUResponse:(uint8_t *)data
 {
-    // NSLog(@"processDFUResponse");
+    NSLog(@"processDFUResponse: %02x %02x %02x", data[0], data[1], data[2]);
     [self setDFUResponseStruct:data];
     if (dfuResponse.responseCode == RESPONSE_CODE) {
         [self processRequestedCode];

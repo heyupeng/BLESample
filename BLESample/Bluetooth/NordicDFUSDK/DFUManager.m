@@ -70,7 +70,6 @@
     NSURL *url = [NSURL fileURLWithPath:filePath];
 
     _dfuHelper.isSelectedFileZipped = YES;
-    _dfuHelper.isDfuVersionExist = YES;
     _dfuHelper.isManifestExist = YES;
     [_dfuHelper setFirmwareType:FIRMWARE_TYPE_APPLICATION];
     _dfuHelper.selectedFileURL = url;
@@ -168,7 +167,7 @@
     if (_readDFUVersion > 2) {
         return;
     }
-    
+    _dfuHelper.isDfuVersionExist = _dfuOperation.dfuVersionCharacteristic? 1: 0;
     [_dfuOperation setAppToBootloaderMode];
     if ([_dfuHelper isValidFileSelected]) {
         [_dfuHelper checkAndPerformDFU];
@@ -192,7 +191,13 @@
     [self postNotificationWithDfuState:DfuStateError];
 }
 
--(void)onDeviceConnected:(CBPeripheral *)peripheral {}
+-(void)onDeviceConnected:(CBPeripheral *)peripheral {
+//    [_dfuOperation setAppToBootloaderMode];
+//    _dfuHelper.isDfuVersionExist = _dfuOperation.dfuVersionCharacteristic? 1: 0;
+//    if ([_dfuHelper isValidFileSelected]) {
+//        [_dfuHelper checkAndPerformDFU];
+//    }
+}
 -(void)onDeviceConnectedWithVersion:(CBPeripheral *)peripheral {}
 -(void)onDFUCancelled {}
 -(void)onSoftDeviceUploadStarted {}

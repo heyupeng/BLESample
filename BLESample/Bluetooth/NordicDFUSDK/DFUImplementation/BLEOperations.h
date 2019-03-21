@@ -23,6 +23,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 
+#import "Utility.h"
 @class BLEOperations;
 
 @protocol BLEOperationsDelegate
@@ -50,6 +51,8 @@ andControlPointCharacteristic:(CBCharacteristic *)dfuControlPointCharacteristic;
 @property (strong, nonatomic)CBCharacteristic *dfuVersionCharacteristic;
 //@property int dfuVersion;
 
+// 2019-03
+@property (nonatomic) DFUServiceType DFUServiceType;
 
 -(BLEOperations *) initWithDelegate:(id<BLEOperationsDelegate>) delegate;
 
