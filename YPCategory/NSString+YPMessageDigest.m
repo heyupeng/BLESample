@@ -1,12 +1,12 @@
 //
-//  NSString+MessageDigest.m
+//  NSString+YPMessageDigest.m
 //  YPDemo
 //
 //  Created by Peng on 2018/5/17.
 //  Copyright © 2018年 heyupeng. All rights reserved.
 //
 
-#import "NSString+MessageDigest.h"
+#import "NSString+YPMessageDigest.h"
 #import <CommonCrypto/CommonCrypto.h>
 
 @implementation NSString (MD5)

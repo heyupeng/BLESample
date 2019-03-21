@@ -1,16 +1,16 @@
 //
-//  UIWebView+YPJS2OC.m
+//  UIWebView+YPJSContext.m
 //  YPDemo
 //
 //  Created by Peng on 2018/10/29.
 //  Copyright © 2018年 heyupeng. All rights reserved.
 //
 
-#import "UIWebView+YPJS2OC.h"
+#import "UIWebView+YPJSContext.h"
 
 NSString * const kUIWebViewJSContext = @"documentView.webView.mainFrame.javaScriptContext";
 
-@implementation UIWebView (YPJS2OC)
+@implementation UIWebView (YPJSContext)
 
 - (JSContext *)jsContext {
     JSContext * jscontext = [self valueForKeyPath:kUIWebViewJSContext];

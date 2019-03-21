@@ -1,5 +1,5 @@
 //
-//  UIDevice+YPExtSysInfo.h
+//  UIDevice+YPSysInfo.h
 //  YPDemo
 //
 //  Created by Peng on 2018/1/23.

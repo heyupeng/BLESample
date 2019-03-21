@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		040F636722410CC1002B0598 /* NSData+YPHexString.m in Sources */ = {isa = PBXBuildFile; fileRef = 040F636622410CC1002B0598 /* NSData+YPHexString.m */; };
+          04279DB7222E61CD001FC02C /* UIColor+YPColours.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279DA6222E61CC001FC02C /* UIColor+YPColours.m */; };
+        04279DB9222E61CD001FC02C /* UIWebView+YPJSContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279DAA222E61CC001FC02C /* UIWebView+YPJSContext.m */; };
+        04279DBA222E61CD001FC02C /* UITableView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279DAB222E61CC001FC02C /* UITableView+Extension.m */; };
+        04279DBB222E61CD001FC02C /* UIDevice+YPSysInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279DAD222E61CC001FC02C /* UIDevice+YPSysInfo.m */; };
+        04279DBD222E61CD001FC02C /* NSString+YPHexString.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279DB0222E61CD001FC02C /* NSString+YPHexString.m */; };
+        04279DBE222E61CD001FC02C /* NSString+YPMessageDigest.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279DB4222E61CD001FC02C /* NSString+YPMessageDigest.m */; };
+        04FBA92825676A5000D9EB91 /* NSString+YPNumberBaseConversion.m in Sources */ = {isa = PBXBuildFile; fileRef = 04FBA92725676A5000D9EB91 /* NSString+YPNumberBaseConversion.m */; };
 		04279C20222CC40C001FC02C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279C1F222CC40C001FC02C /* AppDelegate.m */; };
 		04279C23222CC40C001FC02C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279C22222CC40C001FC02C /* ViewController.m */; };
 		04279C26222CC40C001FC02C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 04279C24222CC40C001FC02C /* Main.storyboard */; };
@@ -16,14 +24,7 @@
 		04279C31222CC40E001FC02C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279C30222CC40E001FC02C /* main.m */; };
 		04279C3B222CC40E001FC02C /* BLESampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279C3A222CC40E001FC02C /* BLESampleTests.m */; };
 		04279C46222CC40E001FC02C /* BLESampleUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279C45222CC40E001FC02C /* BLESampleUITests.m */; };
-		04FBA906256764FD00D9EB91 /* UIColor+YPColours.m in Sources */ = {isa = PBXBuildFile; fileRef = 04FBA8F5256764FD00D9EB91 /* UIColor+YPColours.m */; };
-		04FBA907256764FD00D9EB91 /* YPTimeZone.m in Sources */ = {isa = PBXBuildFile; fileRef = 04FBA8F7256764FD00D9EB91 /* YPTimeZone.m */; };
-		04FBA908256764FD00D9EB91 /* UIWebView+YPJS2OC.m in Sources */ = {isa = PBXBuildFile; fileRef = 04FBA8F9256764FD00D9EB91 /* UIWebView+YPJS2OC.m */; };
-		04FBA909256764FD00D9EB91 /* UITableView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 04FBA8FA256764FD00D9EB91 /* UITableView+Extension.m */; };
-		04FBA90A256764FD00D9EB91 /* UIDevice+YPExtSysInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 04FBA8FC256764FD00D9EB91 /* UIDevice+YPExtSysInfo.m */; };
-		04FBA90B256764FD00D9EB91 /* NSObject+YPProperies.m in Sources */ = {isa = PBXBuildFile; fileRef = 04FBA8FE256764FD00D9EB91 /* NSObject+YPProperies.m */; };
-		04FBA90C256764FD00D9EB91 /* NSString+YPHexString.m in Sources */ = {isa = PBXBuildFile; fileRef = 04FBA8FF256764FD00D9EB91 /* NSString+YPHexString.m */; };
-		04FBA90D256764FD00D9EB91 /* NSString+MessageDigest.m in Sources */ = {isa = PBXBuildFile; fileRef = 04FBA903256764FD00D9EB91 /* NSString+MessageDigest.m */; };
+		F3BAF91295E8E70D5686937F /* Pods_BLESample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5F1E157C40F6D5DA2751736 /* Pods_BLESample.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +45,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		040F636522410CC1002B0598 /* NSData+YPHexString.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSData+YPHexString.h"; sourceTree = "<group>"; };
+		040F636622410CC1002B0598 /* NSData+YPHexString.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSData+YPHexString.m"; sourceTree = "<group>"; };
 		04279C1B222CC40C001FC02C /* BLESample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BLESample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		04279C1E222CC40C001FC02C /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		04279C1F222CC40C001FC02C /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -62,24 +65,24 @@
 		04279C45222CC40E001FC02C /* BLESampleUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BLESampleUITests.m; sourceTree = "<group>"; };
 		04279C47222CC40E001FC02C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
         04279CDC222CF5EB001FC02C /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
-		04FBA8F3256764FD00D9EB91 /* NSString+YPHexString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+YPHexString.h"; sourceTree = "<group>"; };
-		04FBA8F4256764FD00D9EB91 /* NSObject+YPProperies.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+YPProperies.h"; sourceTree = "<group>"; };
-		04FBA8F5256764FD00D9EB91 /* UIColor+YPColours.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+YPColours.m"; sourceTree = "<group>"; };
-		04FBA8F6256764FD00D9EB91 /* YPExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPExtension.h; sourceTree = "<group>"; };
-		04FBA8F7256764FD00D9EB91 /* YPTimeZone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPTimeZone.m; sourceTree = "<group>"; };
-		04FBA8F8256764FD00D9EB91 /* NSString+MessageDigest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+MessageDigest.h"; sourceTree = "<group>"; };
-		04FBA8F9256764FD00D9EB91 /* UIWebView+YPJS2OC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIWebView+YPJS2OC.m"; sourceTree = "<group>"; };
-		04FBA8FA256764FD00D9EB91 /* UITableView+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+Extension.m"; sourceTree = "<group>"; };
-		04FBA8FC256764FD00D9EB91 /* UIDevice+YPExtSysInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice+YPExtSysInfo.m"; sourceTree = "<group>"; };
-		04FBA8FD256764FD00D9EB91 /* UIDevice+YPExtSysInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice+YPExtSysInfo.h"; sourceTree = "<group>"; };
-		04FBA8FE256764FD00D9EB91 /* NSObject+YPProperies.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+YPProperies.m"; sourceTree = "<group>"; };
-		04FBA8FF256764FD00D9EB91 /* NSString+YPHexString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+YPHexString.m"; sourceTree = "<group>"; };
-		04FBA900256764FD00D9EB91 /* UIColor+YPColours.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+YPColours.h"; sourceTree = "<group>"; };
-		04FBA901256764FD00D9EB91 /* NSString+YPExtensi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+YPExtensi.h"; sourceTree = "<group>"; };
-		04FBA902256764FD00D9EB91 /* UIWebView+YPJS2OC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIWebView+YPJS2OC.h"; sourceTree = "<group>"; };
-		04FBA903256764FD00D9EB91 /* NSString+MessageDigest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+MessageDigest.m"; sourceTree = "<group>"; };
-		04FBA904256764FD00D9EB91 /* YPTimeZone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPTimeZone.h; sourceTree = "<group>"; };
-		04FBA905256764FD00D9EB91 /* UITableView+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+Extension.h"; sourceTree = "<group>"; };
+		04279DA4222E61CC001FC02C /* NSString+YPHexString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+YPHexString.h"; sourceTree = "<group>"; };
+		04279DA6222E61CC001FC02C /* UIColor+YPColours.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+YPColours.m"; sourceTree = "<group>"; };
+		04279DA7222E61CC001FC02C /* YPCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPCategory.h; sourceTree = "<group>"; };
+		04279DA9222E61CC001FC02C /* NSString+YPMessageDigest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+YPMessageDigest.h"; sourceTree = "<group>"; };
+		04279DAA222E61CC001FC02C /* UIWebView+YPJSContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIWebView+YPJSContext.m"; sourceTree = "<group>"; };
+		04279DAB222E61CC001FC02C /* UITableView+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+Extension.m"; sourceTree = "<group>"; };
+		04279DAD222E61CC001FC02C /* UIDevice+YPSysInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice+YPSysInfo.m"; sourceTree = "<group>"; };
+		04279DAE222E61CD001FC02C /* UIDevice+YPSysInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice+YPSysInfo.h"; sourceTree = "<group>"; };
+		04279DB0222E61CD001FC02C /* NSString+YPHexString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+YPHexString.m"; sourceTree = "<group>"; };
+		04279DB1222E61CD001FC02C /* UIColor+YPColours.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+YPColours.h"; sourceTree = "<group>"; };
+		04279DB3222E61CD001FC02C /* UIWebView+YPJSContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIWebView+YPJSContext.h"; sourceTree = "<group>"; };
+		04279DB4222E61CD001FC02C /* NSString+YPMessageDigest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+YPMessageDigest.m"; sourceTree = "<group>"; };
+		04279DB6222E61CD001FC02C /* UITableView+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+Extension.h"; sourceTree = "<group>"; };
+		04FBA92625676A5000D9EB91 /* NSString+YPNumberBaseConversion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+YPNumberBaseConversion.h"; sourceTree = "<group>"; };
+		04FBA92725676A5000D9EB91 /* NSString+YPNumberBaseConversion.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+YPNumberBaseConversion.m"; sourceTree = "<group>"; };
+		42F56A2759F0007A6DA244B7 /* Pods-BLESample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BLESample.release.xcconfig"; path = "Pods/Target Support Files/Pods-BLESample/Pods-BLESample.release.xcconfig"; sourceTree = "<group>"; };
+		50CDBF392844C42E6255B02E /* Pods-BLESample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BLESample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BLESample/Pods-BLESample.debug.xcconfig"; sourceTree = "<group>"; };
+		A5F1E157C40F6D5DA2751736 /* Pods_BLESample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BLESample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,6 +90,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F3BAF91295E8E70D5686937F /* Pods_BLESample.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -110,11 +114,13 @@
 		04279C12222CC40C001FC02C = {
 			isa = PBXGroup;
 			children = (
-				04FBA8F2256764FD00D9EB91 /* Extension */,
+				04279DA3222E61CC001FC02C /* YPCategory */,
 				04279C1D222CC40C001FC02C /* BLESample */,
 				04279C39222CC40E001FC02C /* BLESampleTests */,
 				04279C44222CC40E001FC02C /* BLESampleUITests */,
 				04279C1C222CC40C001FC02C /* Products */,
+				D7E150D1C1E725B17A49A9FC /* Pods */,
+				9D917F94A7245CFDC24F0B80 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -163,37 +169,53 @@
 			path = BLESampleUITests;
 			sourceTree = "<group>";
 		};
-		04FBA8F2256764FD00D9EB91 /* Extension */ = {
+		04279DA3222E61CC001FC02C /* YPCategory */ = {
 			isa = PBXGroup;
 			children = (
-				04FBA8F3256764FD00D9EB91 /* NSString+YPHexString.h */,
-				04FBA8F4256764FD00D9EB91 /* NSObject+YPProperies.h */,
-				04FBA8F5256764FD00D9EB91 /* UIColor+YPColours.m */,
-				04FBA8F6256764FD00D9EB91 /* YPExtension.h */,
-				04FBA8F7256764FD00D9EB91 /* YPTimeZone.m */,
-				04FBA8F8256764FD00D9EB91 /* NSString+MessageDigest.h */,
-				04FBA8F9256764FD00D9EB91 /* UIWebView+YPJS2OC.m */,
-				04FBA8FA256764FD00D9EB91 /* UITableView+Extension.m */,
-				04FBA8FB256764FD00D9EB91 /* UIDevice */,
-				04FBA8FE256764FD00D9EB91 /* NSObject+YPProperies.m */,
-				04FBA8FF256764FD00D9EB91 /* NSString+YPHexString.m */,
-				04FBA900256764FD00D9EB91 /* UIColor+YPColours.h */,
-				04FBA901256764FD00D9EB91 /* NSString+YPExtensi.h */,
-				04FBA902256764FD00D9EB91 /* UIWebView+YPJS2OC.h */,
-				04FBA903256764FD00D9EB91 /* NSString+MessageDigest.m */,
-				04FBA904256764FD00D9EB91 /* YPTimeZone.h */,
-				04FBA905256764FD00D9EB91 /* UITableView+Extension.h */,
+				04279DA7222E61CC001FC02C /* YPCategory.h */,
+				040F636522410CC1002B0598 /* NSData+YPHexString.h */,
+				040F636622410CC1002B0598 /* NSData+YPHexString.m */,
+				04279DA4222E61CC001FC02C /* NSString+YPHexString.h */,
+				04279DB0222E61CD001FC02C /* NSString+YPHexString.m */,
+				04FBA92625676A5000D9EB91 /* NSString+YPNumberBaseConversion.h */,
+				04FBA92725676A5000D9EB91 /* NSString+YPNumberBaseConversion.m */,
+				04279DA9222E61CC001FC02C /* NSString+YPMessageDigest.h */,
+				04279DB4222E61CD001FC02C /* NSString+YPMessageDigest.m */,
+				04279DAC222E61CC001FC02C /* UIDevice */,
+				04279DB1222E61CD001FC02C /* UIColor+YPColours.h */,
+				04279DA6222E61CC001FC02C /* UIColor+YPColours.m */,
+				04279DB3222E61CD001FC02C /* UIWebView+YPJSContext.h */,
+				04279DAA222E61CC001FC02C /* UIWebView+YPJSContext.m */,
+				04279DB6222E61CD001FC02C /* UITableView+Extension.h */,
+				04279DAB222E61CC001FC02C /* UITableView+Extension.m */,
 			);
-			path = Extension;
+			path = YPCategory;
 			sourceTree = "<group>";
 		};
-		04FBA8FB256764FD00D9EB91 /* UIDevice */ = {
+		04279DAC222E61CC001FC02C /* UIDevice */ = {
 			isa = PBXGroup;
 			children = (
-				04FBA8FC256764FD00D9EB91 /* UIDevice+YPExtSysInfo.m */,
-				04FBA8FD256764FD00D9EB91 /* UIDevice+YPExtSysInfo.h */,
+				04279DAE222E61CD001FC02C /* UIDevice+YPSysInfo.h */,
+				04279DAD222E61CC001FC02C /* UIDevice+YPSysInfo.m */,
 			);
 			path = UIDevice;
+			sourceTree = "<group>";
+		};
+		9D917F94A7245CFDC24F0B80 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A5F1E157C40F6D5DA2751736 /* Pods_BLESample.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D7E150D1C1E725B17A49A9FC /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				50CDBF392844C42E6255B02E /* Pods-BLESample.debug.xcconfig */,
+				42F56A2759F0007A6DA244B7 /* Pods-BLESample.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -203,6 +225,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 04279C4A222CC40E001FC02C /* Build configuration list for PBXNativeTarget "BLESample" */;
 			buildPhases = (
+				312F46BC5CB0A93DB3928FB0 /* [CP] Check Pods Manifest.lock */,
 				04279C17222CC40C001FC02C /* Sources */,
 				04279C18222CC40C001FC02C /* Frameworks */,
 				04279C19222CC40C001FC02C /* Resources */,
@@ -263,6 +286,7 @@
 				TargetAttributes = {
 					04279C1A222CC40C001FC02C = {
 						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1010;
 					};
 					04279C35222CC40E001FC02C = {
 						CreatedOnToolsVersion = 10.1;
@@ -321,23 +345,44 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		312F46BC5CB0A93DB3928FB0 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-BLESample-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		04279C17222CC40C001FC02C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				04FBA908256764FD00D9EB91 /* UIWebView+YPJS2OC.m in Sources */,
 				04279C23222CC40C001FC02C /* ViewController.m in Sources */,
 				04279C29222CC40C001FC02C /* BLESample.xcdatamodeld in Sources */,
-				04FBA909256764FD00D9EB91 /* UITableView+Extension.m in Sources */,
 				04279C31222CC40E001FC02C /* main.m in Sources */,
 				04279C20222CC40C001FC02C /* AppDelegate.m in Sources */,
-				04FBA90A256764FD00D9EB91 /* UIDevice+YPExtSysInfo.m in Sources */,
-				04FBA90D256764FD00D9EB91 /* NSString+MessageDigest.m in Sources */,
-				04FBA90C256764FD00D9EB91 /* NSString+YPHexString.m in Sources */,
-				04FBA906256764FD00D9EB91 /* UIColor+YPColours.m in Sources */,
-				04FBA90B256764FD00D9EB91 /* NSObject+YPProperies.m in Sources */,
-				04FBA907256764FD00D9EB91 /* YPTimeZone.m in Sources */,
+				04279DBB222E61CD001FC02C /* UIDevice+YPSysInfo.m in Sources */,
+				04279DB7222E61CD001FC02C /* UIColor+YPColours.m in Sources */,
+				04FBA92825676A5000D9EB91 /* NSString+YPNumberBaseConversion.m in Sources */,
+				04279DBA222E61CD001FC02C /* UITableView+Extension.m in Sources */,
+				04279DB9222E61CD001FC02C /* UIWebView+YPJSContext.m in Sources */,
+				040F636722410CC1002B0598 /* NSData+YPHexString.m in Sources */,
+				04279DBD222E61CD001FC02C /* NSString+YPHexString.m in Sources */,
+				04279DBE222E61CD001FC02C /* NSString+YPMessageDigest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -506,35 +551,45 @@
 		};
 		04279C4B222CC40E001FC02C /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 50CDBF392844C42E6255B02E /* Pods-BLESample.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = NO;
 				DEVELOPMENT_TEAM = MK49SZ4EMK;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/BLESample/PrefixHeader.pch";
 				INFOPLIST_FILE = BLESample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.sushi.BLESample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
 		04279C4C222CC40E001FC02C /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 42F56A2759F0007A6DA244B7 /* Pods-BLESample.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = NO;
 				DEVELOPMENT_TEAM = MK49SZ4EMK;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/BLESample/PrefixHeader.pch";
 				INFOPLIST_FILE = BLESample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.sushi.BLESample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

@@ -9,15 +9,18 @@
 #ifndef YPExtension_h
 #define YPExtension_h
 
+/* Hex String */
 #import "NSString+YPHexString.h"
+#import "NSData+YPHexString.h"
 
-#import "NSString+MessageDigest.h"
-#import "NSObject+YPProperies.h"
+#import "NSString+YPMessageDigest.h"
+#import "NSString+YPNumberBaseConversion.h"
 
 /* UI */
 #import "UIColor+YPColours.h"
+#import "UIDevice/UIDevice+YPSysInfo.h"
+
 #import "UITableView+Extension.h"
-#import "UIDevice/UIDevice+YPExtSysInfo.h"
-#import "UIWebView+YPJS2OC.h"
+#import "UIWebView+YPJSContext.h"
 
 #endif /* YPExtension_h */
