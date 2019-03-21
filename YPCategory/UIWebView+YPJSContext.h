@@ -1,5 +1,5 @@
 //
-//  UIWebView+YPJS2OC.h
+//  UIWebView+YPJSContext.h
 //  YPDemo
 //
 //  Created by Peng on 2018/10/29.
@@ -14,7 +14,7 @@ UIKIT_EXTERN NSString *const kUIWebViewJSContext;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface UIWebView (YPJS2OC)
+@interface UIWebView (YPJSContext)
 //获取JS的运行环境
 - (JSContext *)jsContext;
 

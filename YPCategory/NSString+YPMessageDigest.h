@@ -1,5 +1,5 @@
 //
-//  NSString+MessageDigest.h
+//  NSString+YPMessageDigest.h
 //  YPDemo
 //
 //  Created by Peng on 2018/5/17.

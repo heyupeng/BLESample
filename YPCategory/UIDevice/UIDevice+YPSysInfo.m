@@ -1,12 +1,12 @@
 //
-//  UIDevice+YPExeSysInfo.m
+//  UIDevice+YPSysInfo.m
 //  YPDemo
 //
 //  Created by Peng on 2018/1/23.
 //  Copyright © 2018年 heyupeng. All rights reserved.
 //
 
-#import "UIDevice+YPExtSysInfo.h"
+#import "UIDevice+YPSysInfo.h"
 #import <sys/utsname.h>
 
 @implementation UIDevice (YPPlatform)
