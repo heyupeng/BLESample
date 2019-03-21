@@ -8,8 +8,7 @@
 
 #import "YPCmdViewController.h"
 
-#import "YPBlueManager.h"
-#import "YPDeviceManager.h"
+#import "YPBluetooth/YPBluetooth.h"
 
 #import "CommunicationProtocol/SOCBlueToothWriteData.h"
 #import "YPUpgradeViewController.h"
@@ -63,7 +62,13 @@
     
     [self addNotificationObserver];
     
+    __weak YPCmdViewController* weakSelf = self;
+    [_deviceManager setLogger:^(NSString *log) {
+        [weakSelf textforTextViewByAppending:log];
+    }];
+    
     if (_blueManager.currentDevice.peripheral.state == CBPeripheralStateConnected) {
+        [_deviceManager setNotifyVuale:YES forCharacteristicUUID:[CBUUID UUIDWithString:NordicUARTServiceRxCharacteristicUUID] serviceUUID:[CBUUID UUIDWithString:NordicUARTServiceUUID]];
         return;
     }
     [_blueManager connectDevice:_deviceManager];
@@ -110,7 +115,7 @@
     self.view.backgroundColor = [UIColor whiteColor];
     
     // 1.0
-    UIView * view = [[UIView alloc] initWithFrame:CGRectMake(0, 64, SCREENWIDTH, 44)];
+    UIView * view = [[UIView alloc] initWithFrame:CGRectMake(0, 10, SCREENWIDTH, 44)];
     [self.view addSubview:view];
     
     UITextField * tf = [[UITextField alloc] initWithFrame:CGRectMake(5, 0, SCREENWIDTH * 2/3.0, 44)];
@@ -131,7 +136,7 @@
     _btn = btn;
     
     // 2.0
-    CGRect frame = CGRectMake(0, 44 + 64, SCREENWIDTH, SCREENHEIGHT * 0.45);
+    CGRect frame = CGRectMake(0, CGRectGetMaxY(view.frame), SCREENWIDTH, SCREENHEIGHT * 0.45);
     int vol = 2;
     UICollectionViewFlowLayout * layout = [[UICollectionViewFlowLayout alloc] init];
     layout.itemSize = CGSizeMake((CGRectGetWidth(frame) - 10)/vol, 44);
@@ -146,9 +151,14 @@
     
     [_collectionView registerClass:[YPTextCell class] forCellWithReuseIdentifier:@"cell"];
     
+    UIBarButtonItem * rightBtn = [[UIBarButtonItem alloc] initWithTitle:@"Log" style:UIBarButtonItemStyleDone target:self action:@selector(rightButtonAction:)];
+    self.navigationItem.rightBarButtonItem = rightBtn;
+    
     UITextView * tv = [[UITextView alloc] init];
     tv.editable = NO;
-    tv.frame = CGRectMake(0, CGRectGetMaxY(collectionView.frame) + 10, SCREENWIDTH, CGRectGetHeight(self.view.bounds) - CGRectGetMaxY(collectionView.frame) - 20 - 44);
+    tv.hidden = YES;
+    tv.frame = self.view.bounds;
+//    tv.frame = CGRectMake(0, CGRectGetMaxY(collectionView.frame) + 10, SCREENWIDTH, CGRectGetHeight(self.view.bounds) - CGRectGetMaxY(collectionView.frame) - 20 - 44);
     [self.view addSubview:tv];
     _tv = tv;
 }
@@ -190,6 +200,11 @@
     });
 }
 
+- (void)rightButtonAction:(UIBarButtonItem *)sender {
+    _tv.frame = self.view.bounds;
+    _tv.hidden = !_tv.hidden;
+}
+
 /** ============== **/
 - (void)addNotificationObserver {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutBlueManager:) name:YPBLE_DidConnectedDevice object:nil];
@@ -198,8 +213,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutDeviceManager:) name: YPDevice_DidDiscoverCharacteristics object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutDeviceManager:) name: YPDevice_DidUpdateValue object:nil];
-
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutDeviceManager:) name: YPDevice_DidWriteValue object:nil];
 }
 
 - (void)removeNotificationObserver {
@@ -229,9 +244,18 @@
         CBCharacteristic * characteristic = notification.object;
         NSString *valueString = [[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding];
         
-        NSString * log = [NSString stringWithFormat:@"Value for %@: \n%@ ==> %@", [characteristic UUID], [characteristic value], valueString];
+        NSString * log = [NSString stringWithFormat:@"Did Update Value UUID %@ \n%@ ==> %@", [characteristic UUID], [characteristic value], valueString];
 
-        [self textforTextViewByAppending:log];
+//        [self textforTextViewByAppending:log];
+    }
+    
+    if ([notification.name isEqualToString:YPDevice_DidWriteValue]) {
+        CBCharacteristic * characteristic = notification.object;
+        NSString *valueString = [[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding];
+        
+        NSString * log = [NSString stringWithFormat:@"Did Write Value for %@: \n%@ ==> %@", [characteristic UUID], [characteristic value], valueString];
+        
+//        [self textforTextViewByAppending:log];
     }
 }
 
@@ -288,7 +312,7 @@
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ %@", valueString, [character value]];
     
     if ([UUID.UUIDString isEqualToString:@"2A19"]) {
-        long value = [[character.value hexString] hexStringToLongValue];
+        long value = [[character value].hexString hexStringToLongValue];
         cell.detailTextLabel.text = [NSString stringWithFormat:@"%ld %% %@", value, [character value]];
         [_deviceManager IntToCBUUID:0x2a19];
         [_deviceManager CBUUIDToInt:UUID];

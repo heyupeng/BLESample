@@ -9,5 +9,9 @@
 #ifndef YPBluetooth_h
 #define YPBluetooth_h
 
+#import "YPBlueConst.h"
+
+#import "YPBlueManager.h"
+#import "YPDeviceManager.h"
 
 #endif /* YPBluetooth_h */

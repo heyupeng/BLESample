@@ -10,8 +10,9 @@
 #import "FileTableViewController.h"
 #import "DFUManager.h"
 #import "YPDFUManager.h"
+#import <iOSDFULibrary/iOSDFULibrary-Swift.h>
 
-@interface YPUpgradeViewController ()
+@interface YPUpgradeViewController ()<DFUServiceDelegate, DFUProgressDelegate, LoggerDelegate>
 @property (nonatomic) DFUManager * dfuManager;
 @property (nonatomic) DfuState currentDfuState;
 
@@ -20,6 +21,10 @@
 @property (nonatomic) YPDFUManager * dfuManager_xiaosu;
 
 @property (nonatomic, strong) UITextView * tv;
+
+// Nordic DFU
+@property (nonatomic, strong) DFUServiceInitiator * dfuInitiator;
+@property (nonatomic, strong) DFUServiceController * dfuController;
 
 @end
 
@@ -109,10 +114,29 @@
         [_dfuManager_xiaosu startUpgrade];
         return;
     }
-    _dfuManager.firmwareFilePath = filePath;
-    [_dfuManager setCentralManager:_blueManager.manager];
-    [_dfuManager connectDevice:_blueManager.currentDevice.peripheral];
-//    [_blueManager disConnectDevice:_blueManager.currentDevice];
+//    _dfuManager.firmwareFilePath = filePath;
+//    [_dfuManager setCentralManager:_blueManager.manager];
+//    [_dfuManager connectDevice:_blueManager.currentDevice.peripheral];
+    
+    DFUServiceInitiator * dfuInitiator = [self dfuServiceInitiator];
+    dfuInitiator.jumpToBootloaderEncryption = YES; // 自定义属性
+    
+    NSString * zipFile = filePath; // [[NSBundle mainBundle] pathForResource:@"X5_2019031101" ofType:@"zip"];
+    DFUFirmware * firmware = [[DFUFirmware alloc] initWithUrlToZipFile:[NSURL URLWithString:zipFile] type:DFUFirmwareTypeApplication];
+    
+    _dfuInitiator = [dfuInitiator withFirmware:firmware];
+    [dfuInitiator start];
+}
+
+- (DFUServiceInitiator *)dfuServiceInitiator {
+    DFUServiceInitiator * dfuInitiator = [[DFUServiceInitiator alloc] initWithCentralManager:_blueManager.manager target: _blueManager.currentDevice.peripheral];
+    dfuInitiator.delegate = self;
+    dfuInitiator.progressDelegate = self;
+    dfuInitiator.logger = self;
+    
+//    dfuInitiator.enableUnsafeExperimentalButtonlessServiceInSecureDfu = YES; // 允许secureDFU下buttonless模式(SMI-X5、SMI-M1S) x
+    dfuInitiator.alternativeAdvertisingNameEnabled = NO; // 不可重命名
+    return dfuInitiator;
 }
 
 
@@ -130,10 +154,10 @@
 
 - (void)textforTextViewByAppending:(NSString *)append {
     dispatch_sync(dispatch_get_main_queue(), ^{
-        if (_tv.text.length > 1) {
+        if (self.tv.text.length > 1) {
             _tv.text = [_tv.text stringByAppendingFormat:@"\n%@",append];
         } else {
-            _tv.text = append;
+            self.tv.text = append;
         }
         [self autoScroll];
     });
@@ -221,4 +245,40 @@
     [self textforTextViewByAppending: text];
 }
 
+
+#pragma mark - DFUInitiator Delegate
+- (void)dfuStateDidChangeTo:(enum DFUState)state {
+    NSLog(@"dfuState: %@", [self DFUStateDescription:state]);
+    dispatch_async(dispatch_get_main_queue(), ^{
+//        self.dfuStatusLabel.text = [self DFUStateDescription:state];
+    });
+}
+
+- (void)dfuError:(enum DFUError)error didOccurWithMessage:(NSString *)message {
+    NSLog(@"error:%ld - %@",error, message);
+}
+
+- (void)dfuProgressDidChangeFor:(NSInteger)part outOf:(NSInteger)totalParts to:(NSInteger)progress currentSpeedBytesPerSecond:(double)currentSpeedBytesPerSecond avgSpeedBytesPerSecond:(double)avgSpeedBytesPerSecond {
+    NSLog(@"propress: %ld", progress);
+    dispatch_async(dispatch_get_main_queue(), ^{
+//        self.progressLabel.text = [NSString stringWithFormat:@"%ld%%", progress];
+    });
+}
+
+- (void)logWith:(enum LogLevel)level message:(NSString *)message {
+    NSLog(@"log: %ld - %@", level, message);
+}
+
+- (NSString *)DFUStateDescription:(DFUState)state {
+    switch (state) {
+        case DFUStateConnecting:      return @"Connecting";
+        case DFUStateStarting:        return @"Starting";
+        case DFUStateEnablingDfuMode: return @"Enabling DFU Mode";
+        case DFUStateUploading:       return @"Uploading";
+        case DFUStateValidating:      return @"Validating"  ;// this state occurs only in Legacy DFU
+        case DFUStateDisconnecting:   return @"Disconnecting";
+        case DFUStateCompleted:       return @"Completed";
+        case DFUStateAborted:         return @"Aborted";
+    }
+}
 @end

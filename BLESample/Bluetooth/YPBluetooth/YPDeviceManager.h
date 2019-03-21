@@ -9,7 +9,11 @@
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 
-#import "YPBLEMacro.h"
+@protocol YPDeviceDelete <NSObject>
+
+@optional
+
+@end
 
 @interface YPDeviceManager : NSObject <CBPeripheralDelegate>
 
@@ -21,9 +25,10 @@
 @property (nonatomic) NSString *deviceName;
 @property (nonatomic) NSString* identifier;
 
-// advertisementData
+// advertisementData info
 @property (nonatomic, readonly) NSString * localName;
 @property (nonatomic, readonly) NSString * manufacturerData;
+@property (nonatomic, readonly) NSString * specificData;
 
 @property (nonatomic, strong) NSString * manufacturerName;
 @property (nonatomic, strong) NSString * modelNumber;
@@ -31,14 +36,20 @@
 @property (nonatomic, strong) NSString * hardwareRevision;
 @property (nonatomic, strong) NSString * firmwareRevision;
 
+@property (nonatomic) void(^logger)(NSString * log);
+
+// characteristic
+@property (nonatomic, readonly) CBCharacteristic * TxCharacteristic;
+
 - (instancetype)initWithDevice:(CBPeripheral*)device;
 
-- (void)notification:(CBUUID*)serviceUUID characteristicUUID:(CBUUID*)characteristicUUID p:(CBPeripheral *)p on:(BOOL)on;
+- (void)setNotifyVuale:(BOOL)value forCharacteristicUUID:(CBUUID*)characteristicUUID serviceUUID:(CBUUID*)serviceUUID;
 
 - (void)writeValue:(CBUUID*)serviceUUID characteristicUUID:(CBUUID*)characteristicUUID p:(CBPeripheral *)p data:(NSData *)data;
+
 - (void)writeValueWithoutResponse:(CBUUID*)serviceUUID characteristicUUID:(CBUUID*)characteristicUUID p:(CBPeripheral *)p data:(NSData *)data;
 
-- (void)readValue: (CBUUID*)serviceUUID characteristicUUID:(CBUUID*)characteristicUUID p:(CBPeripheral *)p;
+- (void)readValueForCharacteristicUUID:(CBUUID*)characteristicUUID serviceUUID:(CBUUID*)serviceUUID peripheral:(CBPeripheral *)peripheral;
 
 - (void)writeFFValue:(NSString *)FFString;
 

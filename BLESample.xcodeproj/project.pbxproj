@@ -19,7 +19,7 @@
 		04279C46222CC40E001FC02C /* BLESampleUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279C45222CC40E001FC02C /* BLESampleUITests.m */; };
 		04279D8D222E61C2001FC02C /* YPBlueViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D58222E61C2001FC02C /* YPBlueViewController.m */; };
 		04279D8E222E61C2001FC02C /* YPBlueManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D5A222E61C2001FC02C /* YPBlueManager.m */; };
-		04279D8F222E61C2001FC02C /* YPBLEMacro.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D5F222E61C2001FC02C /* YPBLEMacro.m */; };
+		04279D8F222E61C2001FC02C /* YPBlueConst.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D5F222E61C2001FC02C /* YPBlueConst.m */; };
 		04279D90222E61C2001FC02C /* YPDeviceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D60222E61C2001FC02C /* YPDeviceManager.m */; };
 		04279D91222E61C2001FC02C /* YPDFUManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D62222E61C2001FC02C /* YPDFUManager.m */; };
 		04279D92222E61C2001FC02C /* FileTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D63222E61C2001FC02C /* FileTableViewController.m */; };
@@ -91,11 +91,11 @@
 		04279D57222E61C2001FC02C /* YPDeviceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPDeviceViewController.h; sourceTree = "<group>"; };
 		04279D58222E61C2001FC02C /* YPBlueViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPBlueViewController.m; sourceTree = "<group>"; };
 		04279D5A222E61C2001FC02C /* YPBlueManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPBlueManager.m; sourceTree = "<group>"; };
-		04279D5B222E61C2001FC02C /* YPBLEMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPBLEMacro.h; sourceTree = "<group>"; };
+		04279D5B222E61C2001FC02C /* YPBlueConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPBlueConst.h; sourceTree = "<group>"; };
 		04279D5C222E61C2001FC02C /* YPDeviceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPDeviceManager.h; sourceTree = "<group>"; };
 		04279D5D222E61C2001FC02C /* YPDFUManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPDFUManager.h; sourceTree = "<group>"; };
 		04279D5E222E61C2001FC02C /* YPBlueManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPBlueManager.h; sourceTree = "<group>"; };
-		04279D5F222E61C2001FC02C /* YPBLEMacro.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPBLEMacro.m; sourceTree = "<group>"; };
+		04279D5F222E61C2001FC02C /* YPBlueConst.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPBlueConst.m; sourceTree = "<group>"; };
 		04279D60222E61C2001FC02C /* YPDeviceManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPDeviceManager.m; sourceTree = "<group>"; };
 		04279D61222E61C2001FC02C /* BlueDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlueDefines.h; sourceTree = "<group>"; };
 		04279D62222E61C2001FC02C /* YPDFUManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPDFUManager.m; sourceTree = "<group>"; };
@@ -265,8 +265,8 @@
 			children = (
 				040F62EB223B429E002B0598 /* YPBluetooth.h */,
 				04279D61222E61C2001FC02C /* BlueDefines.h */,
-				04279D5B222E61C2001FC02C /* YPBLEMacro.h */,
-				04279D5F222E61C2001FC02C /* YPBLEMacro.m */,
+				04279D5B222E61C2001FC02C /* YPBlueConst.h */,
+				04279D5F222E61C2001FC02C /* YPBlueConst.m */,
 				04279D5E222E61C2001FC02C /* YPBlueManager.h */,
 				04279D5A222E61C2001FC02C /* YPBlueManager.m */,
 				04279D5C222E61C2001FC02C /* YPDeviceManager.h */,
@@ -593,7 +593,7 @@
 				04279DA0222E61C2001FC02C /* YPDeviceViewController.m in Sources */,
 				04279DBA222E61CD001FC02C /* UITableView+Extension.m in Sources */,
 				04279D9A222E61C2001FC02C /* DFUManager.m in Sources */,
-				04279D8F222E61C2001FC02C /* YPBLEMacro.m in Sources */,
+				04279D8F222E61C2001FC02C /* YPBlueConst.m in Sources */,
 				04279D98222E61C2001FC02C /* AccessFileSystem.m in Sources */,
 				04279D94222E61C2001FC02C /* Utility.m in Sources */,
 				04279DA2222E61C2001FC02C /* YPCmdViewController.m in Sources */,

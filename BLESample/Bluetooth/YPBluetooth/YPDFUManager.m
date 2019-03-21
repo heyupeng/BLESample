@@ -9,6 +9,8 @@
 #import "YPDFUManager.h"
 #import <UIKit/UIKit.h>
 
+#import "YPBlueConst.h"
+
 #define UIALERTVIEW_TAG_REBOOT 1
 
 @interface YPDFUManager()
@@ -79,7 +81,7 @@
                                                  name:YPDevice_DidWriteValue object:nil];
     
     // Enable notifications on the status characteristic
-    [_deviceManager notification:[_deviceManager IntToCBUUID:SPOTA_SERVICE_UUID] characteristicUUID:[CBUUID UUIDWithString:SPOTA_SERV_STATUS_UUID] p:_deviceManager.peripheral on:YES];
+//    [_deviceManager setNotifyVuale:YES forCharacteristicUUID:[CBUUID UUIDWithString:SPOTA_SERV_STATUS_UUID] serviceUUID:[_deviceManager IntToCBUUID:SPOTA_SERVICE_UUID]];
 }
 
 - (void)startUpgrade {
@@ -187,7 +189,7 @@
             step = 5;
             
             [_deviceManager writeValue:[_deviceManager IntToCBUUID:SPOTA_SERVICE_UUID] characteristicUUID:[CBUUID UUIDWithString:SPOTA_PATCH_LEN_UUID] p:_deviceManager.peripheral data:patchLengthData];
-            //[manager readValue:[manager IntToCBUUID:SPOTA_SERVICE_UUID] characteristicUUID:[CBUUID UUIDWithString:SPOTA_PATCH_LEN_UUID] p:manager.device];
+//            [_deviceManager readValueForCharacteristicUUID:[CBUUID UUIDWithString:SPOTA_PATCH_LEN_UUID] serviceUUID:[_deviceManager IntToCBUUID:SPOTA_SERVICE_UUID] peripheral:_deviceManager.peripheral];
             break;
         }
             

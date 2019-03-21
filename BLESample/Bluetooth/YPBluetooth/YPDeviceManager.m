@@ -8,6 +8,8 @@
 
 #import "YPDeviceManager.h"
 
+#import "YPBlueConst.h"
+
 @implementation YPDeviceManager
 
 - (instancetype)initWithDevice:(CBPeripheral*)device {
@@ -65,6 +67,24 @@
     return @"";
 }
 
+- (NSString *)specificData {
+    NSString * manufacturerData = [self manufacturerData];
+    NSString * specificData = @"";
+    if (manufacturerData.length > 4) {
+        specificData = [manufacturerData substringFromIndex:4];
+    }
+    return specificData;
+}
+
+
+- (void)didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
+    
+}
+
+- (void)didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
+    
+}
+
 #pragma mark - peripheral delegate
 
 - (void)peripheralDidUpdateName:(CBPeripheral *)peripheral {
@@ -84,10 +104,32 @@
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
+    [self logWithFormat:@"Service UUID: %@", service.UUID];
+    
     NSArray *characteristics = [service characteristics];
     for (CBCharacteristic *characteristic in characteristics) {
-        NSLog(@"Characteristic:\n %@ (%@)", [characteristic UUID], characteristic);
-        [peripheral readValueForCharacteristic:characteristic];
+        [self logWithFormat:@"\tCharacteristic UUID: %@", [characteristic UUID]];
+        
+        if (characteristic.properties & CBCharacteristicPropertyRead) {
+            /*  x3 某一个版本的设备 readValue() 后, UARTService Rx、Tx 无法 writeValue()
+             (Error Domain=CBErrorDomain Code=8 "The specified UUID is not allowed for this operation.")
+             */
+//            [peripheral readValueForCharacteristic:characteristic];
+        }
+        
+//        if ([service.UUID isEqual:[CBUUID UUIDWithString:NordicUARTServiceUUID]]) {
+//            if ([characteristic.UUID.data.hexString isEqualToString:@"6e400003b5a3f393e0a9e50e24dcca9e"]) {
+//                /*
+//                 _RxCharacteristic = characteristic;
+//                 */
+//                [peripheral setNotifyValue:YES forCharacteristic:characteristic];
+//            }
+//            if ([characteristic.UUID.data.hexString isEqualToString:@"6e400002b5a3f393e0a9e50e24dcca9e"]) {
+//                /*
+//                _TxCharacteristic = characteristic;
+//                 */
+//            }
+//        }
     }
     
     [[NSNotificationCenter defaultCenter] postNotificationName:YPDevice_DidDiscoverCharacteristics object:service];
@@ -95,7 +137,10 @@
 
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
     NSString *valueString = [[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding];
-    NSLog(@"Value for %@ is \n%@ -> %@", [characteristic UUID], [characteristic value], valueString);
+    [self logWithFormat:@"did Update Value: \n\t UUID %@ \n\t Value %@ -> %@", [characteristic UUID], [characteristic value], valueString];
+    if (error) {
+        [self logWithFormat:@"error: %@", error.localizedDescription];
+    }
     
     char * b1 = (char *)[characteristic.UUID.data bytes];
     UInt16 v = (b1[0] << 8) | b1[1];
@@ -110,83 +155,104 @@
         _hardwareRevision = valueString;
     } else if (v == 0x2A26) {
         _firmwareRevision = valueString;
+    } else if (v == 0x2A19) {
+        
     }
-//    NSString * hexString = [NSString hexStringFromData:[characteristic value]];
-//    NSString * string = [NSString hexStringToCharString:hexString];
-//    NSLog(@"%@ : %@",hexString, string);
-
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:YPDevice_DidUpdateValue object:characteristic];
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
-    NSString * valueString = [[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding];
-    NSLog(@"Data written: %@ is \n%@ -> %@ error: %@", [characteristic UUID], [characteristic value], valueString, error);
+    [self logWithFormat:@"did Write Value: \n\t UUID %@ \n\t Value %@", [characteristic UUID], [characteristic value]];
+    if (error) {
+        [self logWithFormat:@"error: %@", error.localizedDescription];
+    }
     
     [[NSNotificationCenter defaultCenter] postNotificationName:YPDevice_DidWriteValue object:characteristic];
 }
 
+- (void)logWithFormat:(NSString *)format, ... NS_FORMAT_FUNCTION(1,2){
+    va_list args;
+    va_start(args, format);
+    NSString * string = [[NSString alloc]initWithFormat:format arguments:args];
+    va_end(args);
+    
+    if (_logger) {
+        _logger(string);
+    } else {
+        NSLog(@"%@", string);
+    }
+}
 #pragma mark - func
 /*
  */
-- (void)writeValue:(CBUUID*)serviceUUID characteristicUUID:(CBUUID*)characteristicUUID p:(CBPeripheral *)p data:(NSData *)data andResponseType:(CBCharacteristicWriteType)responseType
+- (void)writeValue:(NSData *)data ForCharacteristicUUID:(CBUUID*)characteristicUUID serviceUUID:(CBUUID*)serviceUUID peripheral:(CBPeripheral *)peripheral type:(CBCharacteristicWriteType)type
 {
-    CBService *service = [self findServiceFromUUID:serviceUUID p:p];
+    CBService *service = [self findServiceFromUUID:serviceUUID peripheral:peripheral];
     if (!service) {
-        NSLog(@"Could not find service with UUID %s on peripheral with UUID %@\r\n",[self CBUUIDToString:serviceUUID], p.identifier);
+        NSLog(@"Could not find service with UUID %s on peripheral with UUID %@\r\n",[self CBUUIDToString:serviceUUID], peripheral.identifier);
         return;
     }
     CBCharacteristic *characteristic = [self findCharacteristicFromUUID:characteristicUUID service:service];
     if (!characteristic) {
-        NSLog(@"Could not find characteristic with UUID %s on service with UUID %s on peripheral with UUID %@\r\n",[self CBUUIDToString:characteristicUUID],[self CBUUIDToString:serviceUUID], p.identifier);
+        NSLog(@"Could not find characteristic with UUID %s on service with UUID %s on peripheral with UUID %@\r\n",[self CBUUIDToString:characteristicUUID],[self CBUUIDToString:serviceUUID], peripheral.identifier);
         return;
     }
-    [p writeValue:data forCharacteristic:characteristic type:responseType];
+    [peripheral writeValue:data forCharacteristic:characteristic type:type];
 }
 
 - (void)writeFFValue:(NSString *)FFString {
-    NSData * data = [NSString hexStringToByte:FFString];
+    NSData * data = [NSData dataWithHexString:FFString];
+    CBUUID * characteristicUUID = [CBUUID UUIDWithString:@"6E400002-B5A3-F393-E0A9-E50E24DCCA9E"];
+    CBUUID * serviceUUID = [CBUUID UUIDWithString:@"6E400001-B5A3-F393-E0A9-E50E24DCCA9E"];
     
-    [self notification:[CBUUID UUIDWithString:@"6E400001-B5A3-F393-E0A9-E50E24DCCA9E"] characteristicUUID:[CBUUID UUIDWithString:@"6E400003-B5A3-F393-E0A9-E50E24DCCA9E"] p:_peripheral on:1];
-
-    [self writeValue:[CBUUID UUIDWithString:@"6E400001-B5A3-F393-E0A9-E50E24DCCA9E"] characteristicUUID:[CBUUID UUIDWithString:@"6E400002-B5A3-F393-E0A9-E50E24DCCA9E"] p:_peripheral data:data];
+//    [_peripheral writeValue:data forCharacteristic:_writeCharacteristic type:CBCharacteristicWriteWithResponse];
+    [self writeValue:data ForCharacteristicUUID:characteristicUUID serviceUUID: serviceUUID peripheral:_peripheral type:CBCharacteristicWriteWithResponse];
 }
 
 - (void)writeValue:(CBUUID*)serviceUUID characteristicUUID:(CBUUID*)characteristicUUID p:(CBPeripheral *)p data:(NSData *)data {
-    [self writeValue:serviceUUID characteristicUUID:characteristicUUID p:p data:data andResponseType:CBCharacteristicWriteWithResponse];
+    [self writeValue:data ForCharacteristicUUID:characteristicUUID serviceUUID:serviceUUID peripheral:p type:CBCharacteristicWriteWithResponse];
 }
 
 - (void)writeValueWithoutResponse:(CBUUID*)serviceUUID characteristicUUID:(CBUUID*)characteristicUUID p:(CBPeripheral *)p data:(NSData *)data {
-    [self writeValue:serviceUUID characteristicUUID:characteristicUUID p:p data:data andResponseType:CBCharacteristicWriteWithoutResponse];
+    [self writeValue:data ForCharacteristicUUID:characteristicUUID serviceUUID:serviceUUID peripheral:p type:CBCharacteristicWriteWithoutResponse];
 }
 
-- (void)readValue: (CBUUID*)serviceUUID characteristicUUID:(CBUUID*)characteristicUUID p:(CBPeripheral *)p {
-    CBService *service = [self findServiceFromUUID:serviceUUID p:p];
+- (void)readValueForCharacteristicUUID:(CBUUID*)characteristicUUID serviceUUID:(CBUUID*)serviceUUID peripheral:(CBPeripheral *)peripheral {
+    CBService *service = [self findServiceFromUUID:serviceUUID peripheral:peripheral];
     if (!service) {
-        NSLog(@"Could not find service with UUID %s on peripheral with UUID %@\r\n",[self CBUUIDToString:serviceUUID], p.identifier);
+        NSLog(@"Could not find service with UUID %s on peripheral with UUID %@\r\n",[self CBUUIDToString:serviceUUID], peripheral.identifier);
         return;
     }
     CBCharacteristic *characteristic = [self findCharacteristicFromUUID:characteristicUUID service:service];
     if (!characteristic) {
-        NSLog(@"Could not find characteristic with UUID %s on service with UUID %s on peripheral with UUID %@\r\n",[self CBUUIDToString:characteristicUUID],[self CBUUIDToString:serviceUUID], p.identifier);
+        NSLog(@"Could not find characteristic with UUID %s on service with UUID %s on peripheral with UUID %@\r\n",[self CBUUIDToString:characteristicUUID],[self CBUUIDToString:serviceUUID], peripheral.identifier);
+        return;
+    }
+    NSLog(@"characteristic with UUID %s on service with UUID %s\n",[self CBUUIDToString:characteristicUUID],[self CBUUIDToString:serviceUUID]);
+    [peripheral readValueForCharacteristic:characteristic];
+}
+
+- (void)setNotifyVuale:(BOOL)value forCharacteristicUUID:(CBUUID*)characteristicUUID serviceUUID:(CBUUID*)serviceUUID peripheral:(CBPeripheral *)peripheral {
+    CBService *service = [self findServiceFromUUID:serviceUUID peripheral:peripheral];
+    if (!service) {
+        NSLog(@"Could not find service with UUID %s on peripheral with UUID %@\r\n",[self CBUUIDToString:serviceUUID], peripheral.identifier);
+        return;
+    }
+    CBCharacteristic *characteristic = [self findCharacteristicFromUUID:characteristicUUID service:service];
+    if (!characteristic) {
+        NSLog(@"Could not find characteristic with UUID %s on service with UUID %s on peripheral with UUID %@\r\n",[self CBUUIDToString:characteristicUUID],[self CBUUIDToString:serviceUUID], peripheral.identifier);
         return;
     }
     
-    [p readValueForCharacteristic:characteristic];
+    [peripheral setNotifyValue:value forCharacteristic:characteristic];
 }
 
-- (void)notification:(CBUUID*)serviceUUID characteristicUUID:(CBUUID*)characteristicUUID p:(CBPeripheral *)p on:(BOOL)on {
-    CBService *service = [self findServiceFromUUID:serviceUUID p:p];
-    if (!service) {
-        NSLog(@"Could not find service with UUID %s on peripheral with UUID %@\r\n",[self CBUUIDToString:serviceUUID], p.identifier);
-        return;
-    }
-    CBCharacteristic *characteristic = [self findCharacteristicFromUUID:characteristicUUID service:service];
-    if (!characteristic) {
-        NSLog(@"Could not find characteristic with UUID %s on service with UUID %s on peripheral with UUID %@\r\n",[self CBUUIDToString:characteristicUUID],[self CBUUIDToString:serviceUUID], p.identifier);
-        return;
-    }
-    [p setNotifyValue:on forCharacteristic:characteristic];
+- (void)setNotifyVuale:(BOOL)value forCharacteristicUUID:(CBUUID*)characteristicUUID serviceUUID:(CBUUID*)serviceUUID {
+    CBPeripheral * peripheral = self.peripheral;
+    [self setNotifyVuale:value forCharacteristicUUID:characteristicUUID serviceUUID:serviceUUID peripheral:peripheral];
 }
+
 
 /*
  */
@@ -301,7 +367,7 @@
 }
 
 
-- (CBService *) findServiceFromUUID:(CBUUID *)UUID p:(CBPeripheral *)p {
+- (CBService *)findServiceFromUUID:(CBUUID *)UUID peripheral:(CBPeripheral *)p {
     for(int i = 0; i < p.services.count; i++) {
         CBService *s = [p.services objectAtIndex:i];
         if ([self compareCBUUID:s.UUID UUID2:UUID]) return s;

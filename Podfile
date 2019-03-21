@@ -7,4 +7,5 @@ target ‘BLESample’ do
   
   pod 'SSZipArchive', '~> 1.7'
   
+  pod 'iOSDFULibrary', :path => '../IOS-Pods-DFU-Library/'
 end

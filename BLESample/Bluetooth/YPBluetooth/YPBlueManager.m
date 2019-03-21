@@ -7,7 +7,9 @@
 //
 
 #import "YPBlueManager.h"
+
 #import "YPDeviceManager.h"
+#import "YPBlueConst.h"
 
 static YPBlueManager *shareManager;
 
@@ -15,6 +17,9 @@ static YPBlueManager *shareManager;
 
 @property (nonatomic, strong) NSTimer * scannerTimer;
 @property (nonatomic) NSInteger countDownTime;
+
+@property (nonatomic) NSTimeInterval timeCounter; // 计时器运行时长记录器
+@property (nonatomic) NSInteger timeRepeats; // 计时器循环次数
 
 @end
 
@@ -54,7 +59,7 @@ static YPBlueManager *shareManager;
 
 - (void)configuration {
     _RSSIValue = MAX_RSSI_VALUE;
-    _scanTimeout = SCAN_TIME;
+    _scanTimeout = SCAN_TIME_OUT;
     
     _discoverDevices = [[NSMutableArray alloc] init];
     _discoverperipheral = [NSMutableArray new];
@@ -75,15 +80,51 @@ static YPBlueManager *shareManager;
 }
 
 - (void)scannerTimerCountDown {
-    NSLog(@"countDown: %ld", _countDownTime);
+    
+}
+
+- (void)scannerTimerTimeOut {
+    [self stopScan];
+}
+
+/**
+ The execution function of the timer; some parameter is passed to this block when executed to aid in avoiding cyclical references
+
+ @param timer timer scheduled on the current run loop in a run loop mode.
+ @param timeCounter total time when the timer has been running
+ @param repeats number of times the timer has been running
+ */
+- (void)timer:(NSTimer *)timer didExecuteTime:(NSTimeInterval)timeCounter repeats:(NSInteger)repeats {
+    NSLog(@"Timer counter: %.2f , repeats: %zi", timeCounter, repeats);
+
     _countDownTime --;
     if (_countDownTime < 0) {
-        [self stopScan];
+        [self scanTimeout];
+        return;
     }
+    
+    [self scannerTimerCountDown];
+}
+
+/**
+ The execution function of the timer;
+
+ @param timer timer scheduled on the current run loop in a run loop mode.
+ */
+- (void)timerAction:(NSTimer *)timer {
+    _timeCounter += timer.timeInterval;
+    _timeRepeats += 1;
+    
+    [self timer:timer didExecuteTime:_timeCounter repeats:_timeRepeats];
 }
 
 - (void)createScannerTimer {
-    _scannerTimer = [NSTimer timerWithTimeInterval:1.0 target:self selector:@selector(scannerTimerCountDown) userInfo:nil repeats:YES];
+    [self invalidateTimer];
+    
+    _timeCounter = 0;
+    _timeRepeats = 0;
+    
+    _scannerTimer = [NSTimer timerWithTimeInterval:1.0 target:self selector:@selector(timerAction:) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:_scannerTimer forMode:NSRunLoopCommonModes];
 }
 
@@ -92,29 +133,34 @@ static YPBlueManager *shareManager;
     [self createScannerTimer];
 }
 
-- (void)scannerTimerInvalidate {
-    if (_scannerTimer) {
+- (void)invalidateTimer {
+    if (!_scannerTimer) return;
+    
+    if (_scannerTimer.valid) {
         [_scannerTimer invalidate];
-        _scannerTimer = nil;
     }
+    _scannerTimer = nil;
 }
 
-#pragma mark - central delegate
-- (void)centralManagerDidUpdateState:(CBCentralManager *)central {
-    NSLog(@"%@", [self getDescriptionForManagerState:central.state]);
+- (BOOL)filterPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI {
+    if (abs([RSSI intValue]) > _RSSIValue) { return YES; }
+    
+    if (self.name && ![[advertisementData objectForKey:CBAdvertisementDataLocalNameKey] hasPrefix:self.name]) {return YES;}
+    
+    return NO;
+}
+
+#pragma mark - function
+- (void)didUpdateState:(CBCentralManager *)central {
     
     [[NSNotificationCenter defaultCenter] postNotificationName: YPBLE_DidUpdateState object: central];
+    
+    if (!_autoScanWhilePoweredOn && central.state == CBManagerStatePoweredOn) {return;}
+    
+    [self startScan];
 }
 
-- (void)centralManager:(CBCentralManager *)central willRestoreState:(NSDictionary<NSString *,id> *)dict {
-    NSLog(@"will Restore State: %@", dict.description);
-}
-
-- (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary<NSString *, id> *)advertisementData RSSI:(NSNumber *)RSSI {
-    
-    if (abs([RSSI intValue]) > _RSSIValue) { return; }
-    
-    if (self.name && ![[advertisementData objectForKey:CBAdvertisementDataLocalNameKey] hasPrefix:self.name]) {return;}
+- (void)didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary<NSString *, id> *)advertisementData RSSI:(NSNumber *)RSSI {
     
     if ([_discoverperipheral containsObject:peripheral]) {return;}
     [_discoverperipheral addObject:peripheral];
@@ -125,7 +171,7 @@ static YPBlueManager *shareManager;
         }
     }
     NSLog(@"Discovered %@ RSSI: %@ advertisement: %@", [peripheral description], RSSI, [advertisementData description]);
-
+    
     YPDeviceManager * device = [[YPDeviceManager alloc] initWithDevice:peripheral];
     device.advertisementData = advertisementData;
     device.RSSI = RSSI;
@@ -134,15 +180,34 @@ static YPBlueManager *shareManager;
     [[NSNotificationCenter defaultCenter] postNotificationName: YPBLE_DidDiscoverDevice object:device];
 }
 
+#pragma mark - central delegate
+- (void)centralManagerDidUpdateState:(CBCentralManager *)central {
+    NSLog(@"%@", [self getDescriptionForManagerState:central.state]);
+    
+    [self didUpdateState:central];
+}
+
+- (void)centralManager:(CBCentralManager *)central willRestoreState:(NSDictionary<NSString *,id> *)dict {
+    NSLog(@"will Restore State: %@", dict.description);
+}
+
+- (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary<NSString *, id> *)advertisementData RSSI:(NSNumber *)RSSI {
+    
+    BOOL filter = [self filterPeripheral:peripheral advertisementData:advertisementData RSSI:RSSI];
+    if (filter) {return;}
+    
+    [self didDiscoverPeripheral:peripheral advertisementData:advertisementData RSSI:RSSI];
+}
+
 - (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral {
     NSLog(@"connect device: %@", peripheral);
     
-    [peripheral discoverServices:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName: YPBLE_DidConnectedDevice object:peripheral];
 }
 
 - (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
     NSLog(@"Disconnected device");
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:YPBLE_DidDisconnectedDevice object:peripheral];
 }
 
@@ -156,19 +221,29 @@ static YPBlueManager *shareManager;
 
 - (void)centralManager:(CBCentralManager *)central didRetrievePeripherals:(NSArray *)peripherals {
     NSLog(@"Retrieved peripherals: %@", peripherals);
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:YPBLE_ReceiveDevices object:peripherals];
 }
 
-#pragma mark -
+#pragma mark - Blue Operation
+
+/**
+ a collection of service allowed
+
+ @return a collection of service allowed
+ */
+- (NSArray<CBUUID *> *)services {
+    CBUUID * serviceUUID = [CBUUID UUIDWithString:@"FE95"];
+    return @[serviceUUID];
+}
+
 /**/
 - (void)startScan {
     _isScaning = YES;
     _discoverperipheral = [NSMutableArray new];
     _discoverDevices = [NSMutableArray new];
     
-    CBUUID * serviceUUID = [CBUUID UUIDWithString:@"FE95"];
-    
-    NSArray * services = @[];
+    NSArray * services = [self services];
     NSDictionary * options = @{CBCentralManagerScanOptionAllowDuplicatesKey:@YES};
     [_manager scanForPeripheralsWithServices:services options: options];
     
@@ -179,13 +254,15 @@ static YPBlueManager *shareManager;
     _isScaning = NO;
     [_manager stopScan];
     
-    [self scannerTimerInvalidate];
+    [self invalidateTimer];
 }
 
 - (void)connectDevice:(YPDeviceManager *)device {
     _currentDevice = device;
     device.peripheral.delegate = _currentDevice;
     _manager.delegate = self;
+    
+    [self stopScan];
     
     NSDictionary * options = @{CBConnectPeripheralOptionNotifyOnDisconnectionKey: @YES};
     [_manager connectPeripheral:device.peripheral options:options];
@@ -199,11 +276,9 @@ static YPBlueManager *shareManager;
 }
 
 - (void)dealloc {
-    [self scannerTimerInvalidate];
+    [self invalidateTimer];
     
-    if (_currentDevice) {
-        [self disConnectDevice:_currentDevice];
-    }
+    [self disConnectDevice:_currentDevice];
 }
 
 - (NSString *)getDescriptionForManagerState: (CBManagerState)state {

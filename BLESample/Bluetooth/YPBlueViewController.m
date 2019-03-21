@@ -30,6 +30,7 @@
     [self initialData];
     
     [self initUI];
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -71,7 +72,8 @@
     right.enabled = NO;
     self.navigationItem.rightBarButtonItem = right;
     
-    UIView *view1 = [[UIView alloc] initWithFrame:CGRectMake(0, 64, SCREENWIDTH, 44)];
+    // tool bar
+    UIView *view1 = [[UIView alloc] initWithFrame:CGRectMake(0, 10, SCREENWIDTH, 44)];
     [self.view addSubview:view1];
     
     UILabel * titleLable = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 60, 44)];
@@ -109,6 +111,18 @@
     tableView.clipsToBounds = YES;
     [self.view addSubview: tableView];
     _tableView = tableView;
+    
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    
+    CGRect rect = self.view.frame;
+    CGRect frame;
+    frame = _tableView.frame;
+    frame.size.width = CGRectGetWidth(rect);
+    frame.size.height = CGRectGetHeight(rect) - CGRectGetMinY(frame) - 20;
+    _tableView.frame = frame;
 }
 
 - (void)rightBarButtonAction:(UIBarButtonItem *)button {
@@ -220,7 +234,7 @@
     
     NSDictionary * serviceData = [device.advertisementData objectForKey: CBAdvertisementDataServiceDataKey];
     NSData * fe95 = [serviceData objectForKey:[CBUUID UUIDWithString:@"FE95"]];
-    NSString * ip = [fe95 hexString];
+    NSString * ip = fe95.hexString;
     if (ip.length > 14) {
         ip = [ip substringFromIndex: ip.length - 12 - 2];
         ip = [ip substringToIndex: ip.length - 2];
@@ -245,12 +259,14 @@
     
     [_blueManager stopScan];
     
-//    YPDeviceViewController * viewController = [[YPDeviceViewController alloc] init];
-//    viewController.blueManager = _blueManager;
-//    viewController.deviceManager = device;
-//    viewController.title = @"Services";
-//    [self.navigationController pushViewController:viewController animated:YES];
-//    return;
+    if (0) {
+        YPDeviceViewController * viewController = [[YPDeviceViewController alloc] init];
+        viewController.blueManager = _blueManager;
+        viewController.deviceManager = device;
+        viewController.title = @"Services";
+        [self.navigationController pushViewController:viewController animated:YES];
+        return;
+    }
 
     YPCmdViewController * cmdVC = [[YPCmdViewController alloc] init];
     cmdVC.blueManager = _blueManager;

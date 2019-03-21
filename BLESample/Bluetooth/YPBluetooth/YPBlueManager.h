@@ -9,12 +9,13 @@
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 #import "BlueDefines.h"
-#import "YPBLEMacro.h"
 
 #define MAX_RSSI_VALUE 60
-#define SCAN_TIME 30
+#define SCAN_TIME_OUT 30
 
 @class YPDeviceManager;
+
+@protocol YPBlueManagerDelegate;
 
 @interface YPBlueManager : NSObject <CBCentralManagerDelegate>
 
@@ -23,6 +24,7 @@
 @property (nonatomic, strong) NSMutableArray * discoverperipheral;
 @property (nonatomic, strong) YPDeviceManager * currentDevice;
 
+@property (nonatomic) BOOL autoScanWhilePoweredOn;
 @property (nonatomic) BOOL isScaning;
 
 /* config */
@@ -40,5 +42,15 @@
 + (void)destroy;
 
 - (void)updateState;
+
+@end
+
+@protocol YPBlueManagerDelegate <NSObject>
+@optional
+- (void)didUpdateState:(YPBlueManager *)blueManager;
+
+- (void)didDiscoverBTDevice:(YPDeviceManager *)device;
+
+- (void)didConnectedBTDevice:(YPDeviceManager *)device;
 
 @end

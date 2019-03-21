@@ -1,5 +1,5 @@
 //
-//  YPBLEMacro.h
+//  YPBlueConst.h
 //  YPDemo
 //
 //  Created by Peng on 2018/4/19.
@@ -19,3 +19,10 @@ UIKIT_EXTERN NSNotificationName const YPDevice_DidDiscoverServices;
 UIKIT_EXTERN NSNotificationName const YPDevice_DidDiscoverCharacteristics;
 UIKIT_EXTERN NSNotificationName const YPDevice_DidUpdateValue;
 UIKIT_EXTERN NSNotificationName const YPDevice_DidWriteValue;
+
+/*
+ Nordic UART Service
+ */
+UIKIT_EXTERN NSString * const NordicUARTServiceUUID;
+UIKIT_EXTERN NSString * const NordicUARTServiceTxCharacteristicUUID;
+UIKIT_EXTERN NSString * const NordicUARTServiceRxCharacteristicUUID;
