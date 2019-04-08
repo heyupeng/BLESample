@@ -8,12 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		040F636722410CC1002B0598 /* NSData+YPHexString.m in Sources */ = {isa = PBXBuildFile; fileRef = 040F636622410CC1002B0598 /* NSData+YPHexString.m */; };
-          04279DB7222E61CD001FC02C /* UIColor+YPColours.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279DA6222E61CC001FC02C /* UIColor+YPColours.m */; };
-        04279DB9222E61CD001FC02C /* UIWebView+YPJSContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279DAA222E61CC001FC02C /* UIWebView+YPJSContext.m */; };
-        04279DBA222E61CD001FC02C /* UITableView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279DAB222E61CC001FC02C /* UITableView+Extension.m */; };
-        04279DBB222E61CD001FC02C /* UIDevice+YPSysInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279DAD222E61CC001FC02C /* UIDevice+YPSysInfo.m */; };
-        04279DBD222E61CD001FC02C /* NSString+YPHexString.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279DB0222E61CD001FC02C /* NSString+YPHexString.m */; };
-        04279DBE222E61CD001FC02C /* NSString+YPMessageDigest.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279DB4222E61CD001FC02C /* NSString+YPMessageDigest.m */; };
         04FBA92825676A5000D9EB91 /* NSString+YPNumberBaseConversion.m in Sources */ = {isa = PBXBuildFile; fileRef = 04FBA92725676A5000D9EB91 /* NSString+YPNumberBaseConversion.m */; };
 		04279C20222CC40C001FC02C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279C1F222CC40C001FC02C /* AppDelegate.m */; };
 		04279C23222CC40C001FC02C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279C22222CC40C001FC02C /* ViewController.m */; };
@@ -24,6 +18,15 @@
 		04279C31222CC40E001FC02C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279C30222CC40E001FC02C /* main.m */; };
 		04279C3B222CC40E001FC02C /* BLESampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279C3A222CC40E001FC02C /* BLESampleTests.m */; };
 		04279C46222CC40E001FC02C /* BLESampleUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279C45222CC40E001FC02C /* BLESampleUITests.m */; };
+		04279DB7222E61CD001FC02C /* UIColor+YPColours.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279DA6222E61CC001FC02C /* UIColor+YPColours.m */; };
+		04279DB9222E61CD001FC02C /* UIWebView+YPJSContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279DAA222E61CC001FC02C /* UIWebView+YPJSContext.m */; };
+		04279DBA222E61CD001FC02C /* UITableView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279DAB222E61CC001FC02C /* UITableView+Extension.m */; };
+		04279DBB222E61CD001FC02C /* UIDevice+YPSysInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279DAD222E61CC001FC02C /* UIDevice+YPSysInfo.m */; };
+		04279DBC222E61CD001FC02C /* NSObject+YPProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279DAF222E61CD001FC02C /* NSObject+YPProperty.m */; };
+		04279DBD222E61CD001FC02C /* NSString+YPHexString.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279DB0222E61CD001FC02C /* NSString+YPHexString.m */; };
+		04279DBE222E61CD001FC02C /* NSString+YPMessageDigest.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279DB4222E61CD001FC02C /* NSString+YPMessageDigest.m */; };
+		042958BE224DB10200496C8E /* ObjdectModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 042958BD224DB10200496C8E /* ObjdectModel.m */; };
+		0475F00E255E3E7300D330A4 /* NSObject+YPClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 0475F00D255E3E7300D330A4 /* NSObject+YPClass.m */; };
 		F3BAF91295E8E70D5686937F /* Pods_BLESample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5F1E157C40F6D5DA2751736 /* Pods_BLESample.framework */; };
 /* End PBXBuildFile section */
 
@@ -66,6 +69,7 @@
 		04279C47222CC40E001FC02C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
         04279CDC222CF5EB001FC02C /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		04279DA4222E61CC001FC02C /* NSString+YPHexString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+YPHexString.h"; sourceTree = "<group>"; };
+		04279DA5222E61CC001FC02C /* NSObject+YPProperty.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+YPProperty.h"; sourceTree = "<group>"; };
 		04279DA6222E61CC001FC02C /* UIColor+YPColours.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+YPColours.m"; sourceTree = "<group>"; };
 		04279DA7222E61CC001FC02C /* YPCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPCategory.h; sourceTree = "<group>"; };
 		04279DA9222E61CC001FC02C /* NSString+YPMessageDigest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+YPMessageDigest.h"; sourceTree = "<group>"; };
@@ -73,6 +77,7 @@
 		04279DAB222E61CC001FC02C /* UITableView+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+Extension.m"; sourceTree = "<group>"; };
 		04279DAD222E61CC001FC02C /* UIDevice+YPSysInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice+YPSysInfo.m"; sourceTree = "<group>"; };
 		04279DAE222E61CD001FC02C /* UIDevice+YPSysInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice+YPSysInfo.h"; sourceTree = "<group>"; };
+		04279DAF222E61CD001FC02C /* NSObject+YPProperty.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+YPProperty.m"; sourceTree = "<group>"; };
 		04279DB0222E61CD001FC02C /* NSString+YPHexString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+YPHexString.m"; sourceTree = "<group>"; };
 		04279DB1222E61CD001FC02C /* UIColor+YPColours.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+YPColours.h"; sourceTree = "<group>"; };
 		04279DB3222E61CD001FC02C /* UIWebView+YPJSContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIWebView+YPJSContext.h"; sourceTree = "<group>"; };
@@ -80,6 +85,10 @@
 		04279DB6222E61CD001FC02C /* UITableView+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+Extension.h"; sourceTree = "<group>"; };
 		04FBA92625676A5000D9EB91 /* NSString+YPNumberBaseConversion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+YPNumberBaseConversion.h"; sourceTree = "<group>"; };
 		04FBA92725676A5000D9EB91 /* NSString+YPNumberBaseConversion.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+YPNumberBaseConversion.m"; sourceTree = "<group>"; };
+		042958BC224DB10200496C8E /* ObjdectModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjdectModel.h; sourceTree = "<group>"; };
+		042958BD224DB10200496C8E /* ObjdectModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObjdectModel.m; sourceTree = "<group>"; };
+		0475F00C255E3E7300D330A4 /* NSObject+YPClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+YPClass.h"; sourceTree = "<group>"; };
+		0475F00D255E3E7300D330A4 /* NSObject+YPClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+YPClass.m"; sourceTree = "<group>"; };
 		42F56A2759F0007A6DA244B7 /* Pods-BLESample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BLESample.release.xcconfig"; path = "Pods/Target Support Files/Pods-BLESample/Pods-BLESample.release.xcconfig"; sourceTree = "<group>"; };
 		50CDBF392844C42E6255B02E /* Pods-BLESample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BLESample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BLESample/Pods-BLESample.debug.xcconfig"; sourceTree = "<group>"; };
 		A5F1E157C40F6D5DA2751736 /* Pods_BLESample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BLESample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -139,6 +148,8 @@
 			children = (
 				04279C1E222CC40C001FC02C /* AppDelegate.h */,
 				04279C1F222CC40C001FC02C /* AppDelegate.m */,
+				042958BC224DB10200496C8E /* ObjdectModel.h */,
+				042958BD224DB10200496C8E /* ObjdectModel.m */,
 				04279C21222CC40C001FC02C /* ViewController.h */,
 				04279C22222CC40C001FC02C /* ViewController.m */,
 				04279C24222CC40C001FC02C /* Main.storyboard */,
@@ -181,6 +192,10 @@
 				04FBA92725676A5000D9EB91 /* NSString+YPNumberBaseConversion.m */,
 				04279DA9222E61CC001FC02C /* NSString+YPMessageDigest.h */,
 				04279DB4222E61CD001FC02C /* NSString+YPMessageDigest.m */,
+				0475F00C255E3E7300D330A4 /* NSObject+YPClass.h */,
+				0475F00D255E3E7300D330A4 /* NSObject+YPClass.m */,
+				04279DA5222E61CC001FC02C /* NSObject+YPProperty.h */,
+				04279DAF222E61CD001FC02C /* NSObject+YPProperty.m */,
 				04279DAC222E61CC001FC02C /* UIDevice */,
 				04279DB1222E61CD001FC02C /* UIColor+YPColours.h */,
 				04279DA6222E61CC001FC02C /* UIColor+YPColours.m */,
@@ -199,6 +214,15 @@
 				04279DAD222E61CC001FC02C /* UIDevice+YPSysInfo.m */,
 			);
 			path = UIDevice;
+			sourceTree = "<group>";
+		};
+		04AB1D47227E8E1400B801E9 /* SOCDFUSDK */ = {
+			isa = PBXGroup;
+			children = (
+				04AB1D57227E9C8C00B801E9 /* libSOCDFUSDK.a */,
+				04AB1D56227E9C8C00B801E9 /* SOCDFUManager.h */,
+			);
+			path = SOCDFUSDK;
 			sourceTree = "<group>";
 		};
 		9D917F94A7245CFDC24F0B80 /* Frameworks */ = {
@@ -281,7 +305,7 @@
 		04279C13222CC40C001FC02C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1010;
+				LastUpgradeCheck = 1210;
 				ORGANIZATIONNAME = heyupeng;
 				TargetAttributes = {
 					04279C1A222CC40C001FC02C = {
@@ -377,12 +401,15 @@
 				04279C20222CC40C001FC02C /* AppDelegate.m in Sources */,
 				04279DBB222E61CD001FC02C /* UIDevice+YPSysInfo.m in Sources */,
 				04279DB7222E61CD001FC02C /* UIColor+YPColours.m in Sources */,
+                040F636722410CC1002B0598 /* NSData+YPHexString.m in Sources */,
+                04279DBD222E61CD001FC02C /* NSString+YPHexString.m in Sources */,
+                04279DBE222E61CD001FC02C /* NSString+YPMessageDigest.m in Sources */,
 				04FBA92825676A5000D9EB91 /* NSString+YPNumberBaseConversion.m in Sources */,
 				04279DBA222E61CD001FC02C /* UITableView+Extension.m in Sources */,
 				04279DB9222E61CD001FC02C /* UIWebView+YPJSContext.m in Sources */,
-				040F636722410CC1002B0598 /* NSData+YPHexString.m in Sources */,
-				04279DBD222E61CD001FC02C /* NSString+YPHexString.m in Sources */,
-				04279DBE222E61CD001FC02C /* NSString+YPMessageDigest.m in Sources */,
+                04279DBC222E61CD001FC02C /* NSObject+YPProperty.m in Sources */,
+				0475F00E255E3E7300D330A4 /* NSObject+YPClass.m in Sources */,
+                042958BE224DB10200496C8E /* ObjdectModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -463,6 +490,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -522,6 +550,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -558,12 +587,17 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = NO;
 				DEVELOPMENT_TEAM = MK49SZ4EMK;
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/BLESample/PrefixHeader.pch";
 				INFOPLIST_FILE = BLESample/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/BLESample/BlueTooth/SOCDFUSDK",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.sushi.BLESample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -580,12 +614,17 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = NO;
 				DEVELOPMENT_TEAM = MK49SZ4EMK;
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/BLESample/PrefixHeader.pch";
 				INFOPLIST_FILE = BLESample/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/BLESample/BlueTooth/SOCDFUSDK",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.sushi.BLESample;
 				PRODUCT_NAME = "$(TARGET_NAME)";

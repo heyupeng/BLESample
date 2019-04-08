@@ -23,12 +23,22 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (NSString *)hexString;
 
-/*
- 数据流转数字 <0643> => 163
+/**
+ 数据流转ascii字符串 <313233 343561 626364> => 12345abcd
  */
-- (NSInteger)hexIntergerValue;
+- (NSString *)ASCIIString;
 
-- (NSInteger)hexLongLongValue;
+/**
+ 数据流转数组 <0643> => @[0x06, 0x43]
+ */
+- (NSArray<NSNumber *> *)hexArray;
+
+/*
+ 数据流转数字 <0643> => 1603
+ */
+- (NSInteger)hexIntegerValue;
+
+- (long long)hexLongLongValue;
 
 @end
 

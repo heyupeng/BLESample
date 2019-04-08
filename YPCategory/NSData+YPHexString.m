@@ -38,6 +38,16 @@
     return mdata;
 }
 
+
+/**
+ way 1:
+     NSString * string = data.description;
+     //去除 < > space
+     string = [[string substringToIndex:string.length -1 ] substringFromIndex:1];
+     string = [string stringByReplacingOccurrencesOfString:@" " withString:@""];
+     return string;
+ 
+ */
 - (NSString *)hexString {
     Byte * bytes = (Byte *)[self bytes];
     NSInteger length = [self length];
@@ -52,13 +62,44 @@
     
     for (int i = 0; i < length; i ++) {
         UInt8 byte = bytes[i];
-        [hexString appendFormat:@"%02x", byte&0xff];
+        [hexString appendFormat:@"%02x", byte];
     }
     
     return hexString;
 }
 
-- (NSInteger)hexIntergerValue {
+- (NSString *)ASCIIString {
+//    return [[NSString alloc] initWithData:self encoding:NSASCIIStringEncoding];
+    
+    Byte * bytes = (Byte *)[self bytes];
+    NSInteger length = [self length];
+    
+    NSMutableString * hexString = [[NSMutableString alloc] initWithCapacity:length];
+    
+    for (int i = 0; i < length; i ++) {
+        UInt8 byte = bytes[i];
+        [hexString appendFormat:@"%c", byte];
+    }
+    
+    return hexString;
+}
+
+- (NSArray<NSNumber *> *)hexArray {
+    Byte * bytes = (Byte *)[self bytes];
+    NSInteger length = [self length];
+    
+    if (length < 1) {return @[];}
+    
+    NSMutableArray * array = [NSMutableArray arrayWithCapacity:length];
+    for (int i = 0; i < length; i ++) {
+        UInt8 byte = bytes[i];
+        [array addObject:[NSNumber numberWithUnsignedChar:byte]];
+    }
+    
+    return array;
+}
+
+- (NSInteger)hexIntegerValue {
     Byte * bytes = (Byte *)[self bytes];
     NSInteger length = [self length];
     
@@ -75,10 +116,10 @@
     return value;
 }
 
-- (NSInteger)hexLongLongValue {
+- (long long)hexLongLongValue {
     Byte * bytes = (Byte *)[self bytes];
     NSInteger length = [self length];
-    NSInteger value = 0;
+    long long  value = 0;
     
     for (int i = 0; i < length; i ++) {
         Byte byte = bytes[i];
