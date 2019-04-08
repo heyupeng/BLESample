@@ -10,6 +10,7 @@
 
 #import "YPDeviceViewController.h"
 #import "YPCmdViewController.h"
+#import "ObjdectModel.h"
 
 @interface YPBlueViewController ()
 {
@@ -19,6 +20,7 @@
 @property (nonatomic, strong) NSMutableArray * dataSource;
 
 @property (nonatomic, strong) UILabel * rssiValueLable;
+@property (nonatomic, strong) UITextField * nameTextField;;
 
 @end
 
@@ -30,7 +32,6 @@
     [self initialData];
     
     [self initUI];
-    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -43,8 +44,6 @@
     
     [self addNotificationObserver];
     _blueManager = [YPBlueManager share];
-    _blueManager.RSSIValue = 60;
-    _blueManager.name = _deviceName;
     [_blueManager updateState];
 }
 
@@ -59,7 +58,7 @@
 - (void)initialData {
     _dataSource = [NSMutableArray new];
     
-    _deviceName = @"SMI-X";
+    _deviceName = @"";
 }
 
 - (void)initUI {
@@ -96,18 +95,21 @@
     [self.view addSubview:view2];
     
     UILabel * titleLable2 = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 60, 44)];
-    titleLable2.text = @"name";
+    titleLable2.text = @"Name";
     [view2 addSubview:titleLable2];
     
-    UITextField * tf = [[UITextField alloc] initWithFrame:CGRectMake(80, 0, SCREENWIDTH * 0.5, 44)];
+    UITextField * tf = [[UITextField alloc] initWithFrame:CGRectMake(80, 0 + (44  - 36)*0.5, SCREENWIDTH * 0.5, 36)];
+    tf.borderStyle = UITextBorderStyleRoundedRect;
+    tf.keyboardType = UIKeyboardTypeASCIICapable;
     tf.text = _deviceName;
-    tf.userInteractionEnabled = NO;
+    tf.delegate = self;
+//    tf.userInteractionEnabled = NO;
     [view2 addSubview:tf];
+    _nameTextField = tf;
     [tf addTarget:self action:@selector(textFieldValueChanged:) forControlEvents:UIControlEventValueChanged];
     
-    
     UITableView * tableView = [self createTableVie];
-    tableView.frame = CGRectMake(0, CGRectGetMaxY(view2.frame) , SCREENWIDTH, SCREENHEIGHT - CGRectGetMaxY(view2.frame) - 20);
+    tableView.frame = CGRectMake(0, CGRectGetMaxY(view2.frame) , SCREENWIDTH, SCREENHEIGHT - CGRectGetMaxY(view2.frame));
     tableView.clipsToBounds = YES;
     [self.view addSubview: tableView];
     _tableView = tableView;
@@ -121,12 +123,16 @@
     CGRect frame;
     frame = _tableView.frame;
     frame.size.width = CGRectGetWidth(rect);
-    frame.size.height = CGRectGetHeight(rect) - CGRectGetMinY(frame) - 20;
+    frame.size.height = CGRectGetHeight(rect) - CGRectGetMinY(frame);
     _tableView.frame = frame;
 }
 
 - (void)rightBarButtonAction:(UIBarButtonItem *)button {
     if ([button.title isEqualToString:@"Scan"]) {
+        _dataSource = [NSMutableArray new];
+        [self.tableView reloadData];
+        
+        _blueManager.localName = _nameTextField.text;
         [_blueManager startScan];
         button.title = @"Stop scan";
     } else {
@@ -136,6 +142,11 @@
     
 }
 
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    [super touchesBegan:touches withEvent:event];
+    [_nameTextField resignFirstResponder];
+}
+
 - (void)sliderValueChanged:(UISlider *)slider {
     _rssiValueLable.text = [NSString stringWithFormat:@"-%.0f dBm", slider.value];
 
@@ -143,7 +154,7 @@
 }
 
 - (void)textFieldValueChanged:(UITextField *)tf {
-
+    _deviceName = tf.text;
 }
 
 /** ============== **/
@@ -165,7 +176,7 @@
     tableView.clipsToBounds = NO;
     tableView.showsHorizontalScrollIndicator = NO;
 //    tableView.showsVerticalScrollIndicator = NO;
-   
+    tableView.backgroundColor = [UIColor groupTableViewBackgroundColor];
     [tableView estimatedHeightZero];
     tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     
@@ -177,9 +188,9 @@
 
 /** ============== **/
 - (void)addNotificationObserver {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutDiscoverDevice:) name: YPBLE_DidUpdateState object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutDiscoverDevice:) name: YPBLEManager_DidUpdateState object:nil];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutDiscoverDevice:) name: YPBLE_DidDiscoverDevice object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutDiscoverDevice:) name: YPBLEManager_DidDiscoverDevice object:nil];
 }
 
 - (void)removeNotificationObserver {
@@ -188,11 +199,11 @@
 
 - (void)notificationAboutDiscoverDevice: (NSNotification *)notification {
 //    NSLog(@"notificationAboutDiscoverDevice");
-//    YPDeviceManager * deviceManager = (YPDeviceManager *)[notification object];
+//    YPBleDevice * device = (YPBleDevice *)[notification object];
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         NSString * name = notification.name;
-        if ([name isEqualToString:YPBLE_DidUpdateState]) {
+        if ([name isEqualToString:YPBLEManager_DidUpdateState]) {
             if (_blueManager.manager.state == CBManagerStatePoweredOn) {
                 [self.navigationItem.rightBarButtonItem setTitle:@"Scan"];
                 self.navigationItem.rightBarButtonItem.enabled = YES;
@@ -202,7 +213,7 @@
             }
         }
         
-        if ([name isEqualToString:YPBLE_DidDiscoverDevice]) {
+        if ([name isEqualToString:YPBLEManager_DidDiscoverDevice]) {
             [_dataSource setArray:_blueManager.discoverDevices];
             [_tableView reloadData];
         }
@@ -229,40 +240,39 @@
     if (!cell) {
         cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:tableViewCellDefaultIdentifier];
     }
-    YPDeviceManager * device = [_dataSource objectAtIndex:indexPath.row];
+    YPBleDevice * device = [_dataSource objectAtIndex:indexPath.row];
     NSString * title = device.deviceName;
     
     NSDictionary * serviceData = [device.advertisementData objectForKey: CBAdvertisementDataServiceDataKey];
     NSData * fe95 = [serviceData objectForKey:[CBUUID UUIDWithString:@"FE95"]];
     NSString * ip = fe95.hexString;
-    if (ip.length > 14) {
-        ip = [ip substringFromIndex: ip.length - 12 - 2];
-        ip = [ip substringToIndex: ip.length - 2];
-    }
-    ip = [NSString hexStringReverse:ip];
     
-    NSData * manufacturerData = [device.advertisementData objectForKey:@"kCBAdvDataManufacturerData"];
+    NSData * manufacturerData = [device.advertisementData objectForKey:CBAdvertisementDataManufacturerDataKey];
+    NSData * specificData = [manufacturerData subdataWithRange:NSMakeRange(2, manufacturerData.length -2)];
+    
     NSString * localName = device.localName;
+    NSString * specificDataHexString = specificData.hexString;
     
-    cell.textLabel.text = [NSString stringWithFormat:@"name: %@, rssi: %.0f",title, device.RSSI.doubleValue];
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"localName: %@  id: %@", localName, ip];
+    cell.textLabel.text = [NSString stringWithFormat:@"Name: %@, rssi: %.0f", title, device.RSSI.doubleValue];
+    cell.detailTextLabel.numberOfLines = 3;
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ \nLocalName: %@  \nId: %@",device.identifier, localName, specificDataHexString];
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 60;
+    return 80;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [[tableView cellForRowAtIndexPath:indexPath] setSelected:NO];
-    YPDeviceManager * device = [_dataSource objectAtIndex:indexPath.row];
+    YPBleDevice * device = [_dataSource objectAtIndex:indexPath.row];
     
     [_blueManager stopScan];
     
-    if (0) {
+    if (1) {
         YPDeviceViewController * viewController = [[YPDeviceViewController alloc] init];
         viewController.blueManager = _blueManager;
-        viewController.deviceManager = device;
+        viewController.device = device;
         viewController.title = @"Services";
         [self.navigationController pushViewController:viewController animated:YES];
         return;
@@ -270,7 +280,7 @@
 
     YPCmdViewController * cmdVC = [[YPCmdViewController alloc] init];
     cmdVC.blueManager = _blueManager;
-    cmdVC.deviceManager = device;
+    cmdVC.device = device;
     cmdVC.title = @"Cmd";
     [self.navigationController pushViewController:cmdVC animated:YES];
 

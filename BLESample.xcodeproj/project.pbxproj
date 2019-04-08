@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -20,21 +20,9 @@
 		04279D8D222E61C2001FC02C /* YPBlueViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D58222E61C2001FC02C /* YPBlueViewController.m */; };
 		04279D8E222E61C2001FC02C /* YPBlueManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D5A222E61C2001FC02C /* YPBlueManager.m */; };
 		04279D8F222E61C2001FC02C /* YPBlueConst.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D5F222E61C2001FC02C /* YPBlueConst.m */; };
-		04279D90222E61C2001FC02C /* YPDeviceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D60222E61C2001FC02C /* YPDeviceManager.m */; };
+		04279D90222E61C2001FC02C /* YPBleDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D60222E61C2001FC02C /* YPBleDevice.m */; };
 		04279D91222E61C2001FC02C /* YPDFUManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D62222E61C2001FC02C /* YPDFUManager.m */; };
 		04279D92222E61C2001FC02C /* FileTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D63222E61C2001FC02C /* FileTableViewController.m */; };
-		04279D93222E61C2001FC02C /* UnzipFirmware.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D68222E61C2001FC02C /* UnzipFirmware.m */; };
-		04279D94222E61C2001FC02C /* Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D6B222E61C2001FC02C /* Utility.m */; };
-		04279D95222E61C2001FC02C /* IntelHex2BinConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D6E222E61C2001FC02C /* IntelHex2BinConverter.m */; };
-		04279D96222E61C2001FC02C /* InitData.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D71222E61C2001FC02C /* InitData.m */; };
-		04279D97222E61C2001FC02C /* JsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D74222E61C2001FC02C /* JsonParser.m */; };
-		04279D98222E61C2001FC02C /* AccessFileSystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D77222E61C2001FC02C /* AccessFileSystem.m */; };
-		04279D99222E61C2001FC02C /* DFUHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D78222E61C2001FC02C /* DFUHelper.m */; };
-		04279D9A222E61C2001FC02C /* DFUManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D79222E61C2001FC02C /* DFUManager.m */; };
-		04279D9B222E61C2001FC02C /* DFUOperations.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D7C222E61C2001FC02C /* DFUOperations.m */; };
-		04279D9C222E61C2001FC02C /* FileOperations.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D7D222E61C2001FC02C /* FileOperations.m */; };
-		04279D9D222E61C2001FC02C /* DFUOperationsDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D7E222E61C2001FC02C /* DFUOperationsDetails.m */; };
-		04279D9E222E61C2001FC02C /* BLEOperations.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D7F222E61C2001FC02C /* BLEOperations.m */; };
 		04279D9F222E61C2001FC02C /* YPUpgradeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D84222E61C2001FC02C /* YPUpgradeViewController.m */; };
 		04279DA0222E61C2001FC02C /* YPDeviceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D85222E61C2001FC02C /* YPDeviceViewController.m */; };
 		04279DA1222E61C2001FC02C /* SOCBlueToothWriteData.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D89222E61C2001FC02C /* SOCBlueToothWriteData.m */; };
@@ -47,7 +35,9 @@
 		04279DBD222E61CD001FC02C /* NSString+YPHexString.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279DB0222E61CD001FC02C /* NSString+YPHexString.m */; };
 		04279DBE222E61CD001FC02C /* NSString+YPMessageDigest.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279DB4222E61CD001FC02C /* NSString+YPMessageDigest.m */; };
 		042958BE224DB10200496C8E /* ObjdectModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 042958BD224DB10200496C8E /* ObjdectModel.m */; };
+		045072522268726D008B4C60 /* YPNordicDFU.m in Sources */ = {isa = PBXBuildFile; fileRef = 045072512268726D008B4C60 /* YPNordicDFU.m */; };
 		0475F00E255E3E7300D330A4 /* NSObject+YPClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 0475F00D255E3E7300D330A4 /* NSObject+YPClass.m */; };
+		04AB1D58227E9C8C00B801E9 /* libSOCDFUSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04AB1D57227E9C8C00B801E9 /* libSOCDFUSDK.a */; };
 		F3BAF91295E8E70D5686937F /* Pods_BLESample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5F1E157C40F6D5DA2751736 /* Pods_BLESample.framework */; };
 /* End PBXBuildFile section */
 
@@ -95,38 +85,14 @@
 		04279D58222E61C2001FC02C /* YPBlueViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPBlueViewController.m; sourceTree = "<group>"; };
 		04279D5A222E61C2001FC02C /* YPBlueManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPBlueManager.m; sourceTree = "<group>"; };
 		04279D5B222E61C2001FC02C /* YPBlueConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPBlueConst.h; sourceTree = "<group>"; };
-		04279D5C222E61C2001FC02C /* YPDeviceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPDeviceManager.h; sourceTree = "<group>"; };
+		04279D5C222E61C2001FC02C /* YPBleDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPBleDevice.h; sourceTree = "<group>"; };
 		04279D5D222E61C2001FC02C /* YPDFUManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPDFUManager.h; sourceTree = "<group>"; };
 		04279D5E222E61C2001FC02C /* YPBlueManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPBlueManager.h; sourceTree = "<group>"; };
 		04279D5F222E61C2001FC02C /* YPBlueConst.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPBlueConst.m; sourceTree = "<group>"; };
-		04279D60222E61C2001FC02C /* YPDeviceManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPDeviceManager.m; sourceTree = "<group>"; };
-		04279D61222E61C2001FC02C /* BlueDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlueDefines.h; sourceTree = "<group>"; };
+		04279D60222E61C2001FC02C /* YPBleDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPBleDevice.m; sourceTree = "<group>"; };
+		04279D61222E61C2001FC02C /* YPBlueDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPBlueDefines.h; sourceTree = "<group>"; };
 		04279D62222E61C2001FC02C /* YPDFUManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPDFUManager.m; sourceTree = "<group>"; };
 		04279D63222E61C2001FC02C /* FileTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileTableViewController.m; sourceTree = "<group>"; };
-		04279D65222E61C2001FC02C /* DFUManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DFUManager.h; sourceTree = "<group>"; };
-		04279D66222E61C2001FC02C /* DFUHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DFUHelper.h; sourceTree = "<group>"; };
-		04279D68222E61C2001FC02C /* UnzipFirmware.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnzipFirmware.m; sourceTree = "<group>"; };
-		04279D69222E61C2001FC02C /* UnzipFirmware.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnzipFirmware.h; sourceTree = "<group>"; };
-		04279D6B222E61C2001FC02C /* Utility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utility.m; sourceTree = "<group>"; };
-		04279D6C222E61C2001FC02C /* Utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utility.h; sourceTree = "<group>"; };
-		04279D6E222E61C2001FC02C /* IntelHex2BinConverter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IntelHex2BinConverter.m; sourceTree = "<group>"; };
-		04279D6F222E61C2001FC02C /* IntelHex2BinConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IntelHex2BinConverter.h; sourceTree = "<group>"; };
-		04279D71222E61C2001FC02C /* InitData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InitData.m; sourceTree = "<group>"; };
-		04279D72222E61C2001FC02C /* JsonParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JsonParser.h; sourceTree = "<group>"; };
-		04279D73222E61C2001FC02C /* InitData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InitData.h; sourceTree = "<group>"; };
-		04279D74222E61C2001FC02C /* JsonParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JsonParser.m; sourceTree = "<group>"; };
-		04279D76222E61C2001FC02C /* AccessFileSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccessFileSystem.h; sourceTree = "<group>"; };
-		04279D77222E61C2001FC02C /* AccessFileSystem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccessFileSystem.m; sourceTree = "<group>"; };
-		04279D78222E61C2001FC02C /* DFUHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DFUHelper.m; sourceTree = "<group>"; };
-		04279D79222E61C2001FC02C /* DFUManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DFUManager.m; sourceTree = "<group>"; };
-		04279D7B222E61C2001FC02C /* BLEOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BLEOperations.h; sourceTree = "<group>"; };
-		04279D7C222E61C2001FC02C /* DFUOperations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DFUOperations.m; sourceTree = "<group>"; };
-		04279D7D222E61C2001FC02C /* FileOperations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileOperations.m; sourceTree = "<group>"; };
-		04279D7E222E61C2001FC02C /* DFUOperationsDetails.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DFUOperationsDetails.m; sourceTree = "<group>"; };
-		04279D7F222E61C2001FC02C /* BLEOperations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BLEOperations.m; sourceTree = "<group>"; };
-		04279D80222E61C2001FC02C /* FileOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileOperations.h; sourceTree = "<group>"; };
-		04279D81222E61C2001FC02C /* DFUOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DFUOperations.h; sourceTree = "<group>"; };
-		04279D82222E61C2001FC02C /* DFUOperationsDetails.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DFUOperationsDetails.h; sourceTree = "<group>"; };
 		04279D83222E61C2001FC02C /* YPCmdViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPCmdViewController.h; sourceTree = "<group>"; };
 		04279D84222E61C2001FC02C /* YPUpgradeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPUpgradeViewController.m; sourceTree = "<group>"; };
 		04279D85222E61C2001FC02C /* YPDeviceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPDeviceViewController.m; sourceTree = "<group>"; };
@@ -155,8 +121,12 @@
 		04FBA92725676A5000D9EB91 /* NSString+YPNumberBaseConversion.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+YPNumberBaseConversion.m"; sourceTree = "<group>"; };
 		042958BC224DB10200496C8E /* ObjdectModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjdectModel.h; sourceTree = "<group>"; };
 		042958BD224DB10200496C8E /* ObjdectModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObjdectModel.m; sourceTree = "<group>"; };
+		045072502268726D008B4C60 /* YPNordicDFU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPNordicDFU.h; sourceTree = "<group>"; };
+		045072512268726D008B4C60 /* YPNordicDFU.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPNordicDFU.m; sourceTree = "<group>"; };
 		0475F00C255E3E7300D330A4 /* NSObject+YPClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+YPClass.h"; sourceTree = "<group>"; };
 		0475F00D255E3E7300D330A4 /* NSObject+YPClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+YPClass.m"; sourceTree = "<group>"; };
+		04AB1D56227E9C8C00B801E9 /* SOCDFUManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SOCDFUManager.h; sourceTree = "<group>"; };
+		04AB1D57227E9C8C00B801E9 /* libSOCDFUSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libSOCDFUSDK.a; sourceTree = "<group>"; };
 		42F56A2759F0007A6DA244B7 /* Pods-BLESample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BLESample.release.xcconfig"; path = "Pods/Target Support Files/Pods-BLESample/Pods-BLESample.release.xcconfig"; sourceTree = "<group>"; };
 		50CDBF392844C42E6255B02E /* Pods-BLESample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BLESample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BLESample/Pods-BLESample.debug.xcconfig"; sourceTree = "<group>"; };
 		A5F1E157C40F6D5DA2751736 /* Pods_BLESample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BLESample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -167,6 +137,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04AB1D58227E9C8C00B801E9 /* libSOCDFUSDK.a in Frameworks */,
 				F3BAF91295E8E70D5686937F /* Pods_BLESample.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -254,9 +225,9 @@
 		04279D56222E61C2001FC02C /* Bluetooth */ = {
 			isa = PBXGroup;
 			children = (
+				04AB1D47227E8E1400B801E9 /* SOCDFUSDK */,
 				04279D87222E61C2001FC02C /* CommunicationProtocol */,
 				04279D59222E61C2001FC02C /* YPBluetooth */,
-				04279D64222E61C2001FC02C /* NordicDFUSDK */,
 				04279D8A222E61C2001FC02C /* YPBlueViewController.h */,
 				04279D58222E61C2001FC02C /* YPBlueViewController.m */,
 				04279D57222E61C2001FC02C /* YPDeviceViewController.h */,
@@ -275,96 +246,19 @@
 			isa = PBXGroup;
 			children = (
 				040F62EB223B429E002B0598 /* YPBluetooth.h */,
-				04279D61222E61C2001FC02C /* BlueDefines.h */,
+				04279D61222E61C2001FC02C /* YPBlueDefines.h */,
 				04279D5B222E61C2001FC02C /* YPBlueConst.h */,
 				04279D5F222E61C2001FC02C /* YPBlueConst.m */,
 				04279D5E222E61C2001FC02C /* YPBlueManager.h */,
 				04279D5A222E61C2001FC02C /* YPBlueManager.m */,
-				04279D5C222E61C2001FC02C /* YPDeviceManager.h */,
-				04279D60222E61C2001FC02C /* YPDeviceManager.m */,
+				04279D5C222E61C2001FC02C /* YPBleDevice.h */,
+				04279D60222E61C2001FC02C /* YPBleDevice.m */,
 				04279D5D222E61C2001FC02C /* YPDFUManager.h */,
 				04279D62222E61C2001FC02C /* YPDFUManager.m */,
+				045072502268726D008B4C60 /* YPNordicDFU.h */,
+				045072512268726D008B4C60 /* YPNordicDFU.m */,
 			);
 			path = YPBluetooth;
-			sourceTree = "<group>";
-		};
-		04279D64222E61C2001FC02C /* NordicDFUSDK */ = {
-			isa = PBXGroup;
-			children = (
-				04279D65222E61C2001FC02C /* DFUManager.h */,
-				04279D66222E61C2001FC02C /* DFUHelper.h */,
-				04279D67222E61C2001FC02C /* Unzip */,
-				04279D6A222E61C2001FC02C /* Constants */,
-				04279D6D222E61C2001FC02C /* HexToBinConverter */,
-				04279D70222E61C2001FC02C /* JSONParser */,
-				04279D75222E61C2001FC02C /* FileSelection */,
-				04279D78222E61C2001FC02C /* DFUHelper.m */,
-				04279D79222E61C2001FC02C /* DFUManager.m */,
-				04279D7A222E61C2001FC02C /* DFUImplementation */,
-			);
-			path = NordicDFUSDK;
-			sourceTree = "<group>";
-		};
-		04279D67222E61C2001FC02C /* Unzip */ = {
-			isa = PBXGroup;
-			children = (
-				04279D68222E61C2001FC02C /* UnzipFirmware.m */,
-				04279D69222E61C2001FC02C /* UnzipFirmware.h */,
-			);
-			path = Unzip;
-			sourceTree = "<group>";
-		};
-		04279D6A222E61C2001FC02C /* Constants */ = {
-			isa = PBXGroup;
-			children = (
-				04279D6C222E61C2001FC02C /* Utility.h */,
-				04279D6B222E61C2001FC02C /* Utility.m */,
-			);
-			path = Constants;
-			sourceTree = "<group>";
-		};
-		04279D6D222E61C2001FC02C /* HexToBinConverter */ = {
-			isa = PBXGroup;
-			children = (
-				04279D6E222E61C2001FC02C /* IntelHex2BinConverter.m */,
-				04279D6F222E61C2001FC02C /* IntelHex2BinConverter.h */,
-			);
-			path = HexToBinConverter;
-			sourceTree = "<group>";
-		};
-		04279D70222E61C2001FC02C /* JSONParser */ = {
-			isa = PBXGroup;
-			children = (
-				04279D71222E61C2001FC02C /* InitData.m */,
-				04279D72222E61C2001FC02C /* JsonParser.h */,
-				04279D73222E61C2001FC02C /* InitData.h */,
-				04279D74222E61C2001FC02C /* JsonParser.m */,
-			);
-			path = JSONParser;
-			sourceTree = "<group>";
-		};
-		04279D75222E61C2001FC02C /* FileSelection */ = {
-			isa = PBXGroup;
-			children = (
-				04279D76222E61C2001FC02C /* AccessFileSystem.h */,
-				04279D77222E61C2001FC02C /* AccessFileSystem.m */,
-			);
-			path = FileSelection;
-			sourceTree = "<group>";
-		};
-		04279D7A222E61C2001FC02C /* DFUImplementation */ = {
-			isa = PBXGroup;
-			children = (
-				04279D7B222E61C2001FC02C /* BLEOperations.h */,
-				04279D7F222E61C2001FC02C /* BLEOperations.m */,
-				04279D81222E61C2001FC02C /* DFUOperations.h */,
-				04279D7C222E61C2001FC02C /* DFUOperations.m */,
-				04279D7D222E61C2001FC02C /* FileOperations.m */,
-				04279D82222E61C2001FC02C /* DFUOperationsDetails.h */,
-				04279D7E222E61C2001FC02C /* DFUOperationsDetails.m */,
-				04279D80222E61C2001FC02C /* FileOperations.h */,
-			);
-			path = DFUImplementation;
 			sourceTree = "<group>";
 		};
 		04279D87222E61C2001FC02C /* CommunicationProtocol */ = {
@@ -609,38 +503,27 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				04279D90222E61C2001FC02C /* YPDeviceManager.m in Sources */,
+				04279D90222E61C2001FC02C /* YPBleDevice.m in Sources */,
 				04279DBB222E61CD001FC02C /* UIDevice+YPSysInfo.m in Sources */,
-				04279D93222E61C2001FC02C /* UnzipFirmware.m in Sources */,
 				04279DB7222E61CD001FC02C /* UIColor+YPColours.m in Sources */,
 				04279D8D222E61C2001FC02C /* YPBlueViewController.m in Sources */,
 				04279DA0222E61C2001FC02C /* YPDeviceViewController.m in Sources */,
 				04279DBA222E61CD001FC02C /* UITableView+Extension.m in Sources */,
-				04279D9A222E61C2001FC02C /* DFUManager.m in Sources */,
 				04279D8F222E61C2001FC02C /* YPBlueConst.m in Sources */,
 				042958BE224DB10200496C8E /* ObjdectModel.m in Sources */,
-				04279D98222E61C2001FC02C /* AccessFileSystem.m in Sources */,
-				04279D94222E61C2001FC02C /* Utility.m in Sources */,
 				04279DA2222E61C2001FC02C /* YPCmdViewController.m in Sources */,
-				04279D9D222E61C2001FC02C /* DFUOperationsDetails.m in Sources */,
-				04279D96222E61C2001FC02C /* InitData.m in Sources */,
-				04279D99222E61C2001FC02C /* DFUHelper.m in Sources */,
 				04279C23222CC40C001FC02C /* ViewController.m in Sources */,
-				04279D95222E61C2001FC02C /* IntelHex2BinConverter.m in Sources */,
-				04279D9C222E61C2001FC02C /* FileOperations.m in Sources */,
 				04279C29222CC40C001FC02C /* BLESample.xcdatamodeld in Sources */,
 				04279C31222CC40E001FC02C /* main.m in Sources */,
 				04279DA1222E61C2001FC02C /* SOCBlueToothWriteData.m in Sources */,
+				045072522268726D008B4C60 /* YPNordicDFU.m in Sources */,
 				04279DBC222E61CD001FC02C /* NSObject+YPProperty.m in Sources */,
 				04279D8E222E61C2001FC02C /* YPBlueManager.m in Sources */,
-				04279D9B222E61C2001FC02C /* DFUOperations.m in Sources */,
 				04279DB9222E61CD001FC02C /* UIWebView+YPJSContext.m in Sources */,
 				04279D92222E61C2001FC02C /* FileTableViewController.m in Sources */,
-				04279D97222E61C2001FC02C /* JsonParser.m in Sources */,
 				040F636722410CC1002B0598 /* NSData+YPHexString.m in Sources */,
 				04279D9F222E61C2001FC02C /* YPUpgradeViewController.m in Sources */,
 				04279DBD222E61CD001FC02C /* NSString+YPHexString.m in Sources */,
-				04279D9E222E61C2001FC02C /* BLEOperations.m in Sources */,
 				04279C20222CC40C001FC02C /* AppDelegate.m in Sources */,
 				04279D91222E61C2001FC02C /* YPDFUManager.m in Sources */,
 				04279DBE222E61CD001FC02C /* NSString+YPMessageDigest.m in Sources */,
@@ -822,7 +705,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = NO;
 				DEVELOPMENT_TEAM = MK49SZ4EMK;
-				ENABLE_BITCODE = YES;
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/BLESample/PrefixHeader.pch";
 				INFOPLIST_FILE = BLESample/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10;
@@ -852,13 +735,17 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = NO;
 				DEVELOPMENT_TEAM = MK49SZ4EMK;
-				ENABLE_BITCODE = YES;
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/BLESample/PrefixHeader.pch";
 				INFOPLIST_FILE = BLESample/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/BLESample/BlueTooth/SOCDFUSDK",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.sushi.BLESample;
 				PRODUCT_NAME = "$(TARGET_NAME)";

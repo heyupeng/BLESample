@@ -12,44 +12,48 @@
 //050000000000
 + (NSString *)getCheckStringWith:(NSString *)sendString;
 //000a0000
-+ (NSString *)getSendingStringWithType:(NSString *)typeString AppendData:(NSString *)appendDataString;
++ (NSString *)commandWithType:(NSString *)typeString appendData:(NSString *)appendString;
++ (NSString *)commandWithType:(NSString *)typeString length:(NSString *)lengthHexString appendData:(NSString *)appendString;
 
 //绑定指令
-+ (NSString *)getSendStringOfBind;
++ (NSString *)commandForBind;
 //获取数据
-+ (NSString *)getSendStringOfGetRequestRecords;
++ (NSString *)commandForGetRequestRecords;
 //获取DFU请求指令
-+ (NSString *)getSendStringOfDFURequest;
++ (NSString *)commandForDFURequest;
+
 //获取电池指令
-+ (NSString *)getSendStringOfGetBattery;
++ (NSString *)commandForGetBattery;
 //设备信息指令
-+ (NSString *)getSendStringOfGetDeviceInfo;
++ (NSString *)commandForGetDeviceInfo;
 //设置时间指令
-+ (NSString *)getSendStringOfSetLocalTime;
++ (NSString *)commandForSetLocalTime;
 + (NSString *)sendOrderToSetLocalTimeWith:(NSInteger)timeStamp geoCode:(NSInteger)geoCode;
 //设置刷牙时间 Function set
-+ (NSString *)getSendStringOfSetFuncionWith:(int)tag;
++ (NSString *)commandForSetFuncionWith:(int)tag;
 //设置渐强模式指令: 1：使能渐强模式;0：禁止渐强模式
-+ (NSString *)getSendStringOfSetfadeInWith:(int)tag;
++ (NSString *)commandForSetfadeInWith:(int)tag;
 //设置附加模式指令: 0x00:禁止功能模式;0x01:抛光模式;0x02:护理模式;0x03:舌苔模式
-+ (NSString *)getSendStringOfSetAddOnsWith:(int)index;
++ (NSString *)commandForSetAddOnsWith:(int)index;
 
 // 电机参数
-+ (NSString *)getCmdOfMotorParameters:(NSString *)MotorParameters;
++ (NSString *)commandForMotorParameters:(NSString *)MotorParameters;
 
 // 定制模式
-+ (NSString *)getCmdOfSetPersonalMode:(BOOL)on mode:(NSString *)mode;
++ (NSString *)commandForSetPersonalMode:(BOOL)on mode:(NSString *)mode;
 
 // 获取soocare设备ID
-+ (NSString *)getCmdOfGetDid;
++ (NSString *)commandForGetDid;
 
 // 写入soocare设备ID
-+ (NSString *)getCmdOfSetDid:(NSString *)did;
++ (NSString *)commandForSetDid:(NSString *)did;
 
 // 获取NTAG中的刷牙次数
-+ (NSString *)getCmdOfGetCountInNTAG;
++ (NSString *)commandForGetCountInNTAG;
 
 // 设置拿起唤醒状态 00/01
-+ (NSString *)getCmdOfSetFlashState:(NSString *)state;
++ (NSString *)commandForSetFlashState:(NSString *)state;
+
++ (NSString *)commandForDFURequestCRC:(NSString *)crcString;
 
 @end

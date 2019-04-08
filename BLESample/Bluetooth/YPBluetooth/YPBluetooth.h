@@ -12,6 +12,6 @@
 #import "YPBlueConst.h"
 
 #import "YPBlueManager.h"
-#import "YPDeviceManager.h"
+#import "YPBleDevice.h"
 
 #endif /* YPBluetooth_h */

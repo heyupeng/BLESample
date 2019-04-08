@@ -24,11 +24,11 @@
 @end
 
 @implementation YPDFUManager
-- (instancetype)initWithDeviceManager:(YPDeviceManager *)manager {
+- (instancetype)initWithDevice:(YPBleDevice *)device {
     self = [super init];
     if (self) {
         step = 0;
-        _deviceManager = manager;
+        _device = device;
         [self  setAddress];
         
     }
@@ -75,13 +75,13 @@
 #pragma mark -
 - (void) addNotification {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didUpdateValueForCharacteristic:)
-                                                 name:YPDevice_DidUpdateValue object:nil];
+                                                 name:YPBLEDevice_DidUpdateValue object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didSendValueForCharacteristic:)
-                                                 name:YPDevice_DidWriteValue object:nil];
+                                                 name:YPBLEDevice_DidWriteValue object:nil];
     
     // Enable notifications on the status characteristic
-//    [_deviceManager setNotifyVuale:YES forCharacteristicUUID:[CBUUID UUIDWithString:SPOTA_SERV_STATUS_UUID] serviceUUID:[_deviceManager IntToCBUUID:SPOTA_SERVICE_UUID]];
+//    [_device setNotifyVuale:YES forCharacteristicUUID:[CBUUID UUIDWithString:SPOTA_SERV_STATUS_UUID] serviceUUID:[_device IntToCBUUID:SPOTA_SERVICE_UUID]];
 }
 
 - (void)startUpgrade {
@@ -142,7 +142,7 @@
             int _memDevData = (self.memoryType << 24) | (self.memoryBank & 0xFF);
             [self debug:[NSString stringWithFormat:@"Sending data: %#10x", _memDevData]];
             NSData *memDevData = [NSData dataWithBytes:&_memDevData length:sizeof(int)];
-            [_deviceManager writeValue:[_deviceManager IntToCBUUID:SPOTA_SERVICE_UUID] characteristicUUID:[CBUUID UUIDWithString:SPOTA_MEM_DEV_UUID] p:_deviceManager.peripheral data:memDevData];
+            [_device writeValue:[_device IntToCBUUID:SPOTA_SERVICE_UUID] characteristicUUID:[CBUUID UUIDWithString:SPOTA_MEM_DEV_UUID] p:_device.peripheral data:memDevData];
             break;
         }
             
@@ -158,7 +158,7 @@
             NSData *memInfoData = [NSData dataWithBytes:&_memInfoData length:sizeof(int)];
             
             step = 3;
-            [_deviceManager writeValue:[_deviceManager IntToCBUUID:SPOTA_SERVICE_UUID] characteristicUUID:[CBUUID UUIDWithString:SPOTA_GPIO_MAP_UUID] p:_deviceManager.peripheral data:memInfoData];
+            [_device writeValue:[_device IntToCBUUID:SPOTA_SERVICE_UUID] characteristicUUID:[CBUUID UUIDWithString:SPOTA_GPIO_MAP_UUID] p:_device.peripheral data:memInfoData];
             break;
         }
             
@@ -188,8 +188,8 @@
             
             step = 5;
             
-            [_deviceManager writeValue:[_deviceManager IntToCBUUID:SPOTA_SERVICE_UUID] characteristicUUID:[CBUUID UUIDWithString:SPOTA_PATCH_LEN_UUID] p:_deviceManager.peripheral data:patchLengthData];
-//            [_deviceManager readValueForCharacteristicUUID:[CBUUID UUIDWithString:SPOTA_PATCH_LEN_UUID] serviceUUID:[_deviceManager IntToCBUUID:SPOTA_SERVICE_UUID] peripheral:_deviceManager.peripheral];
+            [_device writeValue:[_device IntToCBUUID:SPOTA_SERVICE_UUID] characteristicUUID:[CBUUID UUIDWithString:SPOTA_PATCH_LEN_UUID] p:_device.peripheral data:patchLengthData];
+//            [_device readValueForCharacteristicUUID:[CBUUID UUIDWithString:SPOTA_PATCH_LEN_UUID] serviceUUID:[_device IntToCBUUID:SPOTA_SERVICE_UUID] peripheral:_device.peripheral];
             break;
         }
             
@@ -239,7 +239,7 @@
                     }
                 }
                 
-                [_deviceManager writeValueWithoutResponse:[_deviceManager IntToCBUUID:SPOTA_SERVICE_UUID] characteristicUUID:[CBUUID UUIDWithString:SPOTA_PATCH_DATA_UUID] p:_deviceManager.peripheral data:byteData];
+                [_device writeValueWithoutResponse:[_device IntToCBUUID:SPOTA_SERVICE_UUID] characteristicUUID:[CBUUID UUIDWithString:SPOTA_PATCH_DATA_UUID] p:_device.peripheral data:byteData];
             }
             
             break;
@@ -254,7 +254,7 @@
             int suotaEnd = 0xFE000000;
             [self debug:[NSString stringWithFormat:@"Sending data: %#10x", suotaEnd]];
             NSData *suotaEndData = [NSData dataWithBytes:&suotaEnd length:sizeof(int)];
-            [_deviceManager writeValue:[_deviceManager IntToCBUUID:SPOTA_SERVICE_UUID] characteristicUUID:[CBUUID UUIDWithString:SPOTA_MEM_DEV_UUID] p:_deviceManager.peripheral data:suotaEndData];
+            [_device writeValue:[_device IntToCBUUID:SPOTA_SERVICE_UUID] characteristicUUID:[CBUUID UUIDWithString:SPOTA_MEM_DEV_UUID] p:_device.peripheral data:suotaEndData];
             break;
         }
             
@@ -269,7 +269,7 @@
             int suotaEnd = 0xFD000000;
             [self debug:[NSString stringWithFormat:@"Sending data: %#10x", suotaEnd]];
             NSData *suotaEndData = [NSData dataWithBytes:&suotaEnd length:sizeof(int)];
-            [_deviceManager writeValue:[_deviceManager IntToCBUUID:SPOTA_SERVICE_UUID] characteristicUUID:[CBUUID UUIDWithString:SPOTA_MEM_DEV_UUID] p:_deviceManager.peripheral data:suotaEndData];
+            [_device writeValue:[_device IntToCBUUID:SPOTA_SERVICE_UUID] characteristicUUID:[CBUUID UUIDWithString:SPOTA_MEM_DEV_UUID] p:_device.peripheral data:suotaEndData];
             break;
         }
             
@@ -292,7 +292,7 @@
 //            int suotaEnd = 0xFD000000;
 //            [self debug:[NSString stringWithFormat:@"Sending data: %#10x", suotaEnd]];
 //            NSData *suotaEndData = [NSData dataWithBytes:&suotaEnd length:sizeof(int)];
-//            [_deviceManager writeValue:[_deviceManager IntToCBUUID:SPOTA_SERVICE_UUID] characteristicUUID:[CBUUID UUIDWithString:SPOTA_MEM_DEV_UUID] p:_deviceManager.device data:suotaEndData];
+//            [_device writeValue:[_device IntToCBUUID:SPOTA_SERVICE_UUID] characteristicUUID:[CBUUID UUIDWithString:SPOTA_MEM_DEV_UUID] p:_device.peripheral data:suotaEndData];
 //        }
 //    }
 }

@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "YPBlueManager.h"
-#import "YPDeviceManager.h"
+#import "YPBleDevice.h"
 
 @interface YPUpgradeViewController : UIViewController
 

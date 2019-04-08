@@ -9,11 +9,11 @@
 #import <UIKit/UIKit.h>
 
 #import "YPBlueManager.h"
-#import "YPDeviceManager.h"
+#import "YPBleDevice.h"
 
 @interface YPDeviceViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) YPBlueManager * blueManager;
-@property (nonatomic, strong) YPDeviceManager * deviceManager;
+@property (nonatomic, strong) YPBleDevice * device;
 
 @end

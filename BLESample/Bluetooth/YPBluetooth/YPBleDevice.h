@@ -1,5 +1,5 @@
 //
-//  YPDeviceManager.h
+//  YPBleDevice.h
 //  YPDemo
 //
 //  Created by Peng on 2017/11/3.
@@ -15,7 +15,7 @@
 
 @end
 
-@interface YPDeviceManager : NSObject <CBPeripheralDelegate>
+@interface YPBleDevice : NSObject <CBPeripheralDelegate>
 
 @property (nonatomic, strong) CBPeripheral *peripheral;
 @property (nonatomic, strong) NSDictionary * advertisementData;

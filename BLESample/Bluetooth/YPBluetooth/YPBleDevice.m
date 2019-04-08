@@ -1,16 +1,16 @@
 //
-//  YPDeviceManager.m
+//  YPBleDevice.m
 //  YPDemo
 //
 //  Created by Peng on 2017/11/3.
 //  Copyright © 2017年 heyupeng. All rights reserved.
 //
 
-#import "YPDeviceManager.h"
+#import "YPBleDevice.h"
 
 #import "YPBlueConst.h"
 
-@implementation YPDeviceManager
+@implementation YPBleDevice
 
 - (instancetype)initWithDevice:(CBPeripheral*)device {
     self = [super init];
@@ -100,7 +100,7 @@
         [peripheral discoverCharacteristics:nil forService:s];
     }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:YPDevice_DidDiscoverServices object:peripheral.services];
+    [[NSNotificationCenter defaultCenter] postNotificationName:YPBLEDevice_DidDiscoverServices object:peripheral.services];
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
@@ -117,7 +117,7 @@
 //            [peripheral readValueForCharacteristic:characteristic];
         }
         
-//        if ([service.UUID isEqual:[CBUUID UUIDWithString:NordicUARTServiceUUID]]) {
+//        if ([service.UUID isEqual:[CBUUID UUIDWithString:NordicUARTServiceUUIDString]]) {
 //            if ([characteristic.UUID.data.hexString isEqualToString:@"6e400003b5a3f393e0a9e50e24dcca9e"]) {
 //                /*
 //                 _RxCharacteristic = characteristic;
@@ -132,7 +132,7 @@
 //        }
     }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:YPDevice_DidDiscoverCharacteristics object:service];
+    [[NSNotificationCenter defaultCenter] postNotificationName:YPBLEDevice_DidDiscoverCharacteristics object:service];
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
@@ -159,7 +159,7 @@
         
     }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:YPDevice_DidUpdateValue object:characteristic];
+    [[NSNotificationCenter defaultCenter] postNotificationName:YPBLEDevice_DidUpdateValue object:characteristic];
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
@@ -168,7 +168,7 @@
         [self logWithFormat:@"error: %@", error.localizedDescription];
     }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:YPDevice_DidWriteValue object:characteristic];
+    [[NSNotificationCenter defaultCenter] postNotificationName:YPBLEDevice_DidWriteValue object:characteristic];
 }
 
 - (void)logWithFormat:(NSString *)format, ... NS_FORMAT_FUNCTION(1,2){
@@ -203,8 +203,8 @@
 
 - (void)writeFFValue:(NSString *)FFString {
     NSData * data = [NSData dataWithHexString:FFString];
-    CBUUID * characteristicUUID = [CBUUID UUIDWithString:@"6E400002-B5A3-F393-E0A9-E50E24DCCA9E"];
-    CBUUID * serviceUUID = [CBUUID UUIDWithString:@"6E400001-B5A3-F393-E0A9-E50E24DCCA9E"];
+    CBUUID * characteristicUUID = [CBUUID UUIDWithString:NordicUARTTxCharacteristicUUIDString];
+    CBUUID * serviceUUID = [CBUUID UUIDWithString:NordicUARTServiceUUIDString];
     
 //    [_peripheral writeValue:data forCharacteristic:_writeCharacteristic type:CBCharacteristicWriteWithResponse];
     [self writeValue:data ForCharacteristicUUID:characteristicUUID serviceUUID: serviceUUID peripheral:_peripheral type:CBCharacteristicWriteWithResponse];
@@ -324,7 +324,7 @@
 -(int) compareCBUUIDToInt:(CBUUID *)UUID1 UUID2:(UInt16)UUID2 {
     char b1[16];
     [UUID1.data getBytes:b1];
-    UInt16 b2 = [YPDeviceManager swap:UUID2];
+    UInt16 b2 = [YPBleDevice swap:UUID2];
     if (memcmp(b1, (char *)&b2, 2) == 0) return 1;
     else return 0;
 }
@@ -360,7 +360,7 @@
      NSData *data = [[NSData alloc] initWithBytes:t length:16];
      return [CBUUID UUIDWithData:data];
      */
-    UInt16 cz = [YPDeviceManager swap:UUID];
+    UInt16 cz = [YPBleDevice swap:UUID];
     NSData *cdz = [[NSData alloc] initWithBytes:(char *)&cz length:2];
     CBUUID *cuz = [CBUUID UUIDWithData:cdz];
     return cuz;

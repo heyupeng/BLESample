@@ -63,21 +63,20 @@
     [self addNotificationObserver];
     
     __weak YPCmdViewController* weakSelf = self;
-    [_deviceManager setLogger:^(NSString *log) {
+    [_device setLogger:^(NSString *log) {
         [weakSelf textforTextViewByAppending:log];
     }];
     
     if (_blueManager.currentDevice.peripheral.state == CBPeripheralStateConnected) {
-        [_deviceManager setNotifyVuale:YES forCharacteristicUUID:[CBUUID UUIDWithString:NordicUARTServiceRxCharacteristicUUID] serviceUUID:[CBUUID UUIDWithString:NordicUARTServiceUUID]];
+        [_device setNotifyVuale:YES forCharacteristicUUID:[CBUUID UUIDWithString:NordicUARTRxCharacteristicUUIDString] serviceUUID:[CBUUID UUIDWithString:NordicUARTServiceUUIDString]];
         return;
     }
-    [_blueManager connectDevice:_deviceManager];
+    [_blueManager connectDevice:_device];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    [_blueManager disConnectDevice:_deviceManager];
     [self removeNotificationObserver];
 }
 
@@ -90,24 +89,25 @@
     _dataSource = [NSMutableArray new];
     
     NSArray * cmds = @[@"Function set",
-                    @"Request records",
-                    @"Local time set",
-                    @"Request DFU",
-                    @"剩余电量",
-                    @"设备信息",
-                    @"渐强模式",
-                    @"附加功能模式",
-                    @"电机参数设置",
-                    @"请求设备绑定",
-                    @"定制模式",
-                    @"获取did",
-                    @"写入did",
-                    @"NTAG刷牙次数",
-                    @"设置拿起唤醒状态",
-                    @"固件升级"];
+                       @"Request records",
+                       @"Local time set",
+                       @"Request DFU",
+                       @"剩余电量",
+                       @"设备信息",
+                       @"渐强模式",
+                       @"附加功能模式",
+                       @"电机参数设置",
+                       @"请求设备绑定",
+                       @"定制模式",
+                       @"获取did",
+                       @"写入did",
+                       @"NTAG刷牙次数",
+                       @"设置拿起唤醒状态",
+                       @"Request DFU(CRC)",
+                       @"固件升级"];
     [_dataSource setArray:cmds];
     
-    self.title = self.deviceManager.localName;
+    self.title = self.device.localName;
 }
 
 - (void)initUI {
@@ -136,7 +136,7 @@
     _btn = btn;
     
     // 2.0
-    CGRect frame = CGRectMake(0, CGRectGetMaxY(view.frame), SCREENWIDTH, SCREENHEIGHT * 0.45);
+    CGRect frame = CGRectMake(0, CGRectGetMaxY(view.frame), SCREENWIDTH, CGRectGetHeight(self.view.frame) - CGRectGetMaxY(view.frame) - 5);
     int vol = 2;
     UICollectionViewFlowLayout * layout = [[UICollectionViewFlowLayout alloc] init];
     layout.itemSize = CGSizeMake((CGRectGetWidth(frame) - 10)/vol, 44);
@@ -207,14 +207,14 @@
 
 /** ============== **/
 - (void)addNotificationObserver {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutBlueManager:) name:YPBLE_DidConnectedDevice object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutBlueManager:) name:YPBLEManager_DidConnectedDevice object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutDeviceManager:) name: YPDevice_DidDiscoverServices object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutDeviceManager:) name: YPDevice_DidDiscoverCharacteristics object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutdevice:) name: YPBLEDevice_DidDiscoverServices object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutdevice:) name: YPBLEDevice_DidDiscoverCharacteristics object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutDeviceManager:) name: YPDevice_DidUpdateValue object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutdevice:) name: YPBLEDevice_DidUpdateValue object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutDeviceManager:) name: YPDevice_DidWriteValue object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutdevice:) name: YPBLEDevice_DidWriteValue object:nil];
 }
 
 - (void)removeNotificationObserver {
@@ -224,23 +224,23 @@
 - (void)notificationAboutBlueManager: (NSNotification *)notification {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         
-        if ([notification.name isEqualToString:YPBLE_DidConnectedDevice]) {
-            [self.deviceManager.peripheral discoverServices:nil];
+        if ([notification.name isEqualToString:YPBLEManager_DidConnectedDevice]) {
+            [self.device.peripheral discoverServices:nil];
         }
         
     });
 }
 
-- (void)notificationAboutDeviceManager: (NSNotification *)notification {
-    if ([notification.name isEqualToString:YPDevice_DidDiscoverServices]) {
+- (void)notificationAboutdevice: (NSNotification *)notification {
+    if ([notification.name isEqualToString:YPBLEDevice_DidDiscoverServices]) {
        
     }
     
-    if ([notification.name isEqualToString:YPDevice_DidDiscoverCharacteristics]) {
+    if ([notification.name isEqualToString:YPBLEDevice_DidDiscoverCharacteristics]) {
        
     }
     
-    if ([notification.name isEqualToString:YPDevice_DidUpdateValue]) {
+    if ([notification.name isEqualToString:YPBLEDevice_DidUpdateValue]) {
         CBCharacteristic * characteristic = notification.object;
         NSString *valueString = [[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding];
         
@@ -249,7 +249,7 @@
 //        [self textforTextViewByAppending:log];
     }
     
-    if ([notification.name isEqualToString:YPDevice_DidWriteValue]) {
+    if ([notification.name isEqualToString:YPBLEDevice_DidWriteValue]) {
         CBCharacteristic * characteristic = notification.object;
         NSString *valueString = [[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding];
         
@@ -264,7 +264,7 @@
     NSString * log = [NSString stringWithFormat:@"\nWrite FFValue: %@", value];
     [self textforTextViewByAppending:log];
     
-    [_deviceManager writeFFValue:value];
+    [_device writeFFValue:value];
 }
 
 // mark - action
@@ -314,8 +314,8 @@
     if ([UUID.UUIDString isEqualToString:@"2A19"]) {
         long value = [[character value].hexString hexStringToLongValue];
         cell.detailTextLabel.text = [NSString stringWithFormat:@"%ld %% %@", value, [character value]];
-        [_deviceManager IntToCBUUID:0x2a19];
-        [_deviceManager CBUUIDToInt:UUID];
+        [_device IntToCBUUID:0x2a19];
+        [_device CBUUIDToInt:UUID];
         
     }
     return cell;
@@ -367,7 +367,7 @@
     
     NSString * cmd = @"";
     if ([title isEqualToString:@"Function set"]) {
-        cmd = [SOCBlueToothWriteData getSendStringOfSetFuncionWith:1];
+//        cmd = [SOCBlueToothWriteData commandForSetFuncionWith:1];
         
         UIAlertController * alertC = [UIAlertController alertControllerWithTitle:title message:@"" preferredStyle:UIAlertControllerStyleAlert];
         
@@ -382,7 +382,7 @@
         
         [alertC addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             NSString * worktime = [[alertC.textFields objectAtIndex:0] text];
-            NSString * cmd = [SOCBlueToothWriteData getSendStringOfSetFuncionWith: [worktime isEqualToString:@"150"]];
+            NSString * cmd = [SOCBlueToothWriteData commandForSetFuncionWith: [worktime isEqualToString:@"150"]];
             self.tf.text = cmd;
             
         }]];
@@ -393,46 +393,24 @@
         return;
     }
     else if ([title isEqualToString:@"Request records"]) {
-        cmd = [SOCBlueToothWriteData getSendStringOfGetRequestRecords];
+        cmd = [SOCBlueToothWriteData commandForGetRequestRecords];
         
     }
     else if ([title isEqualToString:@"Local time set"]) {
-        cmd = [SOCBlueToothWriteData getSendStringOfSetLocalTime];
+        cmd = [SOCBlueToothWriteData commandForSetLocalTime];
         
-        UIAlertController * alertC = [UIAlertController alertControllerWithTitle:title message:@"" preferredStyle:UIAlertControllerStyleAlert];
-        
-        [alertC addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-            textField.placeholder = @"work time(120|150)";
-            textField.keyboardType = UIKeyboardTypeNumberPad;
-        }];
-        [alertC addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-            textField.placeholder = @"tips time(30|38)";
-            textField.keyboardType = UIKeyboardTypeNumberPad;
-        }];
-        
-        [alertC addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            NSString * worktime = [[alertC.textFields objectAtIndex:0] text];
-            NSString * cmd = [SOCBlueToothWriteData getSendStringOfSetFuncionWith: [worktime isEqualToString:@"150"]];
-            self.tf.text = cmd;
-            
-        }]];
-        [alertC addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-            
-        }]];
-        [self presentViewController:alertC animated:YES completion:nil];
-        return;
     }
     else if ([title isEqualToString:@"Request DFU"]) {
-        cmd = [SOCBlueToothWriteData getSendStringOfDFURequest];
+        cmd = [SOCBlueToothWriteData commandForDFURequest];
     }
     else if ([title isEqualToString:@"剩余电量"]) {
-        cmd = [SOCBlueToothWriteData getSendStringOfGetBattery];
+        cmd = [SOCBlueToothWriteData commandForGetBattery];
     }
     else if ([title isEqualToString:@"设备信息"]) {
-        cmd = [SOCBlueToothWriteData getSendStringOfGetDeviceInfo];
+        cmd = [SOCBlueToothWriteData commandForGetDeviceInfo];
     }
     else if ([title isEqualToString:@"渐强模式"]) {
-        cmd = [SOCBlueToothWriteData getSendStringOfSetfadeInWith:1];
+//        cmd = [SOCBlueToothWriteData commandForSetfadeInWith:1];
         
         UIAlertController * alertC = [UIAlertController alertControllerWithTitle:title message:@"" preferredStyle:UIAlertControllerStyleAlert];
         
@@ -447,7 +425,7 @@
             UInt8 mode = [[[alertC.textFields objectAtIndex:0] text] intValue];
             
             data = [NSString stringWithFormat:@"%.2x",mode];
-            NSString * cmd = [SOCBlueToothWriteData getSendStringOfSetfadeInWith:mode];
+            NSString * cmd = [SOCBlueToothWriteData commandForSetfadeInWith:mode];
             self.tf.text = cmd;
         }]];
         [alertC addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
@@ -457,7 +435,7 @@
         return;
     }
     else if ([title isEqualToString:@"附加功能模式"]) {
-        cmd = [SOCBlueToothWriteData getSendStringOfSetAddOnsWith:1];
+//        cmd = [SOCBlueToothWriteData commandForSetAddOnsWith:1];
         
         UIAlertController * alertC = [UIAlertController alertControllerWithTitle:title message:@"" preferredStyle:UIAlertControllerStyleAlert];
         
@@ -472,7 +450,7 @@
             UInt8 mode = [[[alertC.textFields objectAtIndex:0] text] intValue];
             
             data = [NSString stringWithFormat:@"%.2x",mode];
-            NSString * cmd = [SOCBlueToothWriteData getSendStringOfSetAddOnsWith:mode];;
+            NSString * cmd = [SOCBlueToothWriteData commandForSetAddOnsWith:mode];;
             self.tf.text = cmd;
         }]];
         [alertC addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
@@ -487,7 +465,7 @@
         UInt8 duty = 50; // 1 - 99
         rate = (rate >> 8) |(rate << 8);
         motor = [@"11" stringByAppendingString:[NSString stringWithFormat:@"%.4x%.2x", rate, duty]];
-        cmd = [SOCBlueToothWriteData getCmdOfMotorParameters:motor];
+        cmd = [SOCBlueToothWriteData commandForMotorParameters:motor];
         
         UIAlertController * alertC = [UIAlertController alertControllerWithTitle:title message:@"" preferredStyle:UIAlertControllerStyleAlert];
         
@@ -513,7 +491,7 @@
             rate = (rate >> 8) |(rate << 8);
             
             motor = [NSString stringWithFormat:@"%@%.4x%.2x",gearStr, rate, duty];
-            NSString * cmd = [SOCBlueToothWriteData getCmdOfMotorParameters:motor];;
+            NSString * cmd = [SOCBlueToothWriteData commandForMotorParameters:motor];;
             self.tf.text = cmd;
         }]];
         [alertC addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
@@ -523,7 +501,7 @@
         return;
         
     }else if ([title isEqualToString:@"请求设备绑定"]) {
-        cmd = [SOCBlueToothWriteData getSendStringOfBind];
+        cmd = [SOCBlueToothWriteData commandForBind];
         
     }
     else if ([title isEqualToString:@"定制模式"]) {
@@ -532,13 +510,13 @@
         rate = (rate >> 8) |(rate << 8);
         NSString * mode = [NSString stringWithFormat:@"%.4x%.2x", rate, duty];
         personalMode = !personalMode;
-        cmd = [SOCBlueToothWriteData getCmdOfSetPersonalMode:personalMode mode:mode];
+        cmd = [SOCBlueToothWriteData commandForSetPersonalMode:personalMode mode:mode];
     }
     else if ([title isEqualToString:@"获取did"]) {
-        cmd = [SOCBlueToothWriteData getCmdOfGetDid];
+        cmd = [SOCBlueToothWriteData commandForGetDid];
     }
     else if ([title isEqualToString:@"写入did"]) {
-        cmd = [SOCBlueToothWriteData getCmdOfSetDid:@""];
+        cmd = [SOCBlueToothWriteData commandForSetDid:@""];
         
         UIAlertController * alertC = [UIAlertController alertControllerWithTitle:title message:@"" preferredStyle:UIAlertControllerStyleAlert];
         
@@ -553,7 +531,7 @@
             NSString * did = [[alertC.textFields objectAtIndex:0] text];
             data = did;
             
-            NSString * cmd = [SOCBlueToothWriteData getCmdOfSetDid:data];;
+            NSString * cmd = [SOCBlueToothWriteData commandForSetDid:data];;
             self.tf.text = cmd;
         }]];
         [alertC addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
@@ -563,10 +541,10 @@
         
     }
     else if ([title isEqualToString:@"NTAG刷牙次数"]) {
-        cmd = [SOCBlueToothWriteData getCmdOfGetCountInNTAG];
+        cmd = [SOCBlueToothWriteData commandForGetCountInNTAG];
     }
     else if ([title isEqualToString:@"设置拿起唤醒状态"]) {
-        cmd = [SOCBlueToothWriteData getCmdOfSetFlashState:@"01"];
+        cmd = [SOCBlueToothWriteData commandForSetFlashState:@"01"];
         
         UIAlertController * alertC = [UIAlertController alertControllerWithTitle:title message:@"" preferredStyle:UIAlertControllerStyleAlert];
         
@@ -581,7 +559,7 @@
             UInt8 state = [[[alertC.textFields objectAtIndex:0] text] intValue];
             data = [NSString stringWithFormat:@"%.2x", state];
             
-            NSString * cmd = [SOCBlueToothWriteData getCmdOfSetFlashState:data];;
+            NSString * cmd = [SOCBlueToothWriteData commandForSetFlashState:data];;
             self.tf.text = cmd;
         }]];
         [alertC addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
@@ -595,6 +573,48 @@
         vc.blueManager = _blueManager;
         
         [self.navigationController pushViewController:vc animated:YES];
+        return;
+    }
+    else if ([title isEqualToString:@"Request DFU(CRC)"]) {
+        
+        UIAlertController * alertC = [UIAlertController alertControllerWithTitle:title message:@"" preferredStyle:UIAlertControllerStyleAlert];
+        
+        [alertC addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+            textField.text = @"85150616";
+            textField.placeholder = @"0x85150616";
+            textField.keyboardType = UIKeyboardTypeNumberPad;
+        }];
+        
+        [alertC addAction:[UIAlertAction actionWithTitle:@"0x85150616" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            NSString * text = action.title;
+            if ([text hasPrefix:@"0x"]) {
+                text = [text substringFromIndex:2];
+            }
+            NSString * cmd = [SOCBlueToothWriteData commandForDFURequestCRC: text];
+            self.tf.text = cmd;
+        }]];
+        
+        [alertC addAction:[UIAlertAction actionWithTitle:@"X5" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            NSString * text = [[alertC.textFields objectAtIndex:0] text];
+            if ([text hasPrefix:@"0x"]) {
+                text = [text substringFromIndex:2];
+            }
+            NSString * cmd = [SOCBlueToothWriteData commandWithType:@"0010" length:@"0004" appendData:text];;
+            self.tf.text = cmd;
+        }]];
+        
+        [alertC addAction:[UIAlertAction actionWithTitle:@"M1S" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            NSString * text = [[alertC.textFields objectAtIndex:0] text];
+            if ([text hasPrefix:@"0x"]) {
+                text = [text substringFromIndex:2];
+            }
+            NSString * cmd = [SOCBlueToothWriteData commandWithType:@"000e" length:@"0004" appendData:text];;
+            self.tf.text = cmd;
+        }]];
+        [alertC addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            
+        }]];
+        [self presentViewController:alertC animated:YES completion:nil];
         return;
     }
     

@@ -8,12 +8,12 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
-#import "BlueDefines.h"
+#import "YPBlueDefines.h"
 
 #define MAX_RSSI_VALUE 60
 #define SCAN_TIME_OUT 30
 
-@class YPDeviceManager;
+@class YPBleDevice;
 
 @protocol YPBlueManagerDelegate;
 
@@ -22,21 +22,24 @@
 @property (nonatomic, strong) CBCentralManager * manager;
 @property (nonatomic, strong) NSMutableArray * discoverDevices;
 @property (nonatomic, strong) NSMutableArray * discoverperipheral;
-@property (nonatomic, strong) YPDeviceManager * currentDevice;
+@property (nonatomic, strong) YPBleDevice * currentDevice;
+
+@property (nonatomic, weak) id<YPBlueManagerDelegate> bleDelegate;
 
 @property (nonatomic) BOOL autoScanWhilePoweredOn;
 @property (nonatomic) BOOL isScaning;
 
 /* config */
-@property (nonatomic, copy) NSString * name;
 @property (nonatomic) NSInteger RSSIValue;
+@property (nonatomic, copy) NSString * localName;
+
 @property (nonatomic) NSInteger scanTimeout;
 
 - (void)startScan;
 - (void)stopScan;
 
-- (void)connectDevice:(YPDeviceManager *)device;
-- (void)disConnectDevice:(YPDeviceManager *)device;
+- (void)connectDevice:(YPBleDevice *)device;
+- (void)disConnectDevice:(YPBleDevice *)device;
 
 + (instancetype)share;
 + (void)destroy;
@@ -49,8 +52,8 @@
 @optional
 - (void)didUpdateState:(YPBlueManager *)blueManager;
 
-- (void)didDiscoverBTDevice:(YPDeviceManager *)device;
+- (void)didDiscoverBTDevice:(YPBleDevice *)device;
 
-- (void)didConnectedBTDevice:(YPDeviceManager *)device;
+- (void)didConnectedBTDevice:(YPBleDevice *)device;
 
 @end

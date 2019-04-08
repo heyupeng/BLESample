@@ -1,5 +1,5 @@
 //
-//  DFUManager.h
+//  SOCDFUManager.h
 //  Test1
 //
 //  Created by xiehaiyan on 2017/3/21.
@@ -7,23 +7,22 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <CoreBluetooth/CoreBluetooth.h>
 
 #define NotificationWithBluetoothStateChanged @"notification_bluetoothStateChanged"
 #define NotificationWithDfuStateChanged @"notification_dfuStateChanged"
 #define NotificationWithDfuProgressChanged @"notification_dfuProgressChanged"
 
-typedef NS_ENUM(NSInteger, DfuState) {
-    DfuStateDefault = 0,
-    DfuStateSearching,
-    DfuStateConnecting,
-    DfuStateStartUpload,
-    DfuStateUploading,
-    DfuStateComplete,
-    DfuStateError
+typedef NS_ENUM(NSInteger, SOCDFUState) {
+    SOCDFUStateDefault = 0,
+    SOCDFUStateSearching,
+    SOCDFUStateConnecting,
+    SOCDFUStateStartUpload,
+    SOCDFUStateUploading,
+    SOCDFUStateComplete,
+    SOCDFUStateError
 };
 
-@interface DFUManager : NSObject
+@interface SOCDFUManager : NSObject
 
 @property (nonatomic, copy) NSString *deviceNamePrefix;
 @property (nonatomic, copy) NSString *deviceMac;
@@ -32,8 +31,5 @@ typedef NS_ENUM(NSInteger, DfuState) {
 - (void)startDfu;
 - (void)stopScanDevice;
 - (void)stopConnectDevice;
-
-- (void)setCentralManager:(CBCentralManager *)centralManager;
-- (void)connectDevice:(CBPeripheral *)peripheral;
 
 @end

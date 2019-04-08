@@ -8,23 +8,33 @@
 
 #import "YPUpgradeViewController.h"
 #import "FileTableViewController.h"
-#import "DFUManager.h"
+#import "SOCDFUManager.h"
 #import "YPDFUManager.h"
 #import <iOSDFULibrary/iOSDFULibrary-Swift.h>
 
-@interface YPUpgradeViewController ()<DFUServiceDelegate, DFUProgressDelegate, LoggerDelegate>
-@property (nonatomic) DFUManager * dfuManager;
-@property (nonatomic) DfuState currentDfuState;
+#import "YPBluetooth/YPNordicDFU.h"
+
+@interface YPUpgradeViewController ()<NordicDFUDelegate>
+@property (nonatomic) SOCDFUManager * dfuManager;
+@property (nonatomic) SOCDFUState currentDfuState;
 
 @property (nonatomic) FileTableViewController *  fileVC;
 
 @property (nonatomic) YPDFUManager * dfuManager_xiaosu;
+
+@property (nonatomic, strong) UIProgressView * progressView;
 
 @property (nonatomic, strong) UITextView * tv;
 
 // Nordic DFU
 @property (nonatomic, strong) DFUServiceInitiator * dfuInitiator;
 @property (nonatomic, strong) DFUServiceController * dfuController;
+
+// NordicDFU
+@property (nonatomic, strong) YPNordicDFU * nordicDFU;
+@property (nonatomic) BOOL rename;
+@property (nonatomic) BOOL encrypt;
+@property (nonatomic, strong) NSString * encryptString;
 
 @end
 
@@ -48,7 +58,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     if (_fileVC && _fileVC.filePath) {
-        _fileLabel.text = _fileVC.filePath;
+        _fileLabel.text = [_fileVC.filePath lastPathComponent];
     }
 }
 - (void)dealloc {
@@ -58,7 +68,9 @@
 /** ============== **/
 
 - (void)initialData {
-    _dfuManager = [[DFUManager alloc] init];
+    _dfuManager = [[SOCDFUManager alloc] init];
+    
+    _rename = YES;
 }
 
 - (void)initUI {
@@ -66,12 +78,35 @@
     self.view.backgroundColor = [UIColor groupTableViewBackgroundColor];
     self.title = @"固件升级";
     
-    UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0, 70, SCREENWIDTH, 40 * 2)];
+    UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, SCREENWIDTH, 40)];
     label.numberOfLines = 0;
     label.textAlignment = NSTextAlignmentCenter;
-    label.text = @"请选择文件";
+    label.text = @"请先选择文件";
     _fileLabel = label;
     [self.view addSubview:label];
+    
+    UIProgressView * progressView = [[UIProgressView alloc] initWithFrame:CGRectMake(20, CGRectGetMaxY(label.frame) + 20, SCREENWIDTH - 20 * 2, 5)];
+    progressView.progress = 0;
+    _progressView = progressView;
+    [self.view addSubview:_progressView];
+    
+    UIButton * renameBtn = [[UIButton alloc] initWithFrame:CGRectMake(20, CGRectGetMaxY(progressView.frame) + 20, 120, 30)];
+    [renameBtn setTitle:@"Rename" forState:UIControlStateNormal];
+    [renameBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    renameBtn.backgroundColor = [UIColor redColor];
+    renameBtn.selected = _rename;
+    renameBtn.layer.borderWidth = 1;
+    [self.view addSubview:renameBtn];
+    [renameBtn addTarget:self action:@selector(rename:) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIButton * encryptBtn = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetMaxX(renameBtn.frame) + 20, CGRectGetMinY(renameBtn.frame), 120, 30)];
+    [encryptBtn setTitle:@"Encrypt" forState:UIControlStateNormal];
+    [encryptBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    encryptBtn.backgroundColor = [UIColor whiteColor];
+    encryptBtn.selected = _encrypt;
+    encryptBtn.layer.borderWidth = 1;
+    [self.view addSubview:encryptBtn];
+    [encryptBtn addTarget:self action:@selector(encrypt:) forControlEvents:UIControlEventTouchUpInside];
     
     UIButton * button = [UIButton buttonWithType:UIButtonTypeSystem];
     button.frame = CGRectMake((SCREENWIDTH - 100) * 0.5, 200, 100, 60);
@@ -83,13 +118,98 @@
     UITextView * tv = [[UITextView alloc] init];
     tv.backgroundColor = [UIColor whiteColor];
     tv.editable = NO;
-    tv.frame = CGRectMake(0, 300 + 10, SCREENWIDTH, CGRectGetHeight(self.view.bounds) - 300 - 20 - 64);
+    tv.frame = CGRectMake(0, 300 + 10, SCREENWIDTH, CGRectGetHeight(self.view.bounds) - 300 - 20 - 64 - 44);
     [self.view addSubview:tv];
     _tv = tv;
     
-    
-    UIBarButtonItem * rightButton = [[UIBarButtonItem alloc] initWithTitle:@"file" style:UIBarButtonItemStyleDone target:self action:@selector(rightButtonClick:)];
+    UIBarButtonItem * rightButton = [[UIBarButtonItem alloc] initWithTitle:@"File" style:UIBarButtonItemStyleDone target:self action:@selector(rightButtonClick:)];
     [self.navigationItem setRightBarButtonItem:rightButton];
+}
+
+- (void)rename:(UIButton *)sender {
+    _rename = !_rename;
+    sender.selected = !sender.selected;
+    if (sender.selected) {
+        sender.backgroundColor = [UIColor redColor];
+    } else {
+        sender.backgroundColor = [UIColor whiteColor];
+    }
+}
+
+- (void)encrypt:(UIButton *)sender {
+    UIAlertController * alertC = [UIAlertController alertControllerWithTitle:@"Encrypt" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+    
+    [alertC addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.text = @"85150616";
+        textField.placeholder = @"0x85150616";
+        textField.keyboardType = UIKeyboardTypeNumberPad;
+    }];
+    
+    [alertC addAction:[UIAlertAction actionWithTitle:@"0x15f1" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        NSString * text = action.title;
+        if ([text hasPrefix:@"0x"]) {
+            text = [text substringFromIndex:2];
+        }
+        self.encryptString = text;
+        self.encrypt = YES;
+        sender.selected = self.encrypt;
+        if (sender.selected) {
+            sender.backgroundColor = [UIColor redColor];
+        } else {
+            sender.backgroundColor = [UIColor whiteColor];
+        }
+    }]];
+    
+    [alertC addAction:[UIAlertAction actionWithTitle:@"0x85150616" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        NSString * text = action.title;
+        if ([text hasPrefix:@"0x"]) {
+            text = [text substringFromIndex:2];
+        }
+        self.encryptString = text;
+        self.encrypt = YES;
+        sender.selected = self.encrypt;
+        if (sender.selected) {
+            sender.backgroundColor = [UIColor redColor];
+        } else {
+            sender.backgroundColor = [UIColor whiteColor];
+        }
+    }]];
+    
+    [alertC addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        NSString * text = [[alertC.textFields objectAtIndex:0] text];
+        if ([text hasPrefix:@"0x"]) {
+            text = [text substringFromIndex:2];
+        }
+        
+        self.encryptString = text;
+        self.encrypt = YES;
+        sender.selected = self.encrypt;
+        if (sender.selected) {
+            sender.backgroundColor = [UIColor redColor];
+        } else {
+            sender.backgroundColor = [UIColor whiteColor];
+        }
+    }]];
+    
+    [alertC addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        self.encryptString = @"";
+        self.encrypt = NO;
+        sender.selected = self.encrypt;
+        if (sender.selected) {
+            sender.backgroundColor = [UIColor redColor];
+        } else {
+            sender.backgroundColor = [UIColor whiteColor];
+        }
+    }]];
+    [self presentViewController:alertC animated:YES completion:nil];
+    
+//    _encrypt = !_encrypt;
+//    sender.selected = !sender.selected;
+//    if (sender.selected) {
+//        sender.backgroundColor = [UIColor redColor];
+//    } else {
+//        sender.backgroundColor = [UIColor whiteColor];
+//    }
 }
 
 - (void)rightButtonClick:(UIButton *)button {
@@ -104,12 +224,14 @@
 }
 
 - (void)click:(UIButton *)button {
-    
     NSString *filePath = _fileVC.filePath;
+    if (!filePath) {
+        return;
+    }
     
     NSString * ext = [filePath pathExtension];
     if ([ext isEqualToString:@"img"]) {
-        _dfuManager_xiaosu = [[YPDFUManager alloc] initWithDeviceManager:_blueManager.currentDevice];
+        _dfuManager_xiaosu = [[YPDFUManager alloc] initWithDevice:_blueManager.currentDevice];
         [_dfuManager_xiaosu setUrl: [filePath UTF8String]];
         [_dfuManager_xiaosu startUpgrade];
         return;
@@ -118,25 +240,31 @@
 //    [_dfuManager setCentralManager:_blueManager.manager];
 //    [_dfuManager connectDevice:_blueManager.currentDevice.peripheral];
     
-    DFUServiceInitiator * dfuInitiator = [self dfuServiceInitiator];
-    dfuInitiator.jumpToBootloaderEncryption = YES; // 自定义属性
-    
-    NSString * zipFile = filePath; // [[NSBundle mainBundle] pathForResource:@"X5_2019031101" ofType:@"zip"];
-    DFUFirmware * firmware = [[DFUFirmware alloc] initWithUrlToZipFile:[NSURL URLWithString:zipFile] type:DFUFirmwareTypeApplication];
-    
-    _dfuInitiator = [dfuInitiator withFirmware:firmware];
-    [dfuInitiator start];
+    [self startDFU];
 }
 
-- (DFUServiceInitiator *)dfuServiceInitiator {
-    DFUServiceInitiator * dfuInitiator = [[DFUServiceInitiator alloc] initWithCentralManager:_blueManager.manager target: _blueManager.currentDevice.peripheral];
-    dfuInitiator.delegate = self;
-    dfuInitiator.progressDelegate = self;
-    dfuInitiator.logger = self;
+- (void)startDFU {
+    NSString *filePath = _fileVC.filePath;
+
+    NSArray * encrptBuffers_X5 = [NSArray arrayWithObjects:[NSNumber numberWithInteger:0x15], [NSNumber numberWithInteger:0xf1], nil];
+    NSArray * encrptBuffers_M1S = [NSArray arrayWithObjects:[NSNumber numberWithInteger:0x85], [NSNumber numberWithInteger:0x15], [NSNumber numberWithInteger:0x06], [NSNumber numberWithInteger:0x16], nil];
     
-//    dfuInitiator.enableUnsafeExperimentalButtonlessServiceInSecureDfu = YES; // 允许secureDFU下buttonless模式(SMI-X5、SMI-M1S) x
-    dfuInitiator.alternativeAdvertisingNameEnabled = NO; // 不可重命名
-    return dfuInitiator;
+    _nordicDFU = [[YPNordicDFU alloc] initWithCentralManager:_blueManager.manager peripheral:_blueManager.currentDevice.peripheral];
+    _nordicDFU.delegate = self;
+    
+    DFUFirmware * firmware = [[DFUFirmware alloc] initWithUrlToZipFile:[NSURL URLWithString:filePath]];
+    [_nordicDFU setFirmware:firmware];
+    
+    // rename
+    _nordicDFU.dfuInitiator.alternativeAdvertisingNameEnabled = _rename;
+    
+    // encrypt
+    if (self.encrypt) {
+        NSArray * encrptBuffers = [[NSData dataWithHexString:self.encryptString] hexArray];
+        [_nordicDFU startDFUWithEncrypt:self.encrypt encryptData:encrptBuffers filePath:filePath];
+    } else {
+        [_nordicDFU startDFU];
+    }
 }
 
 
@@ -153,14 +281,11 @@
 }
 
 - (void)textforTextViewByAppending:(NSString *)append {
-    dispatch_sync(dispatch_get_main_queue(), ^{
         if (self.tv.text.length > 1) {
-            _tv.text = [_tv.text stringByAppendingFormat:@"\n%@",append];
+            self.tv.text = [self.tv.text stringByAppendingFormat:@"\n%@",append];
         } else {
             self.tv.text = append;
         }
-        [self autoScroll];
-    });
 }
 
 /** ============== **/
@@ -199,36 +324,36 @@
 {
     NSString * text = @"";
     switch ([noti.object integerValue]) {
-        case DfuStateSearching:{
+        case SOCDFUStateSearching:{
             text = @"查找设备中...";
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                if (_currentDfuState == DfuStateSearching) {
+                if (self.currentDfuState == SOCDFUStateSearching) {
                     NSLog(@"查找设备超时！");
-                    [_dfuManager stopScanDevice];
+                    [self.dfuManager stopScanDevice];
                 }
             });
             break;
         }
-        case DfuStateConnecting:{
+        case SOCDFUStateConnecting:{
             text = @"连接设备中...";
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                if (_currentDfuState == DfuStateConnecting) {
+                if (self.currentDfuState == SOCDFUStateConnecting) {
                     NSLog(@"设备连接超时！");
-                    [_dfuManager stopConnectDevice];
+                    [self.dfuManager stopConnectDevice];
                 }
             });
             break;
         }
-        case DfuStateStartUpload:
+        case SOCDFUStateStartUpload:
             text = @"开始升级固件";
             break;
-        case DfuStateUploading:
+        case SOCDFUStateUploading:
             text = @"升级固件中...";
             break;
-        case DfuStateComplete:
+        case SOCDFUStateComplete:
             text = @"固件升级完成";
             break;
-        case DfuStateError:
+        case SOCDFUStateError:
             text = @"固件升级失败！";
             break;
         default:
@@ -240,7 +365,7 @@
 
 - (void)dfuProgressChanged:(NSNotification *) noti
 {
-    NSString * text = [NSString stringWithFormat:@"升级进度：%zi", [noti.object integerValue]];
+    NSString * text = [NSString stringWithFormat:@"升级进度：%i", [noti.object integerValue]];
     NSLog(@"%@", text);
     [self textforTextViewByAppending: text];
 }
@@ -248,37 +373,37 @@
 
 #pragma mark - DFUInitiator Delegate
 - (void)dfuStateDidChangeTo:(enum DFUState)state {
-    NSLog(@"dfuState: %@", [self DFUStateDescription:state]);
-    dispatch_async(dispatch_get_main_queue(), ^{
-//        self.dfuStatusLabel.text = [self DFUStateDescription:state];
-    });
+    NSString * text = [NSString stringWithFormat:@"dfuState: %@", [_nordicDFU descriptionForDFUState:state]];
+    NSLog(@"%@", text);
+    [self textforTextViewByAppending: text];
 }
 
 - (void)dfuError:(enum DFUError)error didOccurWithMessage:(NSString *)message {
-    NSLog(@"error:%ld - %@",error, message);
+    NSString * text = [NSString stringWithFormat:@"error:%d - %@",error, message];
+    NSLog(@"%@",text);
+    [self textforTextViewByAppending: text];
 }
 
 - (void)dfuProgressDidChangeFor:(NSInteger)part outOf:(NSInteger)totalParts to:(NSInteger)progress currentSpeedBytesPerSecond:(double)currentSpeedBytesPerSecond avgSpeedBytesPerSecond:(double)avgSpeedBytesPerSecond {
-    NSLog(@"propress: %ld", progress);
+    NSString * text = [NSString stringWithFormat:@"propress: %ld", progress];
+    NSLog(@"%@",text);
     dispatch_async(dispatch_get_main_queue(), ^{
 //        self.progressLabel.text = [NSString stringWithFormat:@"%ld%%", progress];
+        self.progressView.progress = progress / 100.0;
+        [self textforTextViewByAppending: text];
     });
 }
 
 - (void)logWith:(enum LogLevel)level message:(NSString *)message {
-    NSLog(@"log: %ld - %@", level, message);
+    NSString * text = [NSString stringWithFormat:@"log: %ld - %@", level, message];
+    NSLog(@"%@",text);
+    [self textforTextViewByAppending: text];
 }
 
-- (NSString *)DFUStateDescription:(DFUState)state {
-    switch (state) {
-        case DFUStateConnecting:      return @"Connecting";
-        case DFUStateStarting:        return @"Starting";
-        case DFUStateEnablingDfuMode: return @"Enabling DFU Mode";
-        case DFUStateUploading:       return @"Uploading";
-        case DFUStateValidating:      return @"Validating"  ;// this state occurs only in Legacy DFU
-        case DFUStateDisconnecting:   return @"Disconnecting";
-        case DFUStateCompleted:       return @"Completed";
-        case DFUStateAborted:         return @"Aborted";
-    }
+#pragma mark -tf
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
+    return YES;
 }
+
 @end

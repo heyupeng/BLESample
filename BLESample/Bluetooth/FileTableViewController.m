@@ -30,6 +30,10 @@
     [self.tableView reloadData];
 }
 
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    self.tableView.frame = self.view.frame;
+}
 - (void) didDisconnectFromDevice:(NSNotification*)notification {
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
@@ -108,19 +112,28 @@
     return cell;
 }
 
-- (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [[tableView cellForRowAtIndexPath:indexPath] setSelected:NO];
 
     NSString *fileName = [self.fileArray objectAtIndex:indexPath.row];
-    NSURL *fileURL = [NSURL URLWithString:[NSString stringWithFormat:@"file://%@", fileName]];
     
-    _filePath = [NSString stringWithFormat:@"%@", fileName];
-//    ParamaterStorage *storage = [ParamaterStorage getInstance];
-//    storage.file_url = fileURL;
+    _filePath = fileName;
     
     if ([fileName.pathExtension isEqualToString:@"mov"] || [fileName.pathExtension isEqualToString:@"mp4"]) {
         
     }
+}
+
+- (NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewRowAction * rowAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"删除" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
+        NSString *file = [self.fileArray objectAtIndex:indexPath.row];
+        [self.fileArray removeObjectAtIndex:indexPath.row];
+        [self.tableView reloadData];
+        
+        NSError * error;
+        [[NSFileManager defaultManager] removeItemAtPath:file error:&error];
+    }];
+    return @[rowAction];
 }
 
 - (NSMutableArray *)getFileListing {
@@ -144,14 +157,18 @@
         }
     }
     
-//    for (NSString *file in files) {
-//        if ([file.pathExtension compare:@"mp4" options:NSCaseInsensitiveSearch] == NSOrderedSame || [file.pathExtension compare:@"mov" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
-//            NSString *fullPath = [publicDocumentsDir stringByAppendingPathComponent:file];
-//            [retval addObject:fullPath];
-//        }
-//    }
     
-//    NSString * resourcePath = [[NSBundle mainBundle] resourcePath];
+    BOOL isDir = YES;
+    NSString * inboxPath = [publicDocumentsDir stringByAppendingPathComponent:@"Inbox"]; // 文件共享(第三方App导入)
+    
+    BOOL existInbox = [[NSFileManager defaultManager] fileExistsAtPath:inboxPath isDirectory:&isDir];
+    if (existInbox) {
+        NSArray * subPathsInInbox = [[NSFileManager defaultManager] subpathsAtPath:inboxPath];
+        for (NSString * fileName in subPathsInInbox) {
+            [retval addObject:[inboxPath stringByAppendingPathComponent:fileName]];
+        }
+    }
+    
     NSArray * p2 =[[NSBundle mainBundle] pathsForResourcesOfType:@"zip" inDirectory:nil];
     if (p2) {
         [retval addObjectsFromArray:p2];

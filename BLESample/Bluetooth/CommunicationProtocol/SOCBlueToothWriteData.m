@@ -10,41 +10,60 @@
 
 @implementation SOCBlueToothWriteData
 
-int frameNumber = 0;
-#pragma mark - /******** 发送指令 *********/
+int frameNumber_ = 0;
+int frameNumber() {
+    frameNumber_ ++;
+    if (frameNumber_ > 255) { frameNumber_ = 0;}
+    return frameNumber_;
+}
 
-+ (NSString *)getSendingStringWithType:(NSString *)typeString AppendData:(NSString *)appendDataString {
+#pragma mark - /******** 发送指令 *********/
++ (NSString *)commandWithType:(NSString *)typeString appendData:(NSString *)appendString {
     NSString * str;
     if (typeString.length == 8) {
-    freeAgain:
-        if (frameNumber < 16) {
-            str = [NSString stringWithFormat:@"%@000%x",typeString,frameNumber++];
-        }else if(frameNumber < 255){
-            str = [NSString stringWithFormat:@"%@00%x",typeString,frameNumber++];
-        }else{
-            frameNumber = 0;
-            goto freeAgain;
-        }//合法
+        str = [NSString stringWithFormat:@"%@%.4x",typeString,frameNumber()];
+        //合法
         str = [self getCheckStringWith:str];
         if (str) {
-            str = [NSString stringWithFormat:@"%@%@",str,appendDataString];
+            str = [NSString stringWithFormat:@"%@%@",str,appendString];
+        }
+    }
+    return [str lowercaseString];
+}
+
+/**
+ @param typeString hex string of command type. eg: 0001
+ @param lengthHexString hex string of data bytes length. eg:0004
+ @param appendString eg:78001e00
+ @return a bluetooth command,
+    eg: type + length + frame + crc + data
+        0100   0400     0100    70b2  78001e00
+ */
++ (NSString *)commandWithType:(NSString *)typeString length:(NSString *)lengthHexString appendData:(NSString *)appendString {
+    NSString * str;
+    if (typeString.length == 4) {
+        str = [NSString stringWithFormat:@"%@%@%.4x",typeString, lengthHexString, frameNumber()];
+        //合法
+        str = [self getCheckStringWith:str];
+        if (str) {
+            str = [NSString stringWithFormat:@"%@%@",str,appendString];
         }
     }
     return [str lowercaseString];
 }
 
 //绑定指令
-+ (NSString *)getSendStringOfBind {
-    return [self getSendingStringWithType:@"000a0000" AppendData:@""];
++ (NSString *)commandForBind {
+    return [self commandWithType:@"000a0000" appendData:@""];
 }
 //获取数据
-+ (NSString *)getSendStringOfGetRequestRecords {
-    return [self getSendingStringWithType:@"00020000" AppendData:@""];
++ (NSString *)commandForGetRequestRecords {
+    return [self commandWithType:@"00020000" appendData:@""];
 }
 //设置时间指令
-+ (NSString *)getSendStringOfSetLocalTime {
++ (NSString *)commandForSetLocalTime {
     NSString * timeIsNowString = [self getTimeIsNowString];
-    return [self getSendingStringWithType:@"0003000c" AppendData:timeIsNowString];
+    return [self commandWithType:@"0003000c" appendData:timeIsNowString];
 }
 
 //获得当前的时间data 为12个字节
@@ -71,23 +90,23 @@ int frameNumber = 0;
 
 + (NSString *)sendOrderToSetLocalTimeWith:(NSInteger)timeStamp geoCode:(NSInteger)geoCode {
     NSString * timeIsNowString = [self getTimeIsNowStringWith:timeStamp geoCode:geoCode];//[NSString getTimeIsNowString];
-    return [self getSendingStringWithType:@"0003000c" AppendData:timeIsNowString];
+    return [self commandWithType:@"0003000c" appendData:timeIsNowString];
 }
 //获取DFU请求指令
-+ (NSString *)getSendStringOfDFURequest {
-    return [self getSendingStringWithType:@"00040000" AppendData:@""];
++ (NSString *)commandForDFURequest {
+    return [self commandWithType:@"00040000" appendData:@""];
 }
 
 //获取电池指令
-+ (NSString *)getSendStringOfGetBattery {
-    return [self getSendingStringWithType:@"00050000" AppendData:@""];
++ (NSString *)commandForGetBattery {
+    return [self commandWithType:@"00050000" appendData:@""];
 }
 //设备信息指令
-+ (NSString *)getSendStringOfGetDeviceInfo {
-    return [self getSendingStringWithType:@"00060000" AppendData:@""];
++ (NSString *)commandForGetDeviceInfo {
+    return [self commandWithType:@"00060000" appendData:@""];
 }
 //设置刷牙时间 Function set
-+ (NSString *)getSendStringOfSetFuncionWith:(int)tag {
++ (NSString *)commandForSetFuncionWith:(int)tag {
     int workTime = (tag ? 150: 120) ;
     int tipsTime = (tag ? 38: 30);
     NSString * workTimeStr = [NSString stringWithFormat:@"%.4X",workTime];
@@ -95,53 +114,58 @@ int frameNumber = 0;
     NSString * s1 = [NSString hexStringReverse:workTimeStr];
     NSString * s2 = [NSString hexStringReverse:tipsTimeStr];
     NSString * s = [NSString stringWithFormat:@"%@%@",s1,s2];
-    return [self getSendingStringWithType:@"00010004" AppendData:s];
+    return [self commandWithType:@"00010004" appendData:s];
 }
 
 //设置渐强模式指令: 1：使能渐强模式;0：禁止渐强模式
-+ (NSString *)getSendStringOfSetfadeInWith:(int)tag {
++ (NSString *)commandForSetfadeInWith:(int)tag {
     NSString * model = [NSString stringWithFormat:@"%.2x",tag];
-    return [self getSendingStringWithType:@"00070001" AppendData:model];
+    return [self commandWithType:@"00070001" appendData:model];
 }
 
 //设置附加模式指令: 0x00:禁止功能模式;0x01:抛光模式;0x02:护理模式;0x03:舌苔模式
-+ (NSString *)getSendStringOfSetAddOnsWith:(int)index {
++ (NSString *)commandForSetAddOnsWith:(int)index {
     NSString * model = [NSString stringWithFormat:@"%.2x",index];
-    return [self getSendingStringWithType:@"00080001" AppendData:model];
+    return [self commandWithType:@"00080001" appendData:model];
 }
 
 // 电机参数
-+ (NSString *)getCmdOfMotorParameters:(NSString *)MotorParameters {
-    return [self getSendingStringWithType:@"00090004" AppendData:MotorParameters];
++ (NSString *)commandForMotorParameters:(NSString *)MotorParameters {
+    return [self commandWithType:@"00090004" appendData:MotorParameters];
 }
 
 // 定制模式
-+ (NSString *)getCmdOfSetPersonalMode:(BOOL)on mode:(NSString *)mode {
++ (NSString *)commandForSetPersonalMode:(BOOL)on mode:(NSString *)mode {
     if (!on) {
-        return [self getSendingStringWithType:@"000b0000" AppendData:@""];
+        return [self commandWithType:@"000b0000" appendData:@""];
     }
-    return [self getSendingStringWithType:@"000b0003" AppendData:mode];
+    return [self commandWithType:@"000b0003" appendData:mode];
 }
 
 // 获取soocare设备ID
-+ (NSString *)getCmdOfGetDid {
-    return [self getSendingStringWithType:@"000c0000" AppendData:@""];
++ (NSString *)commandForGetDid {
+    return [self commandWithType:@"000c0000" appendData:@""];
 }
 
 // 写入soocare设备ID
-+ (NSString *)getCmdOfSetDid:(NSString *)did {
-    return [self getSendingStringWithType:@"000d000c" AppendData:did];
++ (NSString *)commandForSetDid:(NSString *)did {
+    return [self commandWithType:@"000d000c" appendData:did];
 }
 
 // 获取NTAG中的刷牙次数
-+ (NSString *)getCmdOfGetCountInNTAG {
-    return [self getSendingStringWithType:@"000e0000" AppendData:@""];
++ (NSString *)commandForGetCountInNTAG {
+    return [self commandWithType:@"000e0000" appendData:@""];
 }
 
 // 设置拿起唤醒状态 00/01
-+ (NSString *)getCmdOfSetFlashState:(NSString *)state {
-    return [self getSendingStringWithType:@"000f0001" AppendData:state];
++ (NSString *)commandForSetFlashState:(NSString *)state {
+    return [self commandWithType:@"000f0001" appendData:state];
 }
+
++ (NSString *)commandForDFURequestCRC:(NSString *)crcString {
+    return [self commandWithType:@"000e0004" appendData:crcString];
+}
+
 #pragma mark - 安全性校验
 /*
  1.检查指令长度
@@ -187,7 +211,7 @@ int frameNumber = 0;
     NSString * frameHighString = [myString substringWithRange:frameHigh];
     NSString * frameLowString = [myString substringWithRange:frameLow];
     //重新排列高低位
-    NSArray * stringArray = @[typeLowString,typeHighString,lengthLowString,lengthHighString,frameLowString,frameHighString];
+    NSArray * stringArray = @[typeLowString,typeHighString,lengthLowString,lengthHighString,frameHighString, frameLowString];
     NSString * sequenceString = @"";
     for (int i = 0 ; i < stringArray.count; i++) {
         sequenceString = [sequenceString stringByAppendingString:stringArray[i]];
@@ -201,42 +225,15 @@ int frameNumber = 0;
     //把data转换成byte
     Byte * checkSumByte = (Byte *)[myData bytes];
     //获取校验值
-    NSString * checkSumString = [NSString stringWithFormat:@"%x",crc16_compute(checkSumByte, 0x06, NULL)];
+    uint16_t crcPoly = 0xffff ;//0x1021;
+    uint32_t checkCode = crc16_compute(checkSumByte, 0x06, &crcPoly);
+    NSString * checkSumString = [NSString stringWithFormat:@"%4x",checkCode];
     
-    switch (checkSumString.length) {
-        case 0: {
-        }
-            break;
-        case 1: {
-            NSString * newInputString = [NSString stringWithFormat:@"000%@",checkSumString];
-            newInputString = [NSString hexStringReverse:newInputString];
-            sendString = [sequenceString stringByAppendingString:newInputString];
-        }
-            break;
-        case 2: {
-            NSString * newInputString = [NSString stringWithFormat:@"00%@",checkSumString];
-            newInputString = [NSString hexStringReverse:newInputString];
-            sendString = [sequenceString stringByAppendingString:newInputString];
-        }
-            break;
-        case 3: {
-            NSString * newInputString = [NSString stringWithFormat:@"0%@",checkSumString];
-            newInputString = [NSString hexStringReverse:newInputString];
-            sendString = [sequenceString stringByAppendingString:newInputString];
-        }
-            break;
-        case 4: {
-            NSString * newInputString = checkSumString;
-            newInputString = [NSString hexStringReverse:newInputString];
-            sendString = [sequenceString stringByAppendingString:newInputString];
-        }
-            break;
-        default: {
-        }
-            break;
-    }
+    checkSumString = [checkSumString hexStringReverse];
+    sendString = [sequenceString stringByAppendingString:checkSumString];
     return sendString;
 }
+
 #pragma mark - crc校验 如固件有采用此算法校验可以采用 否则可以不用
 //校验程式
 uint16_t crc16_compute(const uint8_t * p_data, uint32_t size, const uint16_t * p_crc)

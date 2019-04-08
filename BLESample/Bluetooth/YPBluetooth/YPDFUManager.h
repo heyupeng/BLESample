@@ -7,8 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "YPDeviceManager.h"
-#import "BlueDefines.h"
+#import "YPBleDevice.h"
+#import "YPBlueDefines.h"
 
 @interface YPDFUManager : NSObject
 {
@@ -28,11 +28,11 @@
 @property char spiCSAddress;
 @property char spiSCKAddress;
 
-@property (nonatomic, strong) YPDeviceManager * deviceManager;
+@property (nonatomic, strong) YPBleDevice * device;
 @property (nonatomic, strong) NSString * urlString;
 @property (nonatomic, strong) NSURL *file_url;
 
-- (instancetype)initWithDeviceManager:(YPDeviceManager *)manager;
+- (instancetype)initWithDevice:(YPBleDevice *)device;
 
 - (void)setUrl:(const char *)url;
 - (void)startUpgrade;

@@ -1,17 +1,17 @@
 //
-//  DFUManager.m
+//  SOCDFUManager.m
 //  Test1
 //
 //  Created by xiehaiyan on 2017/3/21.
 //  Copyright © 2017年 soocare. All rights reserved.
 //
 
-#import "DFUManager.h"
+#import "SOCDFUManager.h"
 #import "DFUHelper.h"
 #import "DFUOperations.h"
 #import <CoreBluetooth/CoreBluetooth.h>
 
-@interface DFUManager ()<CBCentralManagerDelegate, DFUOperationsDelegate>
+@interface SOCDFUManager ()<CBCentralManagerDelegate, DFUOperationsDelegate>
 {
     CBCentralManager *_centralManager;
     CBPeripheral *_peripheral;
@@ -24,7 +24,7 @@
 }
 @end
 
-@implementation DFUManager
+@implementation SOCDFUManager
 
 - (instancetype)init {
     self = [super init];
@@ -97,7 +97,7 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:NotificationWithBluetoothStateChanged object:[NSNumber numberWithBool:blueIsOpen]];
 }
 
-- (void)postNotificationWithDfuState:(DfuState) dfuState {
+- (void)postNotificationWithDfuState:(SOCDFUState) dfuState {
     [[NSNotificationCenter defaultCenter] postNotificationName:NotificationWithDfuStateChanged object:[NSNumber numberWithInteger:dfuState]];
 }
 
@@ -110,7 +110,7 @@
             break;
         case CBManagerStatePoweredOn:{
             [self postNotificationWithBluetoothDidUpdateState:YES];
-            [self postNotificationWithDfuState:DfuStateSearching];
+            [self postNotificationWithDfuState:SOCDFUStateSearching];
             [_centralManager scanForPeripheralsWithServices:nil options:@{CBCentralManagerScanOptionAllowDuplicatesKey:@YES}];
             break;
         }
@@ -147,7 +147,7 @@
         [_centralManager stopScan];
         _peripheral = peripheral;
         [self initAndStartDfu];
-        [self postNotificationWithDfuState:DfuStateConnecting];
+        [self postNotificationWithDfuState:SOCDFUStateConnecting];
     }
 }
 
@@ -157,7 +157,7 @@
     if (!_startUpload) {
         [_dfuOperation connectDevice: peripheral];
     }else{
-        [self postNotificationWithDfuState:DfuStateComplete];
+        [self postNotificationWithDfuState:SOCDFUStateComplete];
     }
 }
 
@@ -177,8 +177,8 @@
 -(void)onDFUStarted
 {
     _startUpload = YES;
-    [self postNotificationWithDfuState:DfuStateStartUpload];
-    [self postNotificationWithDfuState:DfuStateUploading];
+    [self postNotificationWithDfuState:SOCDFUStateStartUpload];
+    [self postNotificationWithDfuState:SOCDFUStateUploading];
 }
 
 -(void)onTransferPercentage:(int)percentage
@@ -188,7 +188,7 @@
 
 -(void)onError:(NSString *)errorMessage
 {
-    [self postNotificationWithDfuState:DfuStateError];
+    [self postNotificationWithDfuState:SOCDFUStateError];
 }
 
 -(void)onDeviceConnected:(CBPeripheral *)peripheral {

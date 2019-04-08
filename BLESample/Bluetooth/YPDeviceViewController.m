@@ -42,7 +42,7 @@
     
     [self addNotificationObserver];
 
-    [_blueManager connectDevice:_deviceManager];
+    [_blueManager connectDevice:_device];
     
 }
 
@@ -52,7 +52,7 @@
 }
 
 - (void)dealloc {
-    [_blueManager disConnectDevice:_deviceManager];
+    [_blueManager disConnectDevice:_device];
     [self removeNotificationObserver];
 }
 /** ============== **/
@@ -101,11 +101,11 @@
 
 /** ============== **/
 - (void)addNotificationObserver {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutBlueManager:) name:YPBLE_DidConnectedDevice object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutBlueManager:) name:YPBLEManager_DidConnectedDevice object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutDeviceManager:) name: YPDevice_DidDiscoverServices object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutDeviceManager:) name: YPDevice_DidDiscoverCharacteristics object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutDeviceManager:) name: YPDevice_DidUpdateValue object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutdevice:) name: YPBLEDevice_DidDiscoverServices object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutdevice:) name: YPBLEDevice_DidDiscoverCharacteristics object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutdevice:) name: YPBLEDevice_DidUpdateValue object:nil];
 
 }
 
@@ -116,26 +116,26 @@
 - (void)notificationAboutBlueManager: (NSNotification *)notification {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         
-        if ([notification.name isEqualToString:YPBLE_DidConnectedDevice]) {
-            [self.deviceManager.peripheral discoverServices:nil];
+        if ([notification.name isEqualToString:YPBLEManager_DidConnectedDevice]) {
+            [self.device.peripheral discoverServices:nil];
         }
 
     });
 }
 
-- (void)notificationAboutDeviceManager: (NSNotification *)notification {
+- (void)notificationAboutdevice: (NSNotification *)notification {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        if ([notification.name isEqualToString:YPDevice_DidDiscoverServices]) {
-            [self.dataSource setArray:self.deviceManager.peripheral.services];
+        if ([notification.name isEqualToString:YPBLEDevice_DidDiscoverServices]) {
+            [self.dataSource setArray:self.device.peripheral.services];
             [self.tableView reloadData];
         }
         
-        if ([notification.name isEqualToString:YPDevice_DidDiscoverCharacteristics]) {
-            [self.dataSource setArray:self.deviceManager.peripheral.services];
+        if ([notification.name isEqualToString:YPBLEDevice_DidDiscoverCharacteristics]) {
+            [self.dataSource setArray:self.device.peripheral.services];
             [self.tableView reloadData];
         }
         
-        if ([notification.name isEqualToString:YPDevice_DidUpdateValue]) {
+        if ([notification.name isEqualToString:YPBLEDevice_DidUpdateValue]) {
             [self.tableView reloadData];
         }
     });
@@ -177,8 +177,8 @@
     if ([UUID.UUIDString isEqualToString:@"2A19"]) {
         long value = [[character value].hexString hexStringToLongValue];
         cell.detailTextLabel.text = [NSString stringWithFormat:@"%ld %% %@", value, [character value]];
-        [_deviceManager IntToCBUUID:0x2a19];
-        [_deviceManager CBUUIDToInt:UUID];
+        [_device IntToCBUUID:0x2a19];
+        [_device CBUUIDToInt:UUID];
 
     }
     return cell;
@@ -206,21 +206,30 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [[tableView cellForRowAtIndexPath:indexPath] setSelected:NO];
     CBService * service = [_dataSource objectAtIndex:indexPath.section];
-    CBCharacteristic * characteristic = [service.characteristics objectAtIndex:indexPath.row];
     
-    if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"6E400002-B5A3-F393-E0A9-E50E24DCCA9E"]]) {
-        [_deviceManager setNotifyVuale:YES forCharacteristicUUID:[CBUUID UUIDWithString:NordicUARTServiceRxCharacteristicUUID] serviceUUID:[CBUUID UUIDWithString:NordicUARTServiceUUID]];
-//        YPCmdViewController * cmdVC = [[YPCmdViewController alloc] init];
-//        cmdVC.blueManager = _blueManager;
-//        cmdVC.deviceManager = _deviceManager;
-//        cmdVC.title = @"Cmd";
-//        [self.navigationController pushViewController:cmdVC animated:YES];
-//        return;
+    if ([service.UUID isEqual:[CBUUID UUIDWithString:NordicUARTServiceUUIDString]]) {
+        [_device setNotifyVuale:YES forCharacteristicUUID:[CBUUID UUIDWithString:NordicUARTRxCharacteristicUUIDString] serviceUUID:[CBUUID UUIDWithString:NordicUARTServiceUUIDString]];
+        
+        YPCmdViewController * cmdVC = [[YPCmdViewController alloc] init];
+        cmdVC.blueManager = _blueManager;
+        cmdVC.device = _device;
+        cmdVC.title = @"Cmd";
+        [self.navigationController pushViewController:cmdVC animated:YES];
+        return;
     }
-//    YPUpgradeViewController * viewController = [[YPUpgradeViewController alloc] init];
-//    viewController.blueManager = _blueManager;
-//    [self.navigationController pushViewController:viewController animated:YES];
-    [_deviceManager writeFFValue:[SOCBlueToothWriteData getSendStringOfSetFuncionWith:0]];
+    
+    if ([service.UUID isEqual:[CBUUID UUIDWithString:@"00001530-1212-EFDE-1523-785FEABCD123"]] || [service.UUID isEqual:[CBUUID UUIDWithString:@"FE59"]]) {
+        YPUpgradeViewController * viewController = [[YPUpgradeViewController alloc] init];
+        viewController.blueManager = _blueManager;
+        [self.navigationController pushViewController:viewController animated:YES];
+        [_device writeFFValue:[SOCBlueToothWriteData commandForSetFuncionWith:0]];
+        return;
+    }
+    
+    if ([service.UUID isEqual:[CBUUID UUIDWithString:@"180A"]]) {
+        CBCharacteristic * characteristic = [[service characteristics] objectAtIndex:indexPath.row];
+        [_device.peripheral readValueForCharacteristic:characteristic];
+    }
 }
 
 @end
