@@ -184,19 +184,19 @@
     return hex;
 }
 
-- (NSString *)hexStringToDecimalString {
+- (NSString *)hexToDecimal {
     return [NSString decimalStringByHexString:self];
 }
 
-- (NSString *)hexStringToBinaryString {
+- (NSString *)hexToBinary {
     return [NSString binaryStringByHexString:self];
 }
 
-- (NSString *)decimalStringToHexString {
+- (NSString *)decimalToHex {
     return [NSString decimalToHex:self];
 }
 
-- (NSString *)decimalStringToBinaryString {
+- (NSString *)decimalToBinary {
     return [NSString decimalToBinary:self];
 }
 

@@ -41,13 +41,13 @@ NS_ASSUME_NONNULL_BEGIN
  */
 + (NSString *)decimalToBinary:(NSString *)decimalString;
 
-- (NSString *)hexStringToDecimalString;
+- (NSString *)hexToDecimal;
 
-- (NSString *)hexStringToBinaryString;
+- (NSString *)hexToBinary;
 
-- (NSString *)decimalStringToHexString;
+- (NSString *)decimalToHex;
 
-- (NSString *)decimalStringToBinaryString;
+- (NSString *)decimalToBinary;
 
 - (NSString *)binaryToHex;
 
