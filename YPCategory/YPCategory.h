@@ -9,21 +9,10 @@
 #ifndef YPCategory_h
 #define YPCategory_h
 
-/* Hex String */
-#import "NSString+YPHexString.h"
-#import "NSData+YPHexString.h"
+/* Foundation */
+#import "Foundation+YPExtension.h"
 
-#import "NSString+YPMessageDigest.h"
-#import "NSString+YPNumberBaseConversion.h"
-
-#import "NSObject+YPClass.h"
-#import "NSObject+YPProperty.h"
-
-/* UI */
-#import "UIColor+YPColours.h"
-#import "UIDevice/UIDevice+YPSysInfo.h"
-
-#import "UITableView+Extension.h"
-#import "UIWebView+YPJSContext.h"
+/* UIKit */
+#import "UIKit+YPExtension.h"
 
 #endif /* YPCategory_h */
