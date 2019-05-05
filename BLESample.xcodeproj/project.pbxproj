@@ -127,6 +127,8 @@
 		0475F00D255E3E7300D330A4 /* NSObject+YPClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+YPClass.m"; sourceTree = "<group>"; };
 		04AB1D56227E9C8C00B801E9 /* SOCDFUManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SOCDFUManager.h; sourceTree = "<group>"; };
 		04AB1D57227E9C8C00B801E9 /* libSOCDFUSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libSOCDFUSDK.a; sourceTree = "<group>"; };
+		04AB1D5A227EC80300B801E9 /* YPFoundation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YPFoundation.h; sourceTree = "<group>"; };
+		04AB1D5C227ECB4100B801E9 /* YPUIKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YPUIKit.h; sourceTree = "<group>"; };
 		42F56A2759F0007A6DA244B7 /* Pods-BLESample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BLESample.release.xcconfig"; path = "Pods/Target Support Files/Pods-BLESample/Pods-BLESample.release.xcconfig"; sourceTree = "<group>"; };
 		50CDBF392844C42E6255B02E /* Pods-BLESample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BLESample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BLESample/Pods-BLESample.debug.xcconfig"; sourceTree = "<group>"; };
 		A5F1E157C40F6D5DA2751736 /* Pods_BLESample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BLESample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -274,25 +276,8 @@
 			isa = PBXGroup;
 			children = (
 				04279DA7222E61CC001FC02C /* YPCategory.h */,
-				040F636522410CC1002B0598 /* NSData+YPHexString.h */,
-				040F636622410CC1002B0598 /* NSData+YPHexString.m */,
-				04279DA4222E61CC001FC02C /* NSString+YPHexString.h */,
-				04279DB0222E61CD001FC02C /* NSString+YPHexString.m */,
-				04FBA92625676A5000D9EB91 /* NSString+YPNumberBaseConversion.h */,
-				04FBA92725676A5000D9EB91 /* NSString+YPNumberBaseConversion.m */,
-				04279DA9222E61CC001FC02C /* NSString+YPMessageDigest.h */,
-				04279DB4222E61CD001FC02C /* NSString+YPMessageDigest.m */,
-				0475F00C255E3E7300D330A4 /* NSObject+YPClass.h */,
-				0475F00D255E3E7300D330A4 /* NSObject+YPClass.m */,
-				04279DA5222E61CC001FC02C /* NSObject+YPProperty.h */,
-				04279DAF222E61CD001FC02C /* NSObject+YPProperty.m */,
-				04279DAC222E61CC001FC02C /* UIDevice */,
-				04279DB1222E61CD001FC02C /* UIColor+YPColours.h */,
-				04279DA6222E61CC001FC02C /* UIColor+YPColours.m */,
-				04279DB3222E61CD001FC02C /* UIWebView+YPJSContext.h */,
-				04279DAA222E61CC001FC02C /* UIWebView+YPJSContext.m */,
-				04279DB6222E61CD001FC02C /* UITableView+Extension.h */,
-				04279DAB222E61CC001FC02C /* UITableView+Extension.m */,
+				04AB1D59227EC78000B801E9 /* Foundation */,
+				04AB1D5B227ECA9F00B801E9 /* UIKit */,
 			);
 			path = YPCategory;
 			sourceTree = "<group>";
@@ -306,13 +291,40 @@
 			path = UIDevice;
 			sourceTree = "<group>";
 		};
-		04AB1D47227E8E1400B801E9 /* SOCDFUSDK */ = {
+		04AB1D59227EC78000B801E9 /* Foundation */ = {
 			isa = PBXGroup;
 			children = (
-				04AB1D57227E9C8C00B801E9 /* libSOCDFUSDK.a */,
-				04AB1D56227E9C8C00B801E9 /* SOCDFUManager.h */,
+				04AB1D5A227EC80300B801E9 /* YPFoundation.h */,
+				040F636522410CC1002B0598 /* NSData+YPHexString.h */,
+				040F636622410CC1002B0598 /* NSData+YPHexString.m */,
+				04279DA4222E61CC001FC02C /* NSString+YPHexString.h */,
+				04279DB0222E61CD001FC02C /* NSString+YPHexString.m */,
+				04FBA92625676A5000D9EB91 /* NSString+YPNumberBaseConversion.h */,
+				04FBA92725676A5000D9EB91 /* NSString+YPNumberBaseConversion.m */,
+				04279DA9222E61CC001FC02C /* NSString+YPMessageDigest.h */,
+				04279DB4222E61CD001FC02C /* NSString+YPMessageDigest.m */,
+				0475F00C255E3E7300D330A4 /* NSObject+YPClass.h */,
+				0475F00D255E3E7300D330A4 /* NSObject+YPClass.m */,
+				04279DA5222E61CC001FC02C /* NSObject+YPProperty.h */,
+				04279DAF222E61CD001FC02C /* NSObject+YPProperty.m */,
 			);
-			path = SOCDFUSDK;
+			path = Foundation;
+			sourceTree = "<group>";
+		};
+		04AB1D5B227ECA9F00B801E9 /* UIKit */ = {
+			isa = PBXGroup;
+			children = (
+				04AB1D5C227ECB4100B801E9 /* YPUIKit.h */,
+				04279DAE222E61CD001FC02C /* UIDevice+YPSysInfo.h */,
+				04279DAD222E61CC001FC02C /* UIDevice+YPSysInfo.m */,
+				04279DB1222E61CD001FC02C /* UIColor+YPColours.h */,
+				04279DA6222E61CC001FC02C /* UIColor+YPColours.m */,
+				04279DB3222E61CD001FC02C /* UIWebView+YPJSContext.h */,
+				04279DAA222E61CC001FC02C /* UIWebView+YPJSContext.m */,
+				04279DB6222E61CD001FC02C /* UITableView+Extension.h */,
+				04279DAB222E61CC001FC02C /* UITableView+Extension.m */,
+			);
+			path = UIKit;
 			sourceTree = "<group>";
 		};
 		9D917F94A7245CFDC24F0B80 /* Frameworks */ = {
@@ -396,7 +408,7 @@
 		04279C13222CC40C001FC02C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1210;
+				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = heyupeng;
 				TargetAttributes = {
 					04279C1A222CC40C001FC02C = {
@@ -508,6 +520,10 @@
 				04279DB7222E61CD001FC02C /* UIColor+YPColours.m in Sources */,
 				04279D8D222E61C2001FC02C /* YPBlueViewController.m in Sources */,
 				04279DA0222E61C2001FC02C /* YPDeviceViewController.m in Sources */,
+				040F636722410CC1002B0598 /* NSData+YPHexString.m in Sources */,
+				04279DBD222E61CD001FC02C /* NSString+YPHexString.m in Sources */,
+				04279DBE222E61CD001FC02C /* NSString+YPMessageDigest.m in Sources */,
+				04FBA92825676A5000D9EB91 /* NSString+YPNumberBaseConversion.m in Sources */,
 				04279DBA222E61CD001FC02C /* UITableView+Extension.m in Sources */,
 				04279D8F222E61C2001FC02C /* YPBlueConst.m in Sources */,
 				042958BE224DB10200496C8E /* ObjdectModel.m in Sources */,
@@ -527,7 +543,9 @@
 				04279C20222CC40C001FC02C /* AppDelegate.m in Sources */,
 				04279D91222E61C2001FC02C /* YPDFUManager.m in Sources */,
 				04279DBE222E61CD001FC02C /* NSString+YPMessageDigest.m in Sources */,
+				04279DBC222E61CD001FC02C /* NSObject+YPProperty.m in Sources */,
 				0475F00E255E3E7300D330A4 /* NSObject+YPClass.m in Sources */,
+				042958BE224DB10200496C8E /* ObjdectModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -608,7 +626,6 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -668,7 +685,6 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;

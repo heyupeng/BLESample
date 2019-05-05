@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSString (MD5)
+@interface NSString (yp_MD5)
 
 + (NSString *)md5:(NSString *)string;
 - (NSString *)md5;

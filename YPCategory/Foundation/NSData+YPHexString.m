@@ -26,7 +26,7 @@
     }
     
     NSMutableData * mdata = [NSMutableData new];
-    
+    // strtol() or 取字符ascii值计算
     for (int i = 0; i < hexString.length; i += 2) {
         NSRange range = NSMakeRange(i, 2);
         NSString * str1 = [hexString substringWithRange:range];
@@ -42,8 +42,10 @@
 /**
  way 1:
      NSString * string = data.description;
-     //去除 < > space
-     string = [[string substringToIndex:string.length -1 ] substringFromIndex:1];
+     // 去除 <>
+     // string = [[string substringToIndex:string.length -1 ] substringFromIndex:1];
+     string = [string stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]];
+     // 去除 space
      string = [string stringByReplacingOccurrencesOfString:@" " withString:@""];
      return string;
  
@@ -51,12 +53,6 @@
 - (NSString *)hexString {
     Byte * bytes = (Byte *)[self bytes];
     NSInteger length = [self length];
-    
-//    NSString * hexString = @"";
-//    for(int i = 0; i < length; i++) {
-//        NSString *sample = [NSString stringWithFormat:@"%.2x",bytes[i]&0xff]; //16进制数
-//        hexString = [NSString stringWithFormat:@"%@%@",hexString,sample];
-//    }
     
     NSMutableString * hexString = [[NSMutableString alloc] initWithCapacity:length * 2];
     
@@ -106,9 +102,9 @@
     NSInteger value = 0;
     for (int i = 0; i < length; i ++) {
         Byte byte = bytes[i];
-        value = value * 16 + byte;
+        value = (value << 8) + byte;
         
-        if (value * 16 > NSIntegerMax) {
+        if ((value << 8) > NSIntegerMax) {
             break;
         }
     }
@@ -123,9 +119,9 @@
     
     for (int i = 0; i < length; i ++) {
         Byte byte = bytes[i];
-        value = value * 16 + byte;
+        value = (value << 8) + byte;
         
-        if (value * 16 > LONG_LONG_MAX) {
+        if ((value << 8) > LONG_LONG_MAX) {
             break;
         }
     }

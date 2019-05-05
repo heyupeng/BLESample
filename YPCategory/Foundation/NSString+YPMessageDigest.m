@@ -9,7 +9,7 @@
 #import "NSString+YPMessageDigest.h"
 #import <CommonCrypto/CommonCrypto.h>
 
-@implementation NSString (MD5)
+@implementation NSString (yp_MD5)
 
 + (NSString *)md5: (NSString *)string {
     const char *cStr = [string UTF8String];
