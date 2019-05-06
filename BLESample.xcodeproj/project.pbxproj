@@ -21,11 +21,11 @@
 		04279D8E222E61C2001FC02C /* YPBlueManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D5A222E61C2001FC02C /* YPBlueManager.m */; };
 		04279D8F222E61C2001FC02C /* YPBlueConst.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D5F222E61C2001FC02C /* YPBlueConst.m */; };
 		04279D90222E61C2001FC02C /* YPBleDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D60222E61C2001FC02C /* YPBleDevice.m */; };
-		04279D91222E61C2001FC02C /* YPDFUManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D62222E61C2001FC02C /* YPDFUManager.m */; };
+		04279D91222E61C2001FC02C /* YPSUOTA.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D62222E61C2001FC02C /* YPSUOTA.m */; };
 		04279D92222E61C2001FC02C /* FileTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D63222E61C2001FC02C /* FileTableViewController.m */; };
 		04279D9F222E61C2001FC02C /* YPUpgradeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D84222E61C2001FC02C /* YPUpgradeViewController.m */; };
 		04279DA0222E61C2001FC02C /* YPDeviceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D85222E61C2001FC02C /* YPDeviceViewController.m */; };
-		04279DA1222E61C2001FC02C /* SOCBlueToothWriteData.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D89222E61C2001FC02C /* SOCBlueToothWriteData.m */; };
+		04279DA1222E61C2001FC02C /* SOCBluetoothWriteData.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D89222E61C2001FC02C /* SOCBluetoothWriteData.m */; };
 		04279DA2222E61C2001FC02C /* YPCmdViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D8C222E61C2001FC02C /* YPCmdViewController.m */; };
 		04279DB7222E61CD001FC02C /* UIColor+YPColours.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279DA6222E61CC001FC02C /* UIColor+YPColours.m */; };
 		04279DB9222E61CD001FC02C /* UIWebView+YPJSContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279DAA222E61CC001FC02C /* UIWebView+YPJSContext.m */; };
@@ -86,19 +86,19 @@
 		04279D5A222E61C2001FC02C /* YPBlueManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPBlueManager.m; sourceTree = "<group>"; };
 		04279D5B222E61C2001FC02C /* YPBlueConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPBlueConst.h; sourceTree = "<group>"; };
 		04279D5C222E61C2001FC02C /* YPBleDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPBleDevice.h; sourceTree = "<group>"; };
-		04279D5D222E61C2001FC02C /* YPDFUManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPDFUManager.h; sourceTree = "<group>"; };
+		04279D5D222E61C2001FC02C /* YPSUOTA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPSUOTA.h; sourceTree = "<group>"; };
 		04279D5E222E61C2001FC02C /* YPBlueManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPBlueManager.h; sourceTree = "<group>"; };
 		04279D5F222E61C2001FC02C /* YPBlueConst.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPBlueConst.m; sourceTree = "<group>"; };
 		04279D60222E61C2001FC02C /* YPBleDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPBleDevice.m; sourceTree = "<group>"; };
 		04279D61222E61C2001FC02C /* YPBlueDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPBlueDefines.h; sourceTree = "<group>"; };
-		04279D62222E61C2001FC02C /* YPDFUManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPDFUManager.m; sourceTree = "<group>"; };
+		04279D62222E61C2001FC02C /* YPSUOTA.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPSUOTA.m; sourceTree = "<group>"; };
 		04279D63222E61C2001FC02C /* FileTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileTableViewController.m; sourceTree = "<group>"; };
 		04279D83222E61C2001FC02C /* YPCmdViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPCmdViewController.h; sourceTree = "<group>"; };
 		04279D84222E61C2001FC02C /* YPUpgradeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPUpgradeViewController.m; sourceTree = "<group>"; };
 		04279D85222E61C2001FC02C /* YPDeviceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPDeviceViewController.m; sourceTree = "<group>"; };
 		04279D86222E61C2001FC02C /* FileTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileTableViewController.h; sourceTree = "<group>"; };
-		04279D88222E61C2001FC02C /* SOCBlueToothWriteData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SOCBlueToothWriteData.h; sourceTree = "<group>"; };
-		04279D89222E61C2001FC02C /* SOCBlueToothWriteData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SOCBlueToothWriteData.m; sourceTree = "<group>"; };
+		04279D88222E61C2001FC02C /* SOCBluetoothWriteData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SOCBluetoothWriteData.h; sourceTree = "<group>"; };
+		04279D89222E61C2001FC02C /* SOCBluetoothWriteData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SOCBluetoothWriteData.m; sourceTree = "<group>"; };
 		04279D8A222E61C2001FC02C /* YPBlueViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPBlueViewController.h; sourceTree = "<group>"; };
 		04279D8B222E61C2001FC02C /* YPUpgradeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPUpgradeViewController.h; sourceTree = "<group>"; };
 		04279D8C222E61C2001FC02C /* YPCmdViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPCmdViewController.m; sourceTree = "<group>"; };
@@ -255,8 +255,8 @@
 				04279D5A222E61C2001FC02C /* YPBlueManager.m */,
 				04279D5C222E61C2001FC02C /* YPBleDevice.h */,
 				04279D60222E61C2001FC02C /* YPBleDevice.m */,
-				04279D5D222E61C2001FC02C /* YPDFUManager.h */,
-				04279D62222E61C2001FC02C /* YPDFUManager.m */,
+				04279D5D222E61C2001FC02C /* YPSUOTA.h */,
+				04279D62222E61C2001FC02C /* YPSUOTA.m */,
 				045072502268726D008B4C60 /* YPNordicDFU.h */,
 				045072512268726D008B4C60 /* YPNordicDFU.m */,
 			);
@@ -266,8 +266,8 @@
 		04279D87222E61C2001FC02C /* CommunicationProtocol */ = {
 			isa = PBXGroup;
 			children = (
-				04279D88222E61C2001FC02C /* SOCBlueToothWriteData.h */,
-				04279D89222E61C2001FC02C /* SOCBlueToothWriteData.m */,
+				04279D88222E61C2001FC02C /* SOCBluetoothWriteData.h */,
+				04279D89222E61C2001FC02C /* SOCBluetoothWriteData.m */,
 			);
 			path = CommunicationProtocol;
 			sourceTree = "<group>";
@@ -531,7 +531,7 @@
 				04279C23222CC40C001FC02C /* ViewController.m in Sources */,
 				04279C29222CC40C001FC02C /* BLESample.xcdatamodeld in Sources */,
 				04279C31222CC40E001FC02C /* main.m in Sources */,
-				04279DA1222E61C2001FC02C /* SOCBlueToothWriteData.m in Sources */,
+				04279DA1222E61C2001FC02C /* SOCBluetoothWriteData.m in Sources */,
 				045072522268726D008B4C60 /* YPNordicDFU.m in Sources */,
 				04279DBC222E61CD001FC02C /* NSObject+YPProperty.m in Sources */,
 				04279D8E222E61C2001FC02C /* YPBlueManager.m in Sources */,
@@ -541,7 +541,7 @@
 				04279D9F222E61C2001FC02C /* YPUpgradeViewController.m in Sources */,
 				04279DBD222E61CD001FC02C /* NSString+YPHexString.m in Sources */,
 				04279C20222CC40C001FC02C /* AppDelegate.m in Sources */,
-				04279D91222E61C2001FC02C /* YPDFUManager.m in Sources */,
+				04279D91222E61C2001FC02C /* YPSUOTA.m in Sources */,
 				04279DBE222E61CD001FC02C /* NSString+YPMessageDigest.m in Sources */,
 				04279DBC222E61CD001FC02C /* NSObject+YPProperty.m in Sources */,
 				0475F00E255E3E7300D330A4 /* NSObject+YPClass.m in Sources */,

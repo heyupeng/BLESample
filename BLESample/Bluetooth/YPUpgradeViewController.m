@@ -9,7 +9,7 @@
 #import "YPUpgradeViewController.h"
 #import "FileTableViewController.h"
 #import "SOCDFUManager.h"
-#import "YPDFUManager.h"
+#import "YPSUOTA.h"
 #import <iOSDFULibrary/iOSDFULibrary-Swift.h>
 
 #import "YPBluetooth/YPNordicDFU.h"
@@ -20,7 +20,7 @@
 
 @property (nonatomic) FileTableViewController *  fileVC;
 
-@property (nonatomic) YPDFUManager * dfuManager_xiaosu;
+@property (nonatomic) YPSUOTA * dfuManager_xiaosu;
 
 @property (nonatomic, strong) UIProgressView * progressView;
 
@@ -231,7 +231,7 @@
     
     NSString * ext = [filePath pathExtension];
     if ([ext isEqualToString:@"img"]) {
-        _dfuManager_xiaosu = [[YPDFUManager alloc] initWithDevice:_blueManager.currentDevice];
+        _dfuManager_xiaosu = [[YPSUOTA alloc] initWithDevice:_blueManager.currentDevice];
         [_dfuManager_xiaosu setUrl: [filePath UTF8String]];
         [_dfuManager_xiaosu startUpgrade];
         return;

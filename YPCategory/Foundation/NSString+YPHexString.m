@@ -10,12 +10,12 @@
 
 @implementation NSString (YPHexString)
 
-void decToBin(int num, char *buffer) {
-    if(num>0) {
-        decToBin(num/2,buffer+1);
-        *buffer = (char)(num%2+48);
-    }
-}
+//void decToBin(int num, char *buffer) {
+//    if(num>0) {
+//        decToBin(num/2,buffer+1);
+//        *buffer = (char)(num%2+48);
+//    }
+//}
 
 // 16进制字符串转二进制数据流
 +(NSData*)hexStringToByte:(NSString*)string

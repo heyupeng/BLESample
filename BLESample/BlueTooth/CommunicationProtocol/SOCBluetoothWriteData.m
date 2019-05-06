@@ -1,14 +1,14 @@
 //
-//  SOCBlueToothWriteData.m
+//  SOCBluetoothWriteData.m
 //  SoocareInternational
 //
 //  Created by mac on 16/11/17.
 //  Copyright © 2016年 soocare. All rights reserved.
 //
 
-#import "SOCBlueToothWriteData.h"
+#import "SOCBluetoothWriteData.h"
 
-@implementation SOCBlueToothWriteData
+@implementation SOCBluetoothWriteData
 
 int frameNumber_ = 0;
 int frameNumber() {
@@ -31,17 +31,9 @@ int frameNumber() {
     return [str lowercaseString];
 }
 
-/**
- @param typeString hex string of command type. eg: 0001
- @param lengthHexString hex string of data bytes length. eg:0004
- @param appendString eg:78001e00
- @return a bluetooth command,
-    eg: type + length + frame + crc + data
-        0100   0400     0100    70b2  78001e00
- */
 + (NSString *)commandWithType:(NSString *)typeString length:(NSString *)lengthHexString appendData:(NSString *)appendString {
     NSString * str;
-    if (typeString.length == 4) {
+    if (typeString.length == 4 && lengthHexString.length == 4) {
         str = [NSString stringWithFormat:@"%@%@%.4x",typeString, lengthHexString, frameNumber()];
         //合法
         str = [self getCheckStringWith:str];
@@ -174,6 +166,21 @@ int frameNumber() {
  4.生成校验码并返回
  5.返回yes或者no
  */
++ (NSString *)getCRCCheckCodeWith:(NSString* )hexString {
+    NSString * string;
+    if (hexString.length %4 == 0){
+        // NSLog(@"校验数据正常,开始获得校验码\n");
+        string = [self getCheckSum:hexString];
+        if (string) {
+//            NSLog(@"校验码获得成功\n");
+        }else{
+//             NSLog(@"获得校验码失败\n");
+        }
+    }else {
+        
+    }
+    return string;
+}
 
 + (NSString *)getCheckStringWith:(NSString *)sendString{
     NSString * string;
@@ -198,20 +205,15 @@ int frameNumber() {
 {
     NSString * sendString;
     //根据坐标截取6字节字符串
-    NSRange typeHigh = NSMakeRange(0, 2);
-    NSRange typeLow = NSMakeRange(2, 2);
-    NSRange lengthHigh = NSMakeRange(4, 2);
-    NSRange lengthLow = NSMakeRange(6, 2);
-    NSRange frameHigh = NSMakeRange(8, 2);
-    NSRange frameLow = NSMakeRange(10, 2);
-    NSString * typeHighString = [myString substringWithRange:typeHigh];
-    NSString * typeLowString = [myString substringWithRange:typeLow];
-    NSString * lengthHighString = [myString substringWithRange:lengthHigh];
-    NSString * lengthLowString = [myString substringWithRange:lengthLow];
-    NSString * frameHighString = [myString substringWithRange:frameHigh];
-    NSString * frameLowString = [myString substringWithRange:frameLow];
+    NSRange typeHigh = NSMakeRange(0, 4);
+    NSRange lengthHigh = NSMakeRange(4, 4);
+    NSRange frameHigh = NSMakeRange(8, 4);
+    NSString * typeString = [myString substringWithRange:typeHigh];
+    NSString * lengthString = [myString substringWithRange:lengthHigh];
+    NSString * frameString = [myString substringWithRange:frameHigh];
+    
     //重新排列高低位
-    NSArray * stringArray = @[typeLowString,typeHighString,lengthLowString,lengthHighString,frameHighString, frameLowString];
+    NSArray * stringArray = @[[typeString hexStringReverse], [lengthString hexStringReverse], [frameString hexStringReverse]];
     NSString * sequenceString = @"";
     for (int i = 0 ; i < stringArray.count; i++) {
         sequenceString = [sequenceString stringByAppendingString:stringArray[i]];

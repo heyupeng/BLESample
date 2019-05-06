@@ -32,7 +32,7 @@
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
-    self.tableView.frame = self.view.frame;
+    self.tableView.frame = self.view.bounds;
 }
 - (void) didDisconnectFromDevice:(NSNotification*)notification {
     [self.navigationController popToRootViewControllerAnimated:YES];
@@ -140,9 +140,11 @@
     
     NSMutableArray *retval = [NSMutableArray array];
     
+    // 1.
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *publicDocumentsDir = [paths objectAtIndex:0];
     
+    // 2.
     NSError *error;
     NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:publicDocumentsDir error:&error];
     if (files == nil) {
@@ -150,6 +152,16 @@
         return retval;
     }
     
+    // 3.
+    if (files) {
+        NSMutableArray * mArray = [NSMutableArray arrayWithArray:files];
+        [mArray sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+            return [obj1 compare:obj2 options:NSCaseInsensitiveSearch];
+        }];
+        files = mArray;
+    }
+    
+    // 4.
     for (NSString *file in files) {
         if ([file.pathExtension compare:@"zip" options:NSCaseInsensitiveSearch] == NSOrderedSame || [file.pathExtension compare:@"bin" options:NSCaseInsensitiveSearch] == NSOrderedSame || [file.pathExtension compare:@"img" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
             NSString *fullPath = [publicDocumentsDir stringByAppendingPathComponent:file];
@@ -157,13 +169,22 @@
         }
     }
     
-    
+    // 1.
     BOOL isDir = YES;
     NSString * inboxPath = [publicDocumentsDir stringByAppendingPathComponent:@"Inbox"]; // 文件共享(第三方App导入)
     
+    // 2.
     BOOL existInbox = [[NSFileManager defaultManager] fileExistsAtPath:inboxPath isDirectory:&isDir];
     if (existInbox) {
         NSArray * subPathsInInbox = [[NSFileManager defaultManager] subpathsAtPath:inboxPath];
+        // 3.
+        NSMutableArray * mArray = [NSMutableArray arrayWithArray:subPathsInInbox];
+        [mArray sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+            return [obj1 compare:obj2 options:NSCaseInsensitiveSearch];
+        }];
+        subPathsInInbox = mArray;
+        
+        // 4.
         for (NSString * fileName in subPathsInInbox) {
             [retval addObject:[inboxPath stringByAppendingPathComponent:fileName]];
         }

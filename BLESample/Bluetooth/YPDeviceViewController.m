@@ -12,7 +12,7 @@
 
 #import "YPBluetooth/YPBluetooth.h"
 
-#import "CommunicationProtocol/SOCBlueToothWriteData.h"
+#import "CommunicationProtocol/SOCBluetoothWriteData.h"
 
 @interface YPDeviceViewController ()
 
@@ -222,7 +222,7 @@
         YPUpgradeViewController * viewController = [[YPUpgradeViewController alloc] init];
         viewController.blueManager = _blueManager;
         [self.navigationController pushViewController:viewController animated:YES];
-        [_device writeFFValue:[SOCBlueToothWriteData commandForSetFuncionWith:0]];
+        [_device writeFFValue:[SOCBluetoothWriteData commandForSetFuncionWith:0]];
         return;
     }
     

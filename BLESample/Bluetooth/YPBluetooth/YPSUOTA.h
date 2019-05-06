@@ -1,5 +1,5 @@
 //
-//  YPDFUManager.h
+//  YPSUOTA.h
 //  YPDemo
 //
 //  Created by Peng on 2017/12/8.
@@ -10,7 +10,7 @@
 #import "YPBleDevice.h"
 #import "YPBlueDefines.h"
 
-@interface YPDFUManager : NSObject
+@interface YPSUOTA : NSObject
 {
     NSMutableData *_fileData;
     char * _url;

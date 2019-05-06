@@ -1,5 +1,5 @@
 //
-//  SOCBlueToothWriteData.h
+//  SOCBluetoothWriteData.h
 //  SoocareInternational
 //
 //  Created by mac on 16/11/17.
@@ -8,11 +8,20 @@
 
 #import <Foundation/Foundation.h>
 
-@interface SOCBlueToothWriteData : NSObject
+@interface SOCBluetoothWriteData : NSObject
 //050000000000
 + (NSString *)getCheckStringWith:(NSString *)sendString;
+
 //000a0000
-+ (NSString *)commandWithType:(NSString *)typeString appendData:(NSString *)appendString;
+//+ (NSString *)commandWithType:(NSString *)typeString appendData:(NSString *)appendString;
+
+/**
+ @param typeString hex string of command type. eg: 0001
+ @param lengthHexString hex string of data bytes length. eg:0004
+ @param appendString eg:78001e00
+ @return a bluetooth command, eg: type + length + frame + crc + data
+                                  0100   0400     0100    70b2  78001e00
+ */
 + (NSString *)commandWithType:(NSString *)typeString length:(NSString *)lengthHexString appendData:(NSString *)appendString;
 
 //绑定指令

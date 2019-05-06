@@ -1,19 +1,19 @@
 //
-//  YPDFUManager.m
+//  YPSUOTA.m
 //  YPDemo
 //
 //  Created by Peng on 2017/12/8.
 //  Copyright © 2017年 heyupeng. All rights reserved.
 //
 
-#import "YPDFUManager.h"
+#import "YPSUOTA.h"
 #import <UIKit/UIKit.h>
 
 #import "YPBlueConst.h"
 
 #define UIALERTVIEW_TAG_REBOOT 1
 
-@interface YPDFUManager()
+@interface YPSUOTA()
 {
     int step, nextStep;
     int expectedValue;
@@ -23,7 +23,7 @@
 }
 @end
 
-@implementation YPDFUManager
+@implementation YPSUOTA
 - (instancetype)initWithDevice:(YPBleDevice *)device {
     self = [super init];
     if (self) {
