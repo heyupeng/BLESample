@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 
+#import "CBUUID+YPExtension.h"
+
 @protocol YPDeviceDelete <NSObject>
 
 @optional
@@ -52,13 +54,5 @@
 - (void)readValueForCharacteristicUUID:(CBUUID*)characteristicUUID serviceUUID:(CBUUID*)serviceUUID peripheral:(CBPeripheral *)peripheral;
 
 - (void)writeFFValue:(NSString *)FFString;
-
-/*UUIDToString*/
-- (const char *) CBUUIDToString:(CBUUID *) UUID;
-- (const char *) UUIDToString:(CFUUIDRef)UUID;
-- (int) compareCBUUID:(CBUUID *) UUID1 UUID2:(CBUUID *)UUID2;
-- (int) compareCBUUIDToInt:(CBUUID *)UUID1 UUID2:(UInt16)UUID2;
-- (UInt16) CBUUIDToInt:(CBUUID *) UUID;
-- (CBUUID *) IntToCBUUID:(UInt16)UUID;
 
 @end

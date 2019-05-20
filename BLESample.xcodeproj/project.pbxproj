@@ -37,6 +37,8 @@
 		042958BE224DB10200496C8E /* ObjdectModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 042958BD224DB10200496C8E /* ObjdectModel.m */; };
 		045072522268726D008B4C60 /* YPNordicDFU.m in Sources */ = {isa = PBXBuildFile; fileRef = 045072512268726D008B4C60 /* YPNordicDFU.m */; };
 		0475F00E255E3E7300D330A4 /* NSObject+YPClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 0475F00D255E3E7300D330A4 /* NSObject+YPClass.m */; };
+		04998B5F22923F0500AE418E /* CBCharacteristic+YPExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 04998B5E22923F0500AE418E /* CBCharacteristic+YPExtension.m */; };
+		04998B622292530700AE418E /* CBUUID+YPExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 04998B612292530700AE418E /* CBUUID+YPExtension.m */; };
 		04AB1D58227E9C8C00B801E9 /* libSOCDFUSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04AB1D57227E9C8C00B801E9 /* libSOCDFUSDK.a */; };
 		F3BAF91295E8E70D5686937F /* Pods_BLESample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5F1E157C40F6D5DA2751736 /* Pods_BLESample.framework */; };
 /* End PBXBuildFile section */
@@ -59,7 +61,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		040F62EB223B429E002B0598 /* YPBluetooth.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YPBluetooth.h; sourceTree = "<group>"; };
+		040F62EB223B429E002B0598 /* CoreBluetooth+Extension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CoreBluetooth+Extension.h"; sourceTree = "<group>"; };
 		040F63142241047B002B0598 /* BLESample-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BLESample-Bridging-Header.h"; sourceTree = "<group>"; };
 		040F636522410CC1002B0598 /* NSData+YPHexString.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSData+YPHexString.h"; sourceTree = "<group>"; };
 		040F636622410CC1002B0598 /* NSData+YPHexString.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSData+YPHexString.m"; sourceTree = "<group>"; };
@@ -125,6 +127,10 @@
 		045072512268726D008B4C60 /* YPNordicDFU.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPNordicDFU.m; sourceTree = "<group>"; };
 		0475F00C255E3E7300D330A4 /* NSObject+YPClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+YPClass.h"; sourceTree = "<group>"; };
 		0475F00D255E3E7300D330A4 /* NSObject+YPClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+YPClass.m"; sourceTree = "<group>"; };
+		04998B5D22923F0500AE418E /* CBCharacteristic+YPExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CBCharacteristic+YPExtension.h"; sourceTree = "<group>"; };
+		04998B5E22923F0500AE418E /* CBCharacteristic+YPExtension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "CBCharacteristic+YPExtension.m"; sourceTree = "<group>"; };
+		04998B602292530700AE418E /* CBUUID+YPExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CBUUID+YPExtension.h"; sourceTree = "<group>"; };
+		04998B612292530700AE418E /* CBUUID+YPExtension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "CBUUID+YPExtension.m"; sourceTree = "<group>"; };
 		04AB1D56227E9C8C00B801E9 /* SOCDFUManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SOCDFUManager.h; sourceTree = "<group>"; };
 		04AB1D57227E9C8C00B801E9 /* libSOCDFUSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libSOCDFUSDK.a; sourceTree = "<group>"; };
 		04AB1D5A227EC80300B801E9 /* YPFoundation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YPFoundation.h; sourceTree = "<group>"; };
@@ -227,6 +233,7 @@
 		04279D56222E61C2001FC02C /* Bluetooth */ = {
 			isa = PBXGroup;
 			children = (
+				04592B2D256E04340026EC44 /* CoreBluetooth+Extension */,
 				04AB1D47227E8E1400B801E9 /* SOCDFUSDK */,
 				04279D87222E61C2001FC02C /* CommunicationProtocol */,
 				04279D59222E61C2001FC02C /* YPBluetooth */,
@@ -247,7 +254,6 @@
 		04279D59222E61C2001FC02C /* YPBluetooth */ = {
 			isa = PBXGroup;
 			children = (
-				040F62EB223B429E002B0598 /* YPBluetooth.h */,
 				04279D61222E61C2001FC02C /* YPBlueDefines.h */,
 				04279D5B222E61C2001FC02C /* YPBlueConst.h */,
 				04279D5F222E61C2001FC02C /* YPBlueConst.m */,
@@ -282,13 +288,16 @@
 			path = YPCategory;
 			sourceTree = "<group>";
 		};
-		04279DAC222E61CC001FC02C /* UIDevice */ = {
+		04592B2D256E04340026EC44 /* CoreBluetooth+Extension */ = {
 			isa = PBXGroup;
 			children = (
-				04279DAE222E61CD001FC02C /* UIDevice+YPSysInfo.h */,
-				04279DAD222E61CC001FC02C /* UIDevice+YPSysInfo.m */,
+				040F62EB223B429E002B0598 /* CoreBluetooth+Extension.h */,
+				04998B5D22923F0500AE418E /* CBCharacteristic+YPExtension.h */,
+				04998B5E22923F0500AE418E /* CBCharacteristic+YPExtension.m */,
+				04998B602292530700AE418E /* CBUUID+YPExtension.h */,
+				04998B612292530700AE418E /* CBUUID+YPExtension.m */,
 			);
-			path = UIDevice;
+			path = "CoreBluetooth+Extension";
 			sourceTree = "<group>";
 		};
 		04AB1D59227EC78000B801E9 /* Foundation */ = {
@@ -529,8 +538,10 @@
 				042958BE224DB10200496C8E /* ObjdectModel.m in Sources */,
 				04279DA2222E61C2001FC02C /* YPCmdViewController.m in Sources */,
 				04279C23222CC40C001FC02C /* ViewController.m in Sources */,
+				04998B622292530700AE418E /* CBUUID+YPExtension.m in Sources */,
 				04279C29222CC40C001FC02C /* BLESample.xcdatamodeld in Sources */,
 				04279C31222CC40E001FC02C /* main.m in Sources */,
+				04998B5F22923F0500AE418E /* CBCharacteristic+YPExtension.m in Sources */,
 				04279DA1222E61C2001FC02C /* SOCBluetoothWriteData.m in Sources */,
 				045072522268726D008B4C60 /* YPNordicDFU.m in Sources */,
 				04279DBC222E61CD001FC02C /* NSObject+YPProperty.m in Sources */,
@@ -719,6 +730,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = NO;
 				DEVELOPMENT_TEAM = MK49SZ4EMK;
 				ENABLE_BITCODE = NO;
@@ -749,6 +761,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = NO;
 				DEVELOPMENT_TEAM = MK49SZ4EMK;
 				ENABLE_BITCODE = NO;
@@ -761,7 +774,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/BLESample/BlueTooth/SOCDFUSDK",
+					"$(PROJECT_DIR)/BLESample/Bluetooth/SOCDFUSDK",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.sushi.BLESample;
 				PRODUCT_NAME = "$(TARGET_NAME)";

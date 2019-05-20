@@ -245,7 +245,7 @@
 
 - (void)startDFU {
     NSString *filePath = _fileVC.filePath;
-
+    
     NSArray * encrptBuffers_X5 = [NSArray arrayWithObjects:[NSNumber numberWithInteger:0x15], [NSNumber numberWithInteger:0xf1], nil];
     NSArray * encrptBuffers_M1S = [NSArray arrayWithObjects:[NSNumber numberWithInteger:0x85], [NSNumber numberWithInteger:0x15], [NSNumber numberWithInteger:0x06], [NSNumber numberWithInteger:0x16], nil];
     

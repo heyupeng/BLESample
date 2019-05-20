@@ -110,21 +110,21 @@
     for (CBCharacteristic *characteristic in characteristics) {
         [self logWithFormat:@"\tCharacteristic UUID: %@", [characteristic UUID]];
         
+        /*  x3 某一个版本的设备 readValueForCharacteristic: 后, UARTService Tx 无法 writeValue()
+         (Error Domain=CBErrorDomain Code=8 "The specified UUID is not allowed for this operation.")
+         */
         if (characteristic.properties & CBCharacteristicPropertyRead) {
-            /*  x3 某一个版本的设备 readValue() 后, UARTService Rx、Tx 无法 writeValue()
-             (Error Domain=CBErrorDomain Code=8 "The specified UUID is not allowed for this operation.")
-             */
 //            [peripheral readValueForCharacteristic:characteristic];
         }
         
 //        if ([service.UUID isEqual:[CBUUID UUIDWithString:NordicUARTServiceUUIDString]]) {
-//            if ([characteristic.UUID.data.hexString isEqualToString:@"6e400003b5a3f393e0a9e50e24dcca9e"]) {
+//            if ([[characteristic.UUID description] isEqualToString:NordicUARTRxCharacteristicUUIDString]) {
 //                /*
 //                 _RxCharacteristic = characteristic;
 //                 */
 //                [peripheral setNotifyValue:YES forCharacteristic:characteristic];
 //            }
-//            if ([characteristic.UUID.data.hexString isEqualToString:@"6e400002b5a3f393e0a9e50e24dcca9e"]) {
+//            if ([[characteristic.UUID description] isEqualToString:NordicUARTTxCharacteristicUUIDString]) {
 //                /*
 //                _TxCharacteristic = characteristic;
 //                 */
@@ -186,16 +186,13 @@
 #pragma mark - func
 /*
  */
-- (void)writeValue:(NSData *)data ForCharacteristicUUID:(CBUUID*)characteristicUUID serviceUUID:(CBUUID*)serviceUUID peripheral:(CBPeripheral *)peripheral type:(CBCharacteristicWriteType)type
-{
+- (void)writeValue:(NSData *)data ForCharacteristicUUID:(CBUUID*)characteristicUUID serviceUUID:(CBUUID*)serviceUUID peripheral:(CBPeripheral *)peripheral type:(CBCharacteristicWriteType)type {
     CBService *service = [self findServiceFromUUID:serviceUUID peripheral:peripheral];
     if (!service) {
-        NSLog(@"Could not find service with UUID %s on peripheral with UUID %@\r\n",[self CBUUIDToString:serviceUUID], peripheral.identifier);
         return;
     }
     CBCharacteristic *characteristic = [self findCharacteristicFromUUID:characteristicUUID service:service];
     if (!characteristic) {
-        NSLog(@"Could not find characteristic with UUID %s on service with UUID %s on peripheral with UUID %@\r\n",[self CBUUIDToString:characteristicUUID],[self CBUUIDToString:serviceUUID], peripheral.identifier);
         return;
     }
     [peripheral writeValue:data forCharacteristic:characteristic type:type];
@@ -206,7 +203,6 @@
     CBUUID * characteristicUUID = [CBUUID UUIDWithString:NordicUARTTxCharacteristicUUIDString];
     CBUUID * serviceUUID = [CBUUID UUIDWithString:NordicUARTServiceUUIDString];
     
-//    [_peripheral writeValue:data forCharacteristic:_writeCharacteristic type:CBCharacteristicWriteWithResponse];
     [self writeValue:data ForCharacteristicUUID:characteristicUUID serviceUUID: serviceUUID peripheral:_peripheral type:CBCharacteristicWriteWithResponse];
 }
 
@@ -221,27 +217,24 @@
 - (void)readValueForCharacteristicUUID:(CBUUID*)characteristicUUID serviceUUID:(CBUUID*)serviceUUID peripheral:(CBPeripheral *)peripheral {
     CBService *service = [self findServiceFromUUID:serviceUUID peripheral:peripheral];
     if (!service) {
-        NSLog(@"Could not find service with UUID %s on peripheral with UUID %@\r\n",[self CBUUIDToString:serviceUUID], peripheral.identifier);
         return;
     }
     CBCharacteristic *characteristic = [self findCharacteristicFromUUID:characteristicUUID service:service];
     if (!characteristic) {
-        NSLog(@"Could not find characteristic with UUID %s on service with UUID %s on peripheral with UUID %@\r\n",[self CBUUIDToString:characteristicUUID],[self CBUUIDToString:serviceUUID], peripheral.identifier);
+//        NSLog(@"Could not find characteristic with UUID %s on service with UUID %s on peripheral with UUID %@\r\n", [characteristicUUID UUIDToString], [serviceUUID UUIDToString], peripheral.identifier);
         return;
     }
-    NSLog(@"characteristic with UUID %s on service with UUID %s\n",[self CBUUIDToString:characteristicUUID],[self CBUUIDToString:serviceUUID]);
+    NSLog(@"characteristic with UUID %s on service with UUID %s\n", [characteristicUUID UUIDToString], [serviceUUID UUIDToString]);
     [peripheral readValueForCharacteristic:characteristic];
 }
 
 - (void)setNotifyVuale:(BOOL)value forCharacteristicUUID:(CBUUID*)characteristicUUID serviceUUID:(CBUUID*)serviceUUID peripheral:(CBPeripheral *)peripheral {
     CBService *service = [self findServiceFromUUID:serviceUUID peripheral:peripheral];
     if (!service) {
-        NSLog(@"Could not find service with UUID %s on peripheral with UUID %@\r\n",[self CBUUIDToString:serviceUUID], peripheral.identifier);
         return;
     }
     CBCharacteristic *characteristic = [self findCharacteristicFromUUID:characteristicUUID service:service];
     if (!characteristic) {
-        NSLog(@"Could not find characteristic with UUID %s on service with UUID %s on peripheral with UUID %@\r\n",[self CBUUIDToString:characteristicUUID],[self CBUUIDToString:serviceUUID], peripheral.identifier);
         return;
     }
     
@@ -253,125 +246,12 @@
     [self setNotifyVuale:value forCharacteristicUUID:characteristicUUID serviceUUID:serviceUUID peripheral:peripheral];
 }
 
-
-/*
- */
-/*
- *  @method CBUUIDToString
- *
- *  @param UUID UUID to convert to string
- *
- *  @returns Pointer to a character buffer containing UUID in string representation
- *
- *  @discussion CBUUIDToString converts the data of a CBUUID class to a character pointer for easy printout using printf()
- *
- */
--(const char *) CBUUIDToString:(CBUUID *) UUID {
-    return [[UUID.data description] cStringUsingEncoding:NSStringEncodingConversionAllowLossy];
-}
-
-
-/*
- *  @method UUIDToString
- *
- *  @param UUID UUID to convert to string
- *
- *  @returns Pointer to a character buffer containing UUID in string representation
- *
- *  @discussion UUIDToString converts the data of a CFUUIDRef class to a character pointer for easy printout using printf()
- *
- */
--(const char *) UUIDToString:(CFUUIDRef)UUID {
-    if (!UUID) return "NULL";
-    CFStringRef s = CFUUIDCreateString(NULL, UUID);
-    return CFStringGetCStringPtr(s, 0);
-    
-}
-
-/*
- *  @method compareCBUUID
- *
- *  @param UUID1 UUID 1 to compare
- *  @param UUID2 UUID 2 to compare
- *
- *  @returns 1 (equal) 0 (not equal)
- *
- *  @discussion compareCBUUID compares two CBUUID's to each other and returns 1 if they are equal and 0 if they are not
- *
- */
-
--(int) compareCBUUID:(CBUUID *) UUID1 UUID2:(CBUUID *)UUID2 {
-    char b1[16];
-    char b2[16];
-    [UUID1.data getBytes:b1];
-    [UUID2.data getBytes:b2];
-    if (memcmp(b1, b2, UUID1.data.length) == 0)return 1;
-    else return 0;
-}
-
-/*
- *  @method compareCBUUIDToInt
- *
- *  @param UUID1 UUID 1 to compare
- *  @param UUID2 UInt16 UUID 2 to compare
- *
- *  @returns 1 (equal) 0 (not equal)
- *
- *  @discussion compareCBUUIDToInt compares a CBUUID to a UInt16 representation of a UUID and returns 1
- *  if they are equal and 0 if they are not
- *
- */
--(int) compareCBUUIDToInt:(CBUUID *)UUID1 UUID2:(UInt16)UUID2 {
-    char b1[16];
-    [UUID1.data getBytes:b1];
-    UInt16 b2 = [YPBleDevice swap:UUID2];
-    if (memcmp(b1, (char *)&b2, 2) == 0) return 1;
-    else return 0;
-}
-/*
- *  @method CBUUIDToInt
- *
- *  @param UUID1 UUID 1 to convert
- *
- *  @returns UInt16 representation of the CBUUID
- *
- *  @discussion CBUUIDToInt converts a CBUUID to a Uint16 representation of the UUID
- *
- */
--(UInt16) CBUUIDToInt:(CBUUID *) UUID {
-    char b1[16];
-    [UUID.data getBytes:b1];
-    return ((b1[0] << 8) | b1[1]);
-}
-
-/*
- *  @method IntToCBUUID
- *
- *  @param UInt16 representation of a UUID
- *
- *  @return The converted CBUUID
- *
- *  @discussion IntToCBUUID converts a UInt16 UUID to a CBUUID
- *
- */
--(CBUUID *) IntToCBUUID:(UInt16)UUID {
-    /*char t[16];
-     t[0] = ((UUID >> 8) & 0xff); t[1] = (UUID & 0xff);
-     NSData *data = [[NSData alloc] initWithBytes:t length:16];
-     return [CBUUID UUIDWithData:data];
-     */
-    UInt16 cz = [YPBleDevice swap:UUID];
-    NSData *cdz = [[NSData alloc] initWithBytes:(char *)&cz length:2];
-    CBUUID *cuz = [CBUUID UUIDWithData:cdz];
-    return cuz;
-}
-
-
-- (CBService *)findServiceFromUUID:(CBUUID *)UUID peripheral:(CBPeripheral *)p {
-    for(int i = 0; i < p.services.count; i++) {
-        CBService *s = [p.services objectAtIndex:i];
-        if ([self compareCBUUID:s.UUID UUID2:UUID]) return s;
+- (CBService *)findServiceFromUUID:(CBUUID *)UUID peripheral:(CBPeripheral *)peripheral {
+    for(int i = 0; i < peripheral.services.count; i++) {
+        CBService *s = [peripheral.services objectAtIndex:i];
+        if ([s.UUID isEqualToUUID:UUID]) return s;
     }
+    NSLog(@"Could not find service with UUID %s on peripheral with UUID %@\r\n", [UUID UUIDToString], peripheral.identifier);
     return nil; //Service not found on this peripheral
 }
 
@@ -387,15 +267,16 @@
  *  to find a characteristic with a specific UUID
  *
  */
--(CBCharacteristic *) findCharacteristicFromUUID:(CBUUID *)UUID service:(CBService*)service {
+-(CBCharacteristic *)findCharacteristicFromUUID:(CBUUID *)UUID service:(CBService*)service {
     for(int i=0; i < service.characteristics.count; i++) {
         CBCharacteristic *c = [service.characteristics objectAtIndex:i];
-        if ([self compareCBUUID:c.UUID UUID2:UUID]) return c;
+        if ([c.UUID isEqualToUUID:UUID]) return c;
     }
+    NSLog(@"Could not find characteristic with UUID %s on service with UUID %s\r\n", [UUID UUIDToString], [[service UUID] UUIDToString]);
     return nil; //Characteristic not found on this service
 }
 
-+ (UInt16) swap:(UInt16)s {
++ (UInt16)swap:(UInt16)s {
     UInt16 temp = s << 8;
     temp |= (s >> 8);
     return temp;

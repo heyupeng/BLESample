@@ -10,7 +10,7 @@
 #import "YPUpgradeViewController.h"
 #import "YPCmdViewController.h"
 
-#import "YPBluetooth/YPBluetooth.h"
+#import "YPBluetooth/YPBlueConst.h"
 
 #import "CommunicationProtocol/SOCBluetoothWriteData.h"
 
@@ -73,7 +73,7 @@
 /** ============== **/
 - (UITableView *)createTableVie {
     CGRect rect = CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGHT);
-    UITableView * tableView = [[UITableView alloc] initWithFrame:rect style: UITableViewStylePlain];
+    UITableView * tableView = [[UITableView alloc] initWithFrame:rect style: UITableViewStyleGrouped];
     tableView.delegate = self;
     tableView.dataSource = self;
     
@@ -167,18 +167,26 @@
     CBService * service = [_dataSource objectAtIndex:indexPath.section];
     CBCharacteristic * character = [[service characteristics] objectAtIndex:indexPath.row];
     CBUUID * UUID = [character UUID];
-    NSString * title = [UUID UUIDString];
+    NSArray * propertyDescriptions = [character yp_propertyDescriptions];
     
     NSString * valueString = [[NSString alloc] initWithData:[character value] encoding:NSUTF8StringEncoding];
     
-    cell.textLabel.text = [NSString stringWithFormat:@"character: %@ (%@)",UUID, title];
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ %@", valueString, [character value]];
+    cell.textLabel.numberOfLines = 2;
+    cell.textLabel.text = [NSString stringWithFormat:@"Characteristic: %@", UUID];
+    
+    NSMutableString * detailText = [[NSMutableString alloc] init];
+    [detailText appendFormat:@"UUIDString: %@\n", [UUID UUIDString]];
+    [detailText appendFormat:@"Properies: %@\n", [propertyDescriptions componentsJoinedByString:@"|"]];
+    [detailText appendFormat:@"Value: %@", valueString];
+    
+    cell.detailTextLabel.numberOfLines = 3;
+    cell.detailTextLabel.text = detailText;
     
     if ([UUID.UUIDString isEqualToString:@"2A19"]) {
         long value = [[character value].hexString hexStringToLongValue];
         cell.detailTextLabel.text = [NSString stringWithFormat:@"%ld %% %@", value, [character value]];
-        [_device IntToCBUUID:0x2a19];
-        [_device CBUUIDToInt:UUID];
+        [CBUUID UUIDWithUInt16:0x2a19];
+        [UUID UInt16Value];
 
     }
     return cell;
@@ -191,12 +199,13 @@
     CBUUID * UUID = [service UUID];
     NSString * title = [UUID UUIDString];
     
-    header.textLabel.text = [NSString stringWithFormat:@"CBServices: %@ (%@)", UUID, title];
+    header.textLabel.numberOfLines = 2;
+    header.textLabel.text = [NSString stringWithFormat:@"CBServices:%@ (0x%@)", UUID, title];
     return header;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 60;
+    return 100;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {

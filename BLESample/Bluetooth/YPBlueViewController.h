@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 #import "YPBlueManager.h"
-#import "YPBluetooth/YPBluetooth.h"
+
 
 @interface YPBlueViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
 

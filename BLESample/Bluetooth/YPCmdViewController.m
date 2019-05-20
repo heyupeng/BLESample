@@ -8,7 +8,7 @@
 
 #import "YPCmdViewController.h"
 
-#import "YPBluetooth/YPBluetooth.h"
+#import "YPBluetooth/YPBlueConst.h"
 
 #import "CommunicationProtocol/SOCBluetoothWriteData.h"
 #import "YPUpgradeViewController.h"
@@ -314,8 +314,8 @@
     if ([UUID.UUIDString isEqualToString:@"2A19"]) {
         long value = [[character value].hexString hexStringToLongValue];
         cell.detailTextLabel.text = [NSString stringWithFormat:@"%ld %% %@", value, [character value]];
-        [_device IntToCBUUID:0x2a19];
-        [_device CBUUIDToInt:UUID];
+        [CBUUID UUIDWithUInt16:0x2a19];
+        [UUID UInt16Value];
         
     }
     return cell;

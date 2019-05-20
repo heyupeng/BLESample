@@ -222,7 +222,7 @@ int frameNumber() {
     NSMutableData * myData = [[NSMutableData alloc]init];
     //把字符串转换成data
     for (NSString * string in stringArray) {
-        [myData appendData:[NSString hexStringToByte:string]];
+        [myData appendData:[NSData dataWithHexString:string]];
     }
     //把data转换成byte
     Byte * checkSumByte = (Byte *)[myData bytes];
