@@ -11,6 +11,7 @@
 
 #import "CBUUID+YPExtension.h"
 #import "CBCharacteristic+YPExtension.h"
+#import "CBPeripheral+YPExtension.h"
 
 
 #endif /* CoreBluetooth_Extension_h */

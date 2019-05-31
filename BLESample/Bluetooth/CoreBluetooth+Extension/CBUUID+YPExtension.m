@@ -40,29 +40,25 @@ UInt16 yp_swap(UInt16 s) {
 
 @implementation CBUUID (YPExtension)
 
-/*!
- * @method UUIDWithData:
- *
- *  @discussion
- *      Creates a CBUUID with a 16-bit UUID int.
- *
+/**
+ Create a CBUUID from a 16-bit int.
+ 
+ @param aUInt16     an UInt16ß
  */
-+ (CBUUID *)UUIDWithUInt16:(UInt16)aUInt16 {
++ (CBUUID *)yp_UUIDWithUInt16:(UInt16)aUInt16 {
     UInt16 cz = yp_swap(aUInt16);
     NSData *cdz = [[NSData alloc] initWithBytes:(char *)&cz length:2];
     CBUUID *cuz = [CBUUID UUIDWithData:cdz];
     return cuz;
 }
 
-/*
- *  @method UInt16Value
- *
- *  @returns UInt16 representation of the CBUUID
- *
- *  @discussion UInt16Value converts a CBUUID to a UInt16 representation of the UUID
- *
+/**
+ Convert a CBUUID to an UInt16 representation of the UUID.
+ 
+ @returns UInt16 Representation of the CBUUID
  */
-- (UInt16)UInt16Value {
+- (UInt16)yp_UInt16Value {
+    [CBUUID yp_UUIDWithUInt16:12];
     char b1[16];
     [self.data getBytes:b1 length:16];
     return ((b1[0] << 8) | b1[1]);
@@ -86,7 +82,7 @@ UInt16 yp_swap(UInt16 s) {
     else return 0;
 }
 
-/*
+/**
  *  @method yp_UUIDToString
  *
  *  @returns Pointer to a character buffer containing UUID in string representation
@@ -105,22 +101,27 @@ UInt16 yp_swap(UInt16 s) {
 @end
 
 
-@implementation CBUUID (NSDeprecated_1_0)
+@implementation CBUUID (yp_deprecated_1_0)
+
++ (CBUUID *)UUIDWithUInt16:(UInt16)aUInt16 {
+    return [self yp_UUIDWithUInt16:aUInt16];
+}
+
+- (UInt16)UInt16Value {
+    return [self yp_UInt16Value];
+}
+
 - (const char *)UUIDToString {
     return [self yp_UUIDToString];
 }
 
-/*!
+/**
+ *  Compare two CBUUID's to each other and returns 1 if they are equal and 0 if they are not
  *  @method compare:
  *
  *  @param UUID UUID compared
- *
  *  @returns 1 or 0(equal or not)
- *
- *  @discussion compare: compares two CBUUID's to each other and returns 1 if they are equal and 0 if they are not
- *
  */
-
 - (int)compare:(CBUUID *)UUID {
     char b1[16];
     char b2[16];
@@ -130,11 +131,10 @@ UInt16 yp_swap(UInt16 s) {
     else return 0;
 }
 
-/*!
+/**
  *  @method compareUInt16:
  *
  *  @param aUInt16 a UInt16 value of UUID
- *
  *  @returns 1 or 0 (equal or not)
  *
  *  @discussion compareUInt16 compares a CBUUID to a UInt16 representation of a UUID and returns 1

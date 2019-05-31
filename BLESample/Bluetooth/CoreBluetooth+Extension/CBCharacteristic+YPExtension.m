@@ -21,15 +21,15 @@
  CBCharacteristicPropertyIndicateEncryptionRequired NS_ENUM_AVAILABLE(10_9, 6_0)    = 0x200
  */
 
-static NSArray * PropertyDescriptions__;
+static NSArray * propertyDescriptions__;
 
 @implementation CBCharacteristic (PropertyDescriptions)
 
-- (NSArray *)PropertyDescriptions {
-    if (!PropertyDescriptions__) {
-        PropertyDescriptions__ = @[@"Broadcast", @"Read", @"WriteWithoutResponse", @"Write", @"Notify", @"Indicate", @"AuthenticatedSignedWrites", @"ExtendedProperties", @"NotifyEncryptionRequired", @"IndicateEncryptionRequired"];
+- (NSArray *)propertyDescriptions_ {
+    if (!propertyDescriptions__) {
+        propertyDescriptions__ = @[@"Broadcast", @"Read", @"WriteWithoutResponse", @"Write", @"Notify", @"Indicate", @"AuthenticatedSignedWrites", @"ExtendedProperties", @"NotifyEncryptionRequired", @"IndicateEncryptionRequired"];
     }
-    return PropertyDescriptions__;
+    return propertyDescriptions__;
 }
 
 - (NSArray<NSString *> *)yp_propertyDescriptions {
@@ -37,26 +37,26 @@ static NSArray * PropertyDescriptions__;
     /*
      @[@"Broadcast", @"Read", @"WriteWithoutResponse", @"Write", @"Notify", @"Indicate", @"AuthenticatedSignedWrites", @"ExtendedProperties", @"NotifyEncryptionRequired", @"IndicateEncryptionRequired"]
      */
-    NSArray * Descriptions = [self PropertyDescriptions];
+    NSArray * descriptions_ = [self propertyDescriptions_];
     NSMutableArray * descriptions = [[NSMutableArray alloc] initWithCapacity:10];
     
     if (properties & CBCharacteristicPropertyBroadcast) {
-        [descriptions addObject:Descriptions[0]];
+        [descriptions addObject:descriptions_[0]];
     }
     if (properties & CBCharacteristicPropertyRead) {
-        [descriptions addObject:Descriptions[1]];
+        [descriptions addObject:descriptions_[1]];
     }
     if (properties & CBCharacteristicPropertyWriteWithoutResponse) {
-        [descriptions addObject:Descriptions[2]];
+        [descriptions addObject:descriptions_[2]];
     }
     if (properties & CBCharacteristicPropertyWrite) {
-        [descriptions addObject:Descriptions[3]];
+        [descriptions addObject:descriptions_[3]];
     }
     if (properties & CBCharacteristicPropertyNotify) {
-        [descriptions addObject:Descriptions[4]];
+        [descriptions addObject:descriptions_[4]];
     }
     if (properties & CBCharacteristicPropertyIndicate) {
-        [descriptions addObject:Descriptions[5]];
+        [descriptions addObject:descriptions_[5]];
     }
     return descriptions;
 }

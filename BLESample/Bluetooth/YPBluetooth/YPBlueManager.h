@@ -13,6 +13,16 @@
 #define MAX_RSSI_VALUE 60
 #define SCAN_TIME_OUT 30
 
+typedef enum {
+    BLEOperationStateNone = 0,
+    BLEOperationStateScanning,
+    BLEOperationStateStopScan,
+    BLEOperationStateConnecting,
+    BLEOperationStateConnected,
+    BLEOperationStatedisConnecting,
+    BLEOperationStatedisConnected,
+} BLEOperationState; // Ble Operation State
+
 @class YPBleDevice;
 
 @protocol YPBlueManagerDelegate;
@@ -32,6 +42,7 @@
 /* config */
 @property (nonatomic) NSInteger RSSIValue;
 @property (nonatomic, copy) NSString * localName;
+@property (nonatomic, copy) NSString * mac;
 
 @property (nonatomic) NSInteger scanTimeout;
 

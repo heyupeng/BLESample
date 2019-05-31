@@ -11,6 +11,8 @@
 #import "YPBluetooth/YPBlueConst.h"
 
 #import "CommunicationProtocol/SOCBluetoothWriteData.h"
+#import "CommunicationProtocol/OperationType.h"
+
 #import "YPUpgradeViewController.h"
 
 @interface YPTextCell : UICollectionViewCell
@@ -44,6 +46,10 @@
 
 @property (nonatomic, strong) UITextView * tv;
 @property (nonatomic, strong) CADisplayLink * displayLink;
+
+@property (nonatomic, strong) NSData * fileData;
+@property (nonatomic) double progress;
+@property (nonatomic) int step;
 @end
 
 @implementation YPCmdViewController
@@ -104,6 +110,7 @@
                        @"NTAG刷牙次数",
                        @"设置拿起唤醒状态",
                        @"Request DFU(CRC)",
+                       @"Music File",
                        @"固件升级"];
     [_dataSource setArray:cmds];
     
@@ -115,10 +122,10 @@
     self.view.backgroundColor = [UIColor whiteColor];
     
     // 1.0
-    UIView * view = [[UIView alloc] initWithFrame:CGRectMake(0, 10, SCREENWIDTH, 44)];
+    UIView * view = [[UIView alloc] initWithFrame:CGRectMake(0, 10, SCREENWIDTH, 44 * 2 + 5 * 1)];
     [self.view addSubview:view];
     
-    UITextField * tf = [[UITextField alloc] initWithFrame:CGRectMake(5, 0, SCREENWIDTH * 2/3.0, 44)];
+    UITextField * tf = [[UITextField alloc] initWithFrame:CGRectMake(1/5.0 *0.5 * SCREENWIDTH, 0, SCREENWIDTH * 4/5.0, 44)];
     tf.borderStyle = UITextBorderStyleRoundedRect;
     [tf addTarget:self action:@selector(tfValueChange:) forControlEvents:UIControlEventValueChanged];
     [view addSubview:tf];
@@ -128,7 +135,7 @@
     _tf.keyboardType = UIKeyboardTypeASCIICapable;
     
     UIButton * btn = [UIButton buttonWithType:UIButtonTypeSystem];
-    btn.frame = CGRectMake(SCREENWIDTH - 110, 0, 100, 44);
+    btn.frame = CGRectMake(1/5.0 *0.5 * SCREENWIDTH, CGRectGetMaxY(tf.frame) + 5, SCREENWIDTH * 4/5.0, 44);
     btn.backgroundColor = [UIColor greenColor];
     [btn setTitle:@"写入数据" forState:UIControlStateNormal];
     [btn addTarget:self action:@selector(btnAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -136,19 +143,21 @@
     _btn = btn;
     
     // 2.0
-    CGRect frame = CGRectMake(0, CGRectGetMaxY(view.frame), SCREENWIDTH, CGRectGetHeight(self.view.frame) - CGRectGetMaxY(view.frame) - 5);
-    int vol = 2;
+    CGRect frame = CGRectMake(0, CGRectGetMaxY(view.frame), SCREENWIDTH, CGRectGetHeight(self.view.frame) - CGRectGetMaxY(view.frame) - 5 - 120);
+    
+    int volumn = 3;
     UICollectionViewFlowLayout * layout = [[UICollectionViewFlowLayout alloc] init];
-    layout.itemSize = CGSizeMake((CGRectGetWidth(frame) - 10)/vol, 44);
+    layout.itemSize = CGSizeMake((CGRectGetWidth(frame) - 10 * (volumn - 1))/volumn, 44);
     
     UICollectionView * collectionView = [[UICollectionView alloc] initWithFrame:frame collectionViewLayout:layout];
     collectionView.backgroundColor = [UIColor groupTableViewBackgroundColor];
     
     collectionView.dataSource = self;
     collectionView.delegate = self;
+    
     [self.view addSubview:collectionView];
     _collectionView = collectionView;
-    
+
     [_collectionView registerClass:[YPTextCell class] forCellWithReuseIdentifier:@"cell"];
     
     UIBarButtonItem * rightBtn = [[UIBarButtonItem alloc] initWithTitle:@"Log" style:UIBarButtonItemStyleDone target:self action:@selector(rightButtonAction:)];
@@ -241,20 +250,14 @@
     }
     
     if ([notification.name isEqualToString:YPBLEDevice_DidUpdateValue]) {
-        CBCharacteristic * characteristic = notification.object;
-        NSString *valueString = [[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding];
-        
-        NSString * log = [NSString stringWithFormat:@"Did Update Value UUID %@ \n%@ ==> %@", [characteristic UUID], [characteristic value], valueString];
-
-//        [self textforTextViewByAppending:log];
+        [self didUpdateValueForCharacteristic:notification];
     }
     
     if ([notification.name isEqualToString:YPBLEDevice_DidWriteValue]) {
         CBCharacteristic * characteristic = notification.object;
         NSString *valueString = [[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding];
         
-        NSString * log = [NSString stringWithFormat:@"Did Write Value for %@: \n%@ ==> %@", [characteristic UUID], [characteristic value], valueString];
-        
+        NSString * log = [NSString stringWithFormat:@"%@ Did Write Value %@ ==> %@", [characteristic UUID], [characteristic value], valueString];
 //        [self textforTextViewByAppending:log];
     }
 }
@@ -274,6 +277,143 @@
 
 - (void)btnAction:(UIButton *)sender {
     [self writeFFValue:_tf.text];
+}
+
+- (void)updateProgress:(double)progress {
+    if (fabs(floor(progress * 1000) - floor(_progress * 1000)) < 10) {
+        return;
+    }
+    _progress = progress;
+    NSLog(@"Progress: %.3f", _progress);
+    [self textforTextViewByAppending:[NSString stringWithFormat:@"Progress: %.2f", _progress]];
+}
+
+int byteStart = 0;
+
+- (void)didUpdateValueForCharacteristic:(NSNotification *)notification {
+    CBCharacteristic * characteristic = notification.object;
+    NSString *valueString = [[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding];
+    
+    NSData * value = characteristic.value;
+    Byte * bytes = (Byte*)value.bytes;
+    NSInteger type = value.length > 1? bytes[0]: 0x00;
+    NSData * data = nil;
+    if (value.length > 8) {
+        data = [value subdataWithRange:NSMakeRange(8, value.length - 8)];
+    }
+    
+    NSString * log = [NSString stringWithFormat:@"did Update Value: \n\t UUID %@ \n\t Value %@ -> %@", [characteristic UUID], [characteristic value], valueString];
+    NSLog(@"%@", log);
+    if (!(type == OpTypeEmpty ||
+        type == OpTypeFileTransferStart ||
+        type == OpTypeFileTransferControl ||
+        type == OpTypeFileTransferEnd)) {
+        [self textforTextViewByAppending:log];
+    }
+    
+    [self didUpdateValueResultType:type];
+}
+
+- (void)didUpdateValueResultType:(OpType)resultType {
+    if (resultType == OpTypeFileTransferStart) {
+        NSLog(@"文件传输开始");
+        byteStart = 0;
+        
+        // 设备内部每接受1024B处理一次，文件段不足1024B需补充至1024B，否则设备内部不会处理
+        NSInteger dataLength = _fileData.length;
+        int mod = dataLength % 1024;
+        int size = (int)(dataLength / 1024);
+        if (mod != 0) {
+            size += 1;
+            NSMutableData * appendData = [[NSMutableData alloc] initWithCapacity:1024];
+            [appendData appendData:_fileData];
+            for (int i = 0; i < 1024 - mod; i ++) {
+                int c = 0;
+                [appendData appendBytes:&c length:sizeof(char)];
+            }
+            _fileData = appendData;
+        }
+        
+        _step = 2;
+        [self writeFileValue];
+    } else if (resultType == OpTypeFileTransferControl) {
+        if (_step == 2) {
+            [self writeFileValue];
+        } else if (_step == 3){
+            [self writeFileEnd];
+        }
+        
+    } else if (resultType == OpTypeFileTransferEnd) {
+        NSLog(@"文件传输结束");
+    }
+}
+
+- (void)writeFileSize:(UInt32)size type:(UInt8)type {
+    _step = 1;
+    // 0e00 0500 0000 f632 000e a900 0b
+    // 0e00 0500 0100 c701 00a9 0e00 0b
+    
+//    NSString * append = [NSString stringWithFormat:@"%.2x%.8x", type, length];
+//    append = [append hexStringReverse];
+    
+    NSString * append = [NSString stringWithFormat:@"%.8x%.2x", size, type];
+    
+    NSString * command = [SOCBluetoothWriteData commandWithType:@"000e" length:@"0005" appendData:append];
+//    command = [NSString stringWithFormat:@"0e00 0500 0000 f632 %@", append];
+    
+    [_device writeFFValue:command];
+}
+
+- (void)writeFileValue {
+    int blockSize = 128;
+    
+    NSInteger dataLength = _fileData.length;
+    int mod = dataLength % 1024;
+    int size = (int)(dataLength / 1024);
+    if (mod != 0) {
+        size += 1;
+    }
+    
+    NSInteger byteLength = MIN(1024, _fileData.length - byteStart);
+//    NSData * byteData = [_fileData subdataWithRange:NSMakeRange(byteStart, byteLength)];
+//    if (byteLength != 1024) {
+//        NSMutableData * appendData = [[NSMutableData alloc] initWithCapacity:1024];
+//        [appendData appendData:byteData];
+//        for (int i = 0; i < 1024 - byteLength; i ++) {
+//            int c = 0;
+//            [appendData appendBytes:&c length:sizeof(char)];
+//        }
+//        byteData = appendData;
+//    }
+    
+    int blockStart = 0;
+    
+    while (blockStart < byteLength) {
+        if (byteLength - blockStart < blockSize) {
+            blockSize = (int)byteLength - blockStart;
+        }
+//                NSLog(@"%d to %d (%d/%d) of %d", byteStart + blockStart, byteStart + blockStart + blockSize, blockStart + blockSize, (int)byteLength, (int)dataLength);
+        double progress = (double)(byteStart + blockStart + blockSize) / (double)dataLength;
+        [self updateProgress:progress];
+        
+        NSData * blockData = [_fileData subdataWithRange:NSMakeRange(byteStart + blockStart, blockSize)];
+        blockStart += blockSize;
+        
+//        blockData = [byteData subdataWithRange:NSMakeRange(blockStart, blockSize)];
+        
+        [_device writeValueWithoutResponse:blockData forCharacteristicUUID:[CBUUID UUIDWithString:Private_Service_Tx_Characteristic_UUID] serviceUUID:[CBUUID UUIDWithString:Private_Service_UUID] peripheral:_device.peripheral];
+    }
+    
+    byteStart += byteLength;
+    
+    if (byteStart == dataLength) {
+        _step = 3;
+    }
+}
+
+- (void)writeFileEnd {
+    NSString * command = [SOCBluetoothWriteData commandWithType:@"000f" length:@"0000" appendData:@""];
+    [_device writeFFValue:command];
 }
 
 /*
@@ -357,6 +497,7 @@
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     YPTextCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
+    cell.backgroundColor = [UIColor whiteColor];
     cell.titleLabel.text = [_dataSource objectAtIndex:indexPath.row];
     
     return cell;
@@ -611,15 +752,49 @@
             NSString * cmd = [SOCBluetoothWriteData commandWithType:@"000e" length:@"0004" appendData:text];;
             self.tf.text = cmd;
         }]];
+        
+        [alertC addAction:[UIAlertAction actionWithTitle:@"MC1" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            NSString * text = [[alertC.textFields objectAtIndex:0] text];
+            if ([text hasPrefix:@"0x"]) {
+                text = [text substringFromIndex:2];
+            }
+            NSString * cmd = [SOCBluetoothWriteData commandWithType:@"0011" length:@"0004" appendData:text];;
+            self.tf.text = cmd;
+        }]];
+        
         [alertC addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
             
         }]];
         [self presentViewController:alertC animated:YES completion:nil];
         return;
+    } else if ([title isEqualToString:@"Music File"]) {
+        NSString * filePath = [[NSBundle mainBundle] pathForResource:@"5" ofType:@"mp3"];
+        [self fileTransferStartWithFile:filePath];
+        
     }
     
     _tf.text = cmd;
 }
+
+- (void)fileTransferStartWithFile:(NSString *)filePath {
+    NSData * fileData = [NSData dataWithContentsOfFile:filePath];
+    NSInteger length = fileData.length;
+    NSInteger type = 0;
+    if (length > 0 && length <= PRIVATE_FILE_TYPE_Length1) {
+        type = 1;
+    } else if (length > PRIVATE_FILE_TYPE_Length1 && length <= PRIVATE_FILE_TYPE_Length2) {
+        type = 11;
+    }
+    
+    if (type == 0) {
+        NSLog(@"文件不合法");
+        return;
+    }
+    _fileData = fileData;
+    
+    [self writeFileSize:(UInt32)length type:type];
+}
+
 
 #pragma mark -tf
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {

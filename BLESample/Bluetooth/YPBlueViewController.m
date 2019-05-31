@@ -235,7 +235,6 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
     UITableViewCell * cell = [tableView dequeueReusableCellWithIdentifier: tableViewCellDefaultIdentifier];
     if (!cell) {
         cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:tableViewCellDefaultIdentifier];
@@ -247,20 +246,27 @@
     NSData * fe95 = [serviceData objectForKey:[CBUUID UUIDWithString:@"FE95"]];
     NSString * ip = fe95.hexString;
     
-    NSData * manufacturerData = [device.advertisementData objectForKey:CBAdvertisementDataManufacturerDataKey];
-    NSData * specificData = [manufacturerData subdataWithRange:NSMakeRange(2, manufacturerData.length -2)];
+    NSData * specificData = device.specificData;
     
     NSString * localName = device.localName;
     NSString * specificDataHexString = specificData.hexString;
     
     cell.textLabel.text = [NSString stringWithFormat:@"Name: %@, rssi: %.0f", title, device.RSSI.doubleValue];
-    cell.detailTextLabel.numberOfLines = 3;
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ \nLocalName: %@  \nId: %@",device.identifier, localName, specificDataHexString];
+    
+    NSInteger detailTextNumberOfLines = 5;
+    NSString * detailText = [NSString stringWithFormat:@"UUID: %@ \
+                                 \nLocalName: %@ \
+                                 \nCompany: %@ \
+                                 \nSpecificData: %@ \
+                                 \nMac: %@",device.identifier, localName, device.companysData.hexString, specificDataHexString, device.mac.hexString.uppercaseString];
+    
+    cell.detailTextLabel.numberOfLines = detailTextNumberOfLines;
+    cell.detailTextLabel.text = detailText;
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 80;
+    return 20 * (1 + 5);
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

@@ -19,9 +19,9 @@ NS_ASSUME_NONNULL_BEGIN
  *      Creates a CBUUID with a 16-bit UUID int.
  *
  */
-+ (CBUUID *)UUIDWithUInt16:(UInt16)aUInt16;
++ (CBUUID *)yp_UUIDWithUInt16:(UInt16)aUInt16;
 
-- (UInt16)UInt16Value;
+- (UInt16)yp_UInt16Value;
 
 - (const char *)yp_UUIDToString;
 
@@ -29,7 +29,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface CBUUID (NSDeprecated)
+@interface CBUUID (yp_deprecated_1_0)
++ (CBUUID *)UUIDWithUInt16:(UInt16)aUInt16;
+
+- (UInt16)UInt16Value;
 
 - (const char *)UUIDToString;
 

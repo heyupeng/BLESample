@@ -154,20 +154,37 @@ static YPBlueManager *shareManager;
 
 - (void)didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary<NSString *, id> *)advertisementData RSSI:(NSNumber *)RSSI {
     
-    if ([_discoverperipheral containsObject:peripheral]) {return;}
-    [_discoverperipheral addObject:peripheral];
+    if ([_discoverperipheral containsObject:peripheral]) {
+//        return;
+    }else {
+        [_discoverperipheral addObject:peripheral];
+    }
     
     for (YPBleDevice * aDevice in _discoverDevices) {
         if ([aDevice.peripheral.identifier.UUIDString isEqualToString:peripheral.identifier.UUIDString]) {
+            [aDevice addRSSIRecord:RSSI];
+            
+//            NSLog(@"Discovered peripheral: identifier = %@ RSSI= %@ specificData = %@", [peripheral identifier], RSSI, aDevice.specificData.hexString.uppercaseString);
+            [[YPLogger share] appendLog:[NSString stringWithFormat:@"Discovered peripheral: identifier = %@ RSSI= %@ specificData = %@", [peripheral identifier], RSSI, aDevice.specificData.hexString.uppercaseString]];
             return;
         }
     }
-    NSLog(@"Discovered %@ RSSI: %@ advertisement: %@", [peripheral description], RSSI, [advertisementData description]);
     
     YPBleDevice * device = [[YPBleDevice alloc] initWithDevice:peripheral];
     device.advertisementData = advertisementData;
     device.RSSI = RSSI;
+    [device addRSSIRecord:RSSI];
+    
+    if (self.mac && self.mac.length > 0) {
+        if (![device.mac.hexString.uppercaseString containsString:self.mac.uppercaseString]) {
+            return;
+        };
+    }
+    
     [_discoverDevices addObject:device];
+    
+//    NSLog(@"Discovered peripheral: identifier = %@ RSSI= %@ specificData = %@", [peripheral identifier], RSSI, aDevice.specificData.hexString.uppercaseString);
+    [[YPLogger share] appendLog:[NSString stringWithFormat:@"Discovered peripheral: identifier = %@ RSSI= %@ specificData = %@", [peripheral identifier], RSSI, device.specificData.hexString.uppercaseString]];
     
     [[NSNotificationCenter defaultCenter] postNotificationName: YPBLEManager_DidDiscoverDevice object:device];
 }
@@ -179,9 +196,9 @@ static YPBlueManager *shareManager;
     [self didUpdateState:central];
 }
 
-- (void)centralManager:(CBCentralManager *)central willRestoreState:(NSDictionary<NSString *,id> *)dict {
-    NSLog(@"will Restore State: %@", dict.description);
-}
+//- (void)centralManager:(CBCentralManager *)central willRestoreState:(NSDictionary<NSString *,id> *)dict {
+//    NSLog(@"will Restore State: %@", dict.description);
+//}
 
 - (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary<NSString *, id> *)advertisementData RSSI:(NSNumber *)RSSI {
     
@@ -191,13 +208,15 @@ static YPBlueManager *shareManager;
 }
 
 - (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral {
-    NSLog(@"connect device: %@", peripheral);
+    NSLog(@"Did connect device: %@", peripheral);
+    [[YPLogger share] appendLog:@"BLE Operation: Did connect"];
     
     [[NSNotificationCenter defaultCenter] postNotificationName: YPBLEManager_DidConnectedDevice object:peripheral];
 }
 
 - (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
-    NSLog(@"Disconnected device");
+    NSLog(@"Did disconnected device");
+    [[YPLogger share] appendLog:@"BLE Operation: Did disconnect"];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:YPBLEManager_DidDisconnectedDevice object:peripheral];
 }
@@ -212,7 +231,6 @@ static YPBlueManager *shareManager;
 
 - (void)centralManager:(CBCentralManager *)central didRetrievePeripherals:(NSArray *)peripherals {
     NSLog(@"Retrieved peripherals: %@", peripherals);
-    struct tm time;;
     [[NSNotificationCenter defaultCenter] postNotificationName:YPBLEManager_ReceiveDevices object:peripherals];
 }
 
@@ -253,6 +271,8 @@ static YPBlueManager *shareManager;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self createScannerTimer];
     });
+    
+    [[YPLogger share] appendLog:@"BLE Operation: Scanning..."];
 }
 
 - (void)stopScan {
@@ -260,6 +280,8 @@ static YPBlueManager *shareManager;
     
     _isScaning = NO;
     [_manager stopScan];
+    
+    [[YPLogger share] appendLog:@"BLE Operation: Stop scan"];
 }
 
 - (void)connectDevice:(YPBleDevice *)device {
@@ -271,12 +293,16 @@ static YPBlueManager *shareManager;
     
     NSDictionary * options = @{CBConnectPeripheralOptionNotifyOnDisconnectionKey: @YES};
     [_manager connectPeripheral:device.peripheral options:options];
+    
+    [[YPLogger share] appendLog:@"BLE Operation: Connecting"];
 }
 
 - (void)disConnectDevice:(YPBleDevice *)device {
     if (!device || !device.peripheral || device.peripheral.state == CBPeripheralStateDisconnected) {
         return;
     }
+    [[YPLogger share] appendLog:@"BLE Operation: DisConnecting"];
+    
     [_manager cancelPeripheralConnection:device.peripheral];
 }
 

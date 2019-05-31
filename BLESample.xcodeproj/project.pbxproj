@@ -39,8 +39,11 @@
 		0475F00E255E3E7300D330A4 /* NSObject+YPClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 0475F00D255E3E7300D330A4 /* NSObject+YPClass.m */; };
 		04998B5F22923F0500AE418E /* CBCharacteristic+YPExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 04998B5E22923F0500AE418E /* CBCharacteristic+YPExtension.m */; };
 		04998B622292530700AE418E /* CBUUID+YPExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 04998B612292530700AE418E /* CBUUID+YPExtension.m */; };
+        15A8508122A7562100223C9E /* CBPeripheral+YPExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 15A8508022A7562100223C9E /* CBPeripheral+YPExtension.m */; };
 		04AB1D58227E9C8C00B801E9 /* libSOCDFUSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04AB1D57227E9C8C00B801E9 /* libSOCDFUSDK.a */; };
-		F3BAF91295E8E70D5686937F /* Pods_BLESample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5F1E157C40F6D5DA2751736 /* Pods_BLESample.framework */; };
+		15A8507B22A621FA00223C9E /* 1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 15A8507A22A621FA00223C9E /* 1.mp3 */; };
+		15A8507C22A64BAD00223C9E /* OperationType.m in Sources */ = {isa = PBXBuildFile; fileRef = 15A8507722A6145B00223C9E /* OperationType.m */; };
+		15A8507E22A656A100223C9E /* 5.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 15A8507D22A656A000223C9E /* 5.mp3 */; };		F3BAF91295E8E70D5686937F /* Pods_BLESample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5F1E157C40F6D5DA2751736 /* Pods_BLESample.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -135,6 +138,12 @@
 		04AB1D57227E9C8C00B801E9 /* libSOCDFUSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libSOCDFUSDK.a; sourceTree = "<group>"; };
 		04AB1D5A227EC80300B801E9 /* YPFoundation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YPFoundation.h; sourceTree = "<group>"; };
 		04AB1D5C227ECB4100B801E9 /* YPUIKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YPUIKit.h; sourceTree = "<group>"; };
+		15A8507622A6145B00223C9E /* OperationType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OperationType.h; sourceTree = "<group>"; };
+		15A8507722A6145B00223C9E /* OperationType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OperationType.m; sourceTree = "<group>"; };
+		15A8507A22A621FA00223C9E /* 1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = 1.mp3; sourceTree = "<group>"; };
+		15A8507D22A656A000223C9E /* 5.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = 5.mp3; sourceTree = "<group>"; };
+		15A8507F22A7562100223C9E /* CBPeripheral+YPExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CBPeripheral+YPExtension.h"; sourceTree = "<group>"; };
+		15A8508022A7562100223C9E /* CBPeripheral+YPExtension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "CBPeripheral+YPExtension.m"; sourceTree = "<group>"; };
 		42F56A2759F0007A6DA244B7 /* Pods-BLESample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BLESample.release.xcconfig"; path = "Pods/Target Support Files/Pods-BLESample/Pods-BLESample.release.xcconfig"; sourceTree = "<group>"; };
 		50CDBF392844C42E6255B02E /* Pods-BLESample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BLESample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BLESample/Pods-BLESample.debug.xcconfig"; sourceTree = "<group>"; };
 		A5F1E157C40F6D5DA2751736 /* Pods_BLESample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BLESample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -206,6 +215,7 @@
 				04279C2F222CC40E001FC02C /* Info.plist */,
 				04279C30222CC40E001FC02C /* main.m */,
 				04279CDC222CF5EB001FC02C /* PrefixHeader.pch */,
+				15A8507922A621D600223C9E /* Resources */,
 				040F63142241047B002B0598 /* BLESample-Bridging-Header.h */,
 				04279C27222CC40C001FC02C /* BLESample.xcdatamodeld */,
 			);
@@ -272,6 +282,8 @@
 		04279D87222E61C2001FC02C /* CommunicationProtocol */ = {
 			isa = PBXGroup;
 			children = (
+				15A8507622A6145B00223C9E /* OperationType.h */,
+				15A8507722A6145B00223C9E /* OperationType.m */,
 				04279D88222E61C2001FC02C /* SOCBluetoothWriteData.h */,
 				04279D89222E61C2001FC02C /* SOCBluetoothWriteData.m */,
 			);
@@ -296,6 +308,8 @@
 				04998B5E22923F0500AE418E /* CBCharacteristic+YPExtension.m */,
 				04998B602292530700AE418E /* CBUUID+YPExtension.h */,
 				04998B612292530700AE418E /* CBUUID+YPExtension.m */,
+                15A8507F22A7562100223C9E /* CBPeripheral+YPExtension.h */,
+                15A8508022A7562100223C9E /* CBPeripheral+YPExtension.m */,
 			);
 			path = "CoreBluetooth+Extension";
 			sourceTree = "<group>";
@@ -334,6 +348,15 @@
 				04279DAB222E61CC001FC02C /* UITableView+Extension.m */,
 			);
 			path = UIKit;
+			sourceTree = "<group>";
+		};
+		15A8507922A621D600223C9E /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				15A8507D22A656A000223C9E /* 5.mp3 */,
+				15A8507A22A621FA00223C9E /* 1.mp3 */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		9D917F94A7245CFDC24F0B80 /* Frameworks */ = {
@@ -459,6 +482,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				15A8507B22A621FA00223C9E /* 1.mp3 in Resources */,
+				15A8507E22A656A100223C9E /* 5.mp3 in Resources */,
 				04279C2E222CC40E001FC02C /* LaunchScreen.storyboard in Resources */,
 				04279C2B222CC40E001FC02C /* Assets.xcassets in Resources */,
 				04279C26222CC40C001FC02C /* Main.storyboard in Resources */,
@@ -524,6 +549,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				15A8507C22A64BAD00223C9E /* OperationType.m in Sources */,
 				04279D90222E61C2001FC02C /* YPBleDevice.m in Sources */,
 				04279DBB222E61CD001FC02C /* UIDevice+YPSysInfo.m in Sources */,
 				04279DB7222E61CD001FC02C /* UIColor+YPColours.m in Sources */,
@@ -545,6 +571,7 @@
 				04279DA1222E61C2001FC02C /* SOCBluetoothWriteData.m in Sources */,
 				045072522268726D008B4C60 /* YPNordicDFU.m in Sources */,
 				04279DBC222E61CD001FC02C /* NSObject+YPProperty.m in Sources */,
+				15A8508122A7562100223C9E /* CBPeripheral+YPExtension.m in Sources */,
 				04279D8E222E61C2001FC02C /* YPBlueManager.m in Sources */,
 				04279DB9222E61CD001FC02C /* UIWebView+YPJSContext.m in Sources */,
 				04279D92222E61C2001FC02C /* FileTableViewController.m in Sources */,

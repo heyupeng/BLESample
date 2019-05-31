@@ -46,7 +46,7 @@
     [self initialData];
     
     [self initUI];
-
+    
     [self addNotificationObserver];
 }
 
@@ -78,14 +78,14 @@
     self.view.backgroundColor = [UIColor groupTableViewBackgroundColor];
     self.title = @"固件升级";
     
-    UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, SCREENWIDTH, 40)];
+    UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(20, 10, SCREENWIDTH - 20 * 2, 40)];
     label.numberOfLines = 0;
-    label.textAlignment = NSTextAlignmentCenter;
+    label.textAlignment = NSTextAlignmentLeft;
     label.text = @"请先选择文件";
     _fileLabel = label;
     [self.view addSubview:label];
     
-    UIProgressView * progressView = [[UIProgressView alloc] initWithFrame:CGRectMake(20, CGRectGetMaxY(label.frame) + 20, SCREENWIDTH - 20 * 2, 5)];
+    UIProgressView * progressView = [[UIProgressView alloc] initWithFrame:CGRectMake(20, CGRectGetMaxY(label.frame) + 10, SCREENWIDTH - 20 * 2, 5)];
     progressView.progress = 0;
     _progressView = progressView;
     [self.view addSubview:_progressView];
@@ -107,6 +107,12 @@
     encryptBtn.layer.borderWidth = 1;
     [self.view addSubview:encryptBtn];
     [encryptBtn addTarget:self action:@selector(encrypt:) forControlEvents:UIControlEventTouchUpInside];
+    
+    UILabel * label_note = [[UILabel alloc] initWithFrame:CGRectMake(20, CGRectGetMaxY(renameBtn.frame), SCREENWIDTH - 20 * 2, 40 * 2)];
+    label_note.numberOfLines = -1;
+    label_note.textAlignment = NSTextAlignmentLeft;
+    label_note.text = @"Note: X5 v1.02以下advertisement localName不允许reset，DFU mode加密需携带信息。";
+    [self.view addSubview:label_note];
     
     UIButton * button = [UIButton buttonWithType:UIButtonTypeSystem];
     button.frame = CGRectMake((SCREENWIDTH - 100) * 0.5, 200, 100, 60);
@@ -203,13 +209,13 @@
     }]];
     [self presentViewController:alertC animated:YES completion:nil];
     
-//    _encrypt = !_encrypt;
-//    sender.selected = !sender.selected;
-//    if (sender.selected) {
-//        sender.backgroundColor = [UIColor redColor];
-//    } else {
-//        sender.backgroundColor = [UIColor whiteColor];
-//    }
+    //    _encrypt = !_encrypt;
+    //    sender.selected = !sender.selected;
+    //    if (sender.selected) {
+    //        sender.backgroundColor = [UIColor redColor];
+    //    } else {
+    //        sender.backgroundColor = [UIColor whiteColor];
+    //    }
 }
 
 - (void)rightButtonClick:(UIButton *)button {
@@ -236,9 +242,9 @@
         [_dfuManager_xiaosu startUpgrade];
         return;
     }
-//    _dfuManager.firmwareFilePath = filePath;
-//    [_dfuManager setCentralManager:_blueManager.manager];
-//    [_dfuManager connectDevice:_blueManager.currentDevice.peripheral];
+    //    _dfuManager.firmwareFilePath = filePath;
+    //    [_dfuManager setCentralManager:_blueManager.manager];
+    //    [_dfuManager connectDevice:_blueManager.currentDevice.peripheral];
     
     [self startDFU];
 }
@@ -281,11 +287,11 @@
 }
 
 - (void)textforTextViewByAppending:(NSString *)append {
-        if (self.tv.text.length > 1) {
-            self.tv.text = [self.tv.text stringByAppendingFormat:@"\n%@",append];
-        } else {
-            self.tv.text = append;
-        }
+    if (self.tv.text.length > 1) {
+        self.tv.text = [self.tv.text stringByAppendingFormat:@"\n%@",append];
+    } else {
+        self.tv.text = append;
+    }
 }
 
 /** ============== **/
@@ -303,14 +309,14 @@
 /** ============== **/
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 - (void)bluetoothStateChanged:(NSNotification *) noti
 {
     if ([noti.object boolValue]) {
@@ -360,7 +366,7 @@
             break;
     }
     [self textforTextViewByAppending: text];
-
+    
 }
 
 - (void)dfuProgressChanged:(NSNotification *) noti
@@ -388,7 +394,7 @@
     NSString * text = [NSString stringWithFormat:@"propress: %ld", progress];
     NSLog(@"%@",text);
     dispatch_async(dispatch_get_main_queue(), ^{
-//        self.progressLabel.text = [NSString stringWithFormat:@"%ld%%", progress];
+        //        self.progressLabel.text = [NSString stringWithFormat:@"%ld%%", progress];
         self.progressView.progress = progress / 100.0;
         [self textforTextViewByAppending: text];
     });

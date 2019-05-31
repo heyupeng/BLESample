@@ -9,11 +9,11 @@
 #import <Foundation/Foundation.h>
 
 @interface SOCBluetoothWriteData : NSObject
-//050000000000
-+ (NSString *)getCheckStringWith:(NSString *)sendString;
 
-//000a0000
-//+ (NSString *)commandWithType:(NSString *)typeString appendData:(NSString *)appendString;
++ (NSString *)getCRCHexCodeWith:(NSString *)hexString;
+
+//050000000000
++ (NSString *)getCheckStringWith:(NSString *)hexString;
 
 /**
  @param typeString hex string of command type. eg: 0001
@@ -24,24 +24,35 @@
  */
 + (NSString *)commandWithType:(NSString *)typeString length:(NSString *)lengthHexString appendData:(NSString *)appendString;
 
+@end
+
+@interface SOCBluetoothWriteData (Command)
+
 //绑定指令
 + (NSString *)commandForBind;
+
 //获取数据
 + (NSString *)commandForGetRequestRecords;
+
 //获取DFU请求指令
 + (NSString *)commandForDFURequest;
 
 //获取电池指令
 + (NSString *)commandForGetBattery;
+
 //设备信息指令
 + (NSString *)commandForGetDeviceInfo;
+
 //设置时间指令
 + (NSString *)commandForSetLocalTime;
-+ (NSString *)sendOrderToSetLocalTimeWith:(NSInteger)timeStamp geoCode:(NSInteger)geoCode;
++ (NSString *)commandForSetLocalTimeWith:(NSInteger)timeStamp geoCode:(NSInteger)geoCode;
+
 //设置刷牙时间 Function set
 + (NSString *)commandForSetFuncionWith:(int)tag;
+
 //设置渐强模式指令: 1：使能渐强模式;0：禁止渐强模式
 + (NSString *)commandForSetfadeInWith:(int)tag;
+
 //设置附加模式指令: 0x00:禁止功能模式;0x01:抛光模式;0x02:护理模式;0x03:舌苔模式
 + (NSString *)commandForSetAddOnsWith:(int)index;
 

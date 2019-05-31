@@ -73,7 +73,7 @@
 /** ============== **/
 - (UITableView *)createTableVie {
     CGRect rect = CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGHT);
-    UITableView * tableView = [[UITableView alloc] initWithFrame:rect style: UITableViewStyleGrouped];
+    UITableView * tableView = [[UITableView alloc] initWithFrame:rect style: UITableViewStylePlain];
     tableView.delegate = self;
     tableView.dataSource = self;
     
@@ -177,18 +177,17 @@
     NSMutableString * detailText = [[NSMutableString alloc] init];
     [detailText appendFormat:@"UUIDString: %@\n", [UUID UUIDString]];
     [detailText appendFormat:@"Properies: %@\n", [propertyDescriptions componentsJoinedByString:@"|"]];
-    [detailText appendFormat:@"Value: %@", valueString];
-    
-    cell.detailTextLabel.numberOfLines = 3;
-    cell.detailTextLabel.text = detailText;
+    [detailText appendFormat:@"Value: (0x%@)", [character value].hexString];
     
     if ([UUID.UUIDString isEqualToString:@"2A19"]) {
         long value = [[character value].hexString hexStringToLongValue];
-        cell.detailTextLabel.text = [NSString stringWithFormat:@"%ld %% %@", value, [character value]];
-        [CBUUID UUIDWithUInt16:0x2a19];
-        [UUID UInt16Value];
-
+        [detailText appendFormat: @" %ld %%", value];
+    } else {
+        [detailText appendFormat: @" %@", valueString];
     }
+    
+    cell.detailTextLabel.numberOfLines = 3;
+    cell.detailTextLabel.text = detailText;
     return cell;
 }
 
@@ -235,7 +234,7 @@
         return;
     }
     
-    if ([service.UUID isEqual:[CBUUID UUIDWithString:@"180A"]]) {
+    if ([service.UUID isEqual:[CBUUID UUIDWithString:@"180A"]] || [service.UUID isEqual:[CBUUID UUIDWithString:@"180F"]]) {
         CBCharacteristic * characteristic = [[service characteristics] objectAtIndex:indexPath.row];
         [_device.peripheral readValueForCharacteristic:characteristic];
     }
