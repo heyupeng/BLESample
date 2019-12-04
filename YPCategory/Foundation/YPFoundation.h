@@ -19,4 +19,6 @@
 #import "NSObject+YPClass.h"
 #import "NSObject+YPProperty.h"
 
+#import "NSDate+YPExtension.h"
+
 #endif /* YPFoundation_h */

@@ -41,9 +41,11 @@
 		04998B622292530700AE418E /* CBUUID+YPExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 04998B612292530700AE418E /* CBUUID+YPExtension.m */; };
         15A8508122A7562100223C9E /* CBPeripheral+YPExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 15A8508022A7562100223C9E /* CBPeripheral+YPExtension.m */; };
 		04AB1D58227E9C8C00B801E9 /* libSOCDFUSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04AB1D57227E9C8C00B801E9 /* libSOCDFUSDK.a */; };
+		04FFB3302397521B004E26C5 /* NSDate+YPExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 04FFB32F2397521A004E26C5 /* NSDate+YPExtension.m */; };
 		15A8507B22A621FA00223C9E /* 1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 15A8507A22A621FA00223C9E /* 1.mp3 */; };
 		15A8507C22A64BAD00223C9E /* OperationType.m in Sources */ = {isa = PBXBuildFile; fileRef = 15A8507722A6145B00223C9E /* OperationType.m */; };
-		15A8507E22A656A100223C9E /* 5.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 15A8507D22A656A000223C9E /* 5.mp3 */; };		F3BAF91295E8E70D5686937F /* Pods_BLESample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5F1E157C40F6D5DA2751736 /* Pods_BLESample.framework */; };
+		15A8507E22A656A100223C9E /* 5.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 15A8507D22A656A000223C9E /* 5.mp3 */; };
+        F3BAF91295E8E70D5686937F /* Pods_BLESample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5F1E157C40F6D5DA2751736 /* Pods_BLESample.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -138,6 +140,8 @@
 		04AB1D57227E9C8C00B801E9 /* libSOCDFUSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libSOCDFUSDK.a; sourceTree = "<group>"; };
 		04AB1D5A227EC80300B801E9 /* YPFoundation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YPFoundation.h; sourceTree = "<group>"; };
 		04AB1D5C227ECB4100B801E9 /* YPUIKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YPUIKit.h; sourceTree = "<group>"; };
+		04FFB32E2397521A004E26C5 /* NSDate+YPExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSDate+YPExtension.h"; sourceTree = "<group>"; };
+		04FFB32F2397521A004E26C5 /* NSDate+YPExtension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSDate+YPExtension.m"; sourceTree = "<group>"; };
 		15A8507622A6145B00223C9E /* OperationType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OperationType.h; sourceTree = "<group>"; };
 		15A8507722A6145B00223C9E /* OperationType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OperationType.m; sourceTree = "<group>"; };
 		15A8507A22A621FA00223C9E /* 1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = 1.mp3; sourceTree = "<group>"; };
@@ -330,6 +334,8 @@
 				0475F00D255E3E7300D330A4 /* NSObject+YPClass.m */,
 				04279DA5222E61CC001FC02C /* NSObject+YPProperty.h */,
 				04279DAF222E61CD001FC02C /* NSObject+YPProperty.m */,
+				04FFB32E2397521A004E26C5 /* NSDate+YPExtension.h */,
+				04FFB32F2397521A004E26C5 /* NSDate+YPExtension.m */,
 			);
 			path = Foundation;
 			sourceTree = "<group>";
@@ -549,6 +555,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04FFB3302397521B004E26C5 /* NSDate+YPExtension.m in Sources */,
 				15A8507C22A64BAD00223C9E /* OperationType.m in Sources */,
 				04279D90222E61C2001FC02C /* YPBleDevice.m in Sources */,
 				04279DBB222E61CD001FC02C /* UIDevice+YPSysInfo.m in Sources */,
@@ -559,6 +566,7 @@
 				04279DBD222E61CD001FC02C /* NSString+YPHexString.m in Sources */,
 				04279DBE222E61CD001FC02C /* NSString+YPMessageDigest.m in Sources */,
 				04FBA92825676A5000D9EB91 /* NSString+YPNumberBaseConversion.m in Sources */,
+                04FFB3302397521B004E26C5 /* NSDate+YPExtension.m in Sources */,
 				04279DBA222E61CD001FC02C /* UITableView+Extension.m in Sources */,
 				04279D8F222E61C2001FC02C /* YPBlueConst.m in Sources */,
 				042958BE224DB10200496C8E /* ObjdectModel.m in Sources */,
