@@ -1,6 +1,6 @@
 //
 //  AppDelegate.m
-//  BLESample
+//  SOOCASBLE
 //
 //  Created by Peng on 2019/3/4.
 //  Copyright © 2019年 heyupeng. All rights reserved.
@@ -17,6 +17,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    
+    // In iOS 13,on iPhone X line , while navigationController.navigationBar.prefersLargeTitles is YES, the statusBar backgroundColor is transparent.
+    self.window.rootViewController.view.backgroundColor = [UIColor systemOrangeColor];
     return YES;
 }
 
@@ -49,6 +52,16 @@
     [self saveContext];
 }
 
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+    
+    // 从第三方App分享过来的文件路径(Document/Inbox/*)
+    if ([url.absoluteString hasPrefix:@"file://"]) {
+        NSArray * paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, true);
+        NSString * documentsDirectoryPath = [paths lastObject];
+    }
+    
+    return YES;
+}
 
 #pragma mark - Core Data stack
 
@@ -58,7 +71,7 @@
     // The persistent container for the application. This implementation creates and returns a container, having loaded the store for the application to it.
     @synchronized (self) {
         if (_persistentContainer == nil) {
-            _persistentContainer = [[NSPersistentContainer alloc] initWithName:@"BLESample"];
+            _persistentContainer = [[NSPersistentContainer alloc] initWithName:@"SOOCASBLE"];
             [_persistentContainer loadPersistentStoresWithCompletionHandler:^(NSPersistentStoreDescription *storeDescription, NSError *error) {
                 if (error != nil) {
                     // Replace this implementation with code to handle the error appropriately.
