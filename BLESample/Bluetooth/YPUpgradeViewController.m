@@ -371,7 +371,7 @@
 
 - (void)dfuProgressChanged:(NSNotification *) noti
 {
-    NSString * text = [NSString stringWithFormat:@"升级进度：%i", [noti.object integerValue]];
+    NSString * text = [NSString stringWithFormat:@"升级进度：%i", [noti.object intValue]];
     NSLog(@"%@", text);
     [self textforTextViewByAppending: text];
 }

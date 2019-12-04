@@ -205,6 +205,7 @@
         } else {
             self.tv.text = append;
         }
+        [[YPLogger share] appendLog:append];
         [self autoScroll];
     });
 }

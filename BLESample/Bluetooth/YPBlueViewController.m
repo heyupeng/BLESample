@@ -12,15 +12,18 @@
 #import "YPCmdViewController.h"
 #import "ObjdectModel.h"
 
-@interface YPBlueViewController ()
+@interface YPBlueViewController ()<UITextFieldDelegate>
 {
-    NSString * _deviceName;
+    NSDictionary * _bleConfig;
+    
+    UIButton * _logBtn;
 }
 @property (nonatomic, strong) UITableView * tableView;
 @property (nonatomic, strong) NSMutableArray * dataSource;
 
 @property (nonatomic, strong) UILabel * rssiValueLable;
 @property (nonatomic, strong) UITextField * nameTextField;;
+@property (nonatomic, strong) UITextField * macTextField;;
 
 @end
 
@@ -32,6 +35,40 @@
     [self initialData];
     
     [self initUI];
+    
+    UIButton * btn = [UIButton buttonWithType:UIButtonTypeSystem];
+    [btn setTitle:@"LOG" forState:UIControlStateNormal];
+    [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [btn addTarget:self action:@selector(showLogAction:) forControlEvents:UIControlEventTouchUpInside];
+    btn.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+    btn.frame = CGRectMake(0, 44, 60, 30);
+    btn.layer.cornerRadius = 30 * 0.5;
+    btn.layer.zPosition = 10;
+    [[UIApplication sharedApplication].keyWindow addSubview:btn];
+    
+    UIPanGestureRecognizer * pan = [[UIPanGestureRecognizer alloc] init];
+    [pan addTarget:self action:@selector(panGestureRecognizerActionForFrame:)];
+    [btn addGestureRecognizer:pan];
+    _logBtn = btn;
+}
+- (void)panGestureRecognizerActionForFrame:(UIPanGestureRecognizer *)sender {
+    // 获取手势的移动，也是相对于最开始的位置
+    CGPoint transP = [sender translationInView:_logBtn];
+    
+    _logBtn.transform = CGAffineTransformTranslate(_logBtn.transform, transP.x, transP.y);
+    
+    // 复位
+    [sender setTranslation:CGPointZero inView:_logBtn];
+    
+    if (sender.state == UIGestureRecognizerStateEnded) {
+        [UIView animateWithDuration:0.2 animations:^{
+            
+        }];
+    }
+}
+
+- (void)showLogAction:(UIButton *)btn {
+    [[YPLogger share] showOrHide];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -52,13 +89,28 @@
     
     [self removeNotificationObserver];
     
+    NSMutableDictionary * temp = [NSMutableDictionary new];
+    [temp setDictionary:_bleConfig];
+    _blueManager.localName? [temp setObject:_blueManager.localName forKey:@"name"]: 0;
+    [temp setValue:@(_blueManager.RSSIValue) forKey:@"RSSI"];
+    [temp setValue:_blueManager.mac forKey:@"mac"];
+    _bleConfig = temp;
+    [[NSUserDefaults standardUserDefaults] setObject:_bleConfig forKey:@"bleConfig"];
 }
 
 /** ============== **/
 - (void)initialData {
     _dataSource = [NSMutableArray new];
     
-    _deviceName = @"";
+    NSDictionary * bleConfig = [[NSUserDefaults standardUserDefaults] objectForKey:@"bleConfig"];
+    if (!bleConfig) {
+        bleConfig = @{
+            @"name": @"SMI-",
+            @"mac": @"",
+            @"RSSI": @60,
+        };
+    }
+    _bleConfig = bleConfig;
 }
 
 - (void)initUI {
@@ -82,7 +134,7 @@
     UISlider * slider = [[UISlider alloc] initWithFrame:CGRectMake(80, 0, SCREENWIDTH * 0.5, 44)];
     slider.minimumValue = 20;
     slider.maximumValue = 100;
-    slider.value = 60;
+    slider.value = [(NSNumber *)[_bleConfig objectForKey:@"RSSI"] intValue]; // 60;
     [slider addTarget:self action:@selector(sliderValueChanged:) forControlEvents:UIControlEventValueChanged];
     [view1 addSubview:slider];
     
@@ -91,6 +143,7 @@
     [view1 addSubview:deltailLable];
     _rssiValueLable = deltailLable;
     
+    // name tag
     UIView *view2 = [[UIView alloc] initWithFrame:CGRectMake(0,CGRectGetMaxY(view1.frame), SCREENWIDTH, 44)];
     [self.view addSubview:view2];
     
@@ -101,15 +154,34 @@
     UITextField * tf = [[UITextField alloc] initWithFrame:CGRectMake(80, 0 + (44  - 36)*0.5, SCREENWIDTH * 0.5, 36)];
     tf.borderStyle = UITextBorderStyleRoundedRect;
     tf.keyboardType = UIKeyboardTypeASCIICapable;
-    tf.text = _deviceName;
+    tf.text = [_bleConfig objectForKey:@"name"];
     tf.delegate = self;
 //    tf.userInteractionEnabled = NO;
     [view2 addSubview:tf];
     _nameTextField = tf;
     [tf addTarget:self action:@selector(textFieldValueChanged:) forControlEvents:UIControlEventValueChanged];
     
+    // mac tag
+    UIView *view3 = [[UIView alloc] initWithFrame:CGRectMake(0,CGRectGetMaxY(view2.frame), SCREENWIDTH, 44)];
+    [self.view addSubview:view3];
+    
+    UILabel * titleLable_mac = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 60, 44)];
+    titleLable_mac.text = @"Mac";
+    [view3 addSubview:titleLable_mac];
+    
+    UITextField * tf_mac = [[UITextField alloc] initWithFrame:CGRectMake(80, 0 + (44  - 36)*0.5, SCREENWIDTH * 0.5, 36)];
+    tf_mac.borderStyle = UITextBorderStyleRoundedRect;
+    tf_mac.keyboardType = UIKeyboardTypeASCIICapable;
+    tf_mac.text = [_bleConfig valueForKey:@"mac"];
+    tf_mac.delegate = self;
+    [tf_mac addTarget:self action:@selector(textFieldValueChanged:) forControlEvents:UIControlEventValueChanged];
+
+    [view3 addSubview:tf_mac];
+    _macTextField = tf_mac;
+    
+    // 主列表
     UITableView * tableView = [self createTableVie];
-    tableView.frame = CGRectMake(0, CGRectGetMaxY(view2.frame) , SCREENWIDTH, SCREENHEIGHT - CGRectGetMaxY(view2.frame));
+    tableView.frame = CGRectMake(0, CGRectGetMaxY(view3.frame) , SCREENWIDTH, SCREENHEIGHT - CGRectGetMaxY(view3.frame));
     tableView.clipsToBounds = YES;
     [self.view addSubview: tableView];
     _tableView = tableView;
@@ -132,7 +204,10 @@
         _dataSource = [NSMutableArray new];
         [self.tableView reloadData];
         
+        [[YPLogger share] clean];
+        
         _blueManager.localName = _nameTextField.text;
+        _blueManager.mac = _macTextField.text;
         [_blueManager startScan];
         button.title = @"Stop scan";
     } else {
@@ -145,6 +220,7 @@
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     [super touchesBegan:touches withEvent:event];
     [_nameTextField resignFirstResponder];
+    [_macTextField resignFirstResponder];
 }
 
 - (void)sliderValueChanged:(UISlider *)slider {
@@ -154,7 +230,11 @@
 }
 
 - (void)textFieldValueChanged:(UITextField *)tf {
-    _deviceName = tf.text;
+    if (tf == _nameTextField) {
+        
+    } else {
+        
+    }
 }
 
 /** ============== **/
@@ -240,18 +320,18 @@
         cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:tableViewCellDefaultIdentifier];
     }
     YPBleDevice * device = [_dataSource objectAtIndex:indexPath.row];
-    NSString * title = device.deviceName;
+    NSString * name = device.deviceName;
     
     NSDictionary * serviceData = [device.advertisementData objectForKey: CBAdvertisementDataServiceDataKey];
     NSData * fe95 = [serviceData objectForKey:[CBUUID UUIDWithString:@"FE95"]];
     NSString * ip = fe95.hexString;
     
-    NSData * specificData = device.specificData;
-    
     NSString * localName = device.localName;
+    
+    NSData * specificData = device.specificData;
     NSString * specificDataHexString = specificData.hexString;
     
-    cell.textLabel.text = [NSString stringWithFormat:@"Name: %@, rssi: %.0f", title, device.RSSI.doubleValue];
+    cell.textLabel.text = [NSString stringWithFormat:@"%@, rssi: %.0f", name, device.RSSI.doubleValue];
     
     NSInteger detailTextNumberOfLines = 5;
     NSString * detailText = [NSString stringWithFormat:@"UUID: %@ \
@@ -262,6 +342,7 @@
     
     cell.detailTextLabel.numberOfLines = detailTextNumberOfLines;
     cell.detailTextLabel.text = detailText;
+    cell.accessoryType = UITableViewCellAccessoryDetailButton;
     return cell;
 }
 
@@ -275,21 +356,28 @@
     
     [_blueManager stopScan];
     
-    if (1) {
-        YPDeviceViewController * viewController = [[YPDeviceViewController alloc] init];
-        viewController.blueManager = _blueManager;
-        viewController.device = device;
-        viewController.title = @"Services";
-        [self.navigationController pushViewController:viewController animated:YES];
-        return;
-    }
+    YPDeviceViewController * viewController = [[YPDeviceViewController alloc] init];
+    viewController.blueManager = _blueManager;
+    viewController.device = device;
+    viewController.title = @"Services";
+    [self.navigationController pushViewController:viewController animated:YES];
 
-    YPCmdViewController * cmdVC = [[YPCmdViewController alloc] init];
-    cmdVC.blueManager = _blueManager;
-    cmdVC.device = device;
-    cmdVC.title = @"Cmd";
-    [self.navigationController pushViewController:cmdVC animated:YES];
+}
 
+- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
+    
+    YPBleDevice * device = [_dataSource objectAtIndex:indexPath.row];
+    
+    NSMutableString * str = [NSMutableString new];
+    [device.RSSIRecords enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [str appendFormat: @"%@: %@\n", [(NSDate *)[obj objectForKey:@"date"] yp_description], [[obj objectForKey:@"rssi"] stringValue]];
+    }];
+    
+    UIAlertController * ac = [UIAlertController alertControllerWithTitle:[@"RSSI" stringByAppendingFormat:@"(dBm) %lu More", device.RSSIRecords.count] message:str preferredStyle:UIAlertControllerStyleActionSheet];
+    [ac addAction:[UIAlertAction actionWithTitle:@"知道了" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        [ac dismissViewControllerAnimated:YES completion:nil];
+    }]];
+     [self presentViewController:ac animated:YES completion:nil];
 }
 
 @end

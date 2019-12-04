@@ -45,7 +45,8 @@
 		15A8507B22A621FA00223C9E /* 1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 15A8507A22A621FA00223C9E /* 1.mp3 */; };
 		15A8507C22A64BAD00223C9E /* OperationType.m in Sources */ = {isa = PBXBuildFile; fileRef = 15A8507722A6145B00223C9E /* OperationType.m */; };
 		15A8507E22A656A100223C9E /* 5.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 15A8507D22A656A000223C9E /* 5.mp3 */; };
-        F3BAF91295E8E70D5686937F /* Pods_BLESample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5F1E157C40F6D5DA2751736 /* Pods_BLESample.framework */; };
+		B8F8F49422E5521C00E7195B /* YPLoggerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B8F8F49322E5521C00E7195B /* YPLoggerViewController.m */; };
+		F3BAF91295E8E70D5686937F /* Pods_BLESample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5F1E157C40F6D5DA2751736 /* Pods_BLESample.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -151,6 +152,8 @@
 		42F56A2759F0007A6DA244B7 /* Pods-BLESample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BLESample.release.xcconfig"; path = "Pods/Target Support Files/Pods-BLESample/Pods-BLESample.release.xcconfig"; sourceTree = "<group>"; };
 		50CDBF392844C42E6255B02E /* Pods-BLESample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BLESample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BLESample/Pods-BLESample.debug.xcconfig"; sourceTree = "<group>"; };
 		A5F1E157C40F6D5DA2751736 /* Pods_BLESample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BLESample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B8F8F49222E5521C00E7195B /* YPLoggerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YPLoggerViewController.h; sourceTree = "<group>"; };
+		B8F8F49322E5521C00E7195B /* YPLoggerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YPLoggerViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -261,6 +264,8 @@
 				04279D63222E61C2001FC02C /* FileTableViewController.m */,
 				04279D83222E61C2001FC02C /* YPCmdViewController.h */,
 				04279D8C222E61C2001FC02C /* YPCmdViewController.m */,
+				B8F8F49222E5521C00E7195B /* YPLoggerViewController.h */,
+				B8F8F49322E5521C00E7195B /* YPLoggerViewController.m */,
 			);
 			path = Bluetooth;
 			sourceTree = "<group>";
@@ -574,6 +579,7 @@
 				04279C23222CC40C001FC02C /* ViewController.m in Sources */,
 				04998B622292530700AE418E /* CBUUID+YPExtension.m in Sources */,
 				04279C29222CC40C001FC02C /* BLESample.xcdatamodeld in Sources */,
+				B8F8F49422E5521C00E7195B /* YPLoggerViewController.m in Sources */,
 				04279C31222CC40E001FC02C /* main.m in Sources */,
 				04998B5F22923F0500AE418E /* CBCharacteristic+YPExtension.m in Sources */,
 				04279DA1222E61C2001FC02C /* SOCBluetoothWriteData.m in Sources */,
