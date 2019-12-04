@@ -9,10 +9,11 @@
 #import "YPUpgradeViewController.h"
 #import "FileTableViewController.h"
 #import "SOCDFUManager.h"
-#import "YPSUOTA.h"
+
 #import <iOSDFULibrary/iOSDFULibrary-Swift.h>
 
-#import "YPBluetooth/YPNordicDFU.h"
+#import "YPSUOTA.h"
+#import "YPNordicDFU.h"
 
 @interface YPUpgradeViewController ()<NordicDFUDelegate>
 @property (nonatomic) SOCDFUManager * dfuManager;

@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
-#import "YPBlueDefines.h"
 
 #define MAX_RSSI_VALUE 60
 #define SCAN_TIME_OUT 30

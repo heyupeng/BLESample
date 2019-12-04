@@ -1,5 +1,5 @@
 //
-//  NordicDFU.m
+//  YPNordicDFU.m
 //  OCEmbedSwiftDemo
 //
 //  Created by Peng on 2019/3/27.

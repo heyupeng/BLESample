@@ -8,6 +8,8 @@
 
 #import "YPBlueViewController.h"
 
+#import "YPBlueConst.h"
+
 #import "YPDeviceViewController.h"
 #import "YPCmdViewController.h"
 #import "ObjdectModel.h"

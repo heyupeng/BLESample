@@ -8,6 +8,8 @@
 
 #import "YPCmdViewController.h"
 
+#import "CoreBluetooth+Extension.h"
+
 #import "YPBluetooth/YPBlueConst.h"
 
 #import "CommunicationProtocol/SOCBluetoothWriteData.h"
