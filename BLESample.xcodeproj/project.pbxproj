@@ -27,6 +27,7 @@
 		042958BE224DB10200496C8E /* ObjdectModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 042958BD224DB10200496C8E /* ObjdectModel.m */; };
 		0475F00E255E3E7300D330A4 /* NSObject+YPClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 0475F00D255E3E7300D330A4 /* NSObject+YPClass.m */; };
 		04FBA92825676A5000D9EB91 /* NSString+YPNumberBaseConversion.m in Sources */ = {isa = PBXBuildFile; fileRef = 04FBA92725676A5000D9EB91 /* NSString+YPNumberBaseConversion.m */; };
+		04FFB3302397521B004E26C5 /* NSDate+YPExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 04FFB32F2397521A004E26C5 /* NSDate+YPExtension.m */; };
 		F3BAF91295E8E70D5686937F /* Pods_BLESample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5F1E157C40F6D5DA2751736 /* Pods_BLESample.framework */; };
 /* End PBXBuildFile section */
 
@@ -91,6 +92,8 @@
 		04AB1D5C227ECB4100B801E9 /* UIKit+YPExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIKit+YPExtension.h"; sourceTree = "<group>"; };
 		04FBA92625676A5000D9EB91 /* NSString+YPNumberBaseConversion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+YPNumberBaseConversion.h"; sourceTree = "<group>"; };
 		04FBA92725676A5000D9EB91 /* NSString+YPNumberBaseConversion.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+YPNumberBaseConversion.m"; sourceTree = "<group>"; };
+		04FFB32E2397521A004E26C5 /* NSDate+YPExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSDate+YPExtension.h"; sourceTree = "<group>"; };
+		04FFB32F2397521A004E26C5 /* NSDate+YPExtension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSDate+YPExtension.m"; sourceTree = "<group>"; };
 		42F56A2759F0007A6DA244B7 /* Pods-BLESample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BLESample.release.xcconfig"; path = "Pods/Target Support Files/Pods-BLESample/Pods-BLESample.release.xcconfig"; sourceTree = "<group>"; };
 		50CDBF392844C42E6255B02E /* Pods-BLESample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BLESample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BLESample/Pods-BLESample.debug.xcconfig"; sourceTree = "<group>"; };
 		A5F1E157C40F6D5DA2751736 /* Pods_BLESample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BLESample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -209,6 +212,8 @@
 				0475F00D255E3E7300D330A4 /* NSObject+YPClass.m */,
 				04279DA5222E61CC001FC02C /* NSObject+YPProperty.h */,
 				04279DAF222E61CD001FC02C /* NSObject+YPProperty.m */,
+				04FFB32E2397521A004E26C5 /* NSDate+YPExtension.h */,
+				04FFB32F2397521A004E26C5 /* NSDate+YPExtension.m */,
 			);
 			path = Foundation;
 			sourceTree = "<group>";
@@ -409,6 +414,7 @@
 				04279DBD222E61CD001FC02C /* NSString+YPHexString.m in Sources */,
 				04279DBE222E61CD001FC02C /* NSString+YPMessageDigest.m in Sources */,
 				04FBA92825676A5000D9EB91 /* NSString+YPNumberBaseConversion.m in Sources */,
+                04FFB3302397521B004E26C5 /* NSDate+YPExtension.m in Sources */,
 				04279DBA222E61CD001FC02C /* UITableView+Extension.m in Sources */,
 				04279DB9222E61CD001FC02C /* UIWebView+YPJSContext.m in Sources */,
 				04279DBC222E61CD001FC02C /* NSObject+YPProperty.m in Sources */,
