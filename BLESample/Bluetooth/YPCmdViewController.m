@@ -17,21 +17,30 @@
 
 #import "YPUpgradeViewController.h"
 
-@interface YPTextCell : UICollectionViewCell
+@interface YPCollectionViewCell : UICollectionViewCell
 
 @property (nonatomic, strong) UILabel * titleLabel;
 
 @end
 
-@implementation YPTextCell
+@implementation YPCollectionViewCell
 
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
-    _titleLabel = [[UILabel alloc] initWithFrame:self.bounds];
+    return self;
+}
+
+- (UILabel *)titleLabel {
+    if (_titleLabel) {
+        return _titleLabel;
+    }
+    _titleLabel = [[UILabel alloc] init];
     _titleLabel.textAlignment = NSTextAlignmentCenter;
     _titleLabel.adjustsFontSizeToFitWidth = YES;
     [self.contentView addSubview:_titleLabel];
-    return self;
+    _titleLabel.frame = self.bounds;
+    
+    return _titleLabel;
 }
 
 @end
@@ -153,6 +162,9 @@
     
     UICollectionView * collectionView = [[UICollectionView alloc] initWithFrame:frame collectionViewLayout:layout];
     collectionView.backgroundColor = [UIColor groupTableViewBackgroundColor];
+    if (@available(iOS 13.0, *)) {
+        collectionView.backgroundColor = [UIColor systemGroupedBackgroundColor];
+    }
     
     collectionView.dataSource = self;
     collectionView.delegate = self;
@@ -160,7 +172,7 @@
     [self.view addSubview:collectionView];
     _collectionView = collectionView;
 
-    [_collectionView registerClass:[YPTextCell class] forCellWithReuseIdentifier:@"cell"];
+    [_collectionView registerClass:[YPCollectionViewCell class] forCellWithReuseIdentifier:@"cell"];
     
     UIBarButtonItem * rightBtn = [[UIBarButtonItem alloc] initWithTitle:@"Log" style:UIBarButtonItemStyleDone target:self action:@selector(rightButtonAction:)];
     self.navigationItem.rightBarButtonItem = rightBtn;
@@ -499,8 +511,8 @@ int byteStart = 0;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    YPTextCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
-    cell.backgroundColor = [UIColor whiteColor];
+    YPCollectionViewCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
+//    cell.backgroundColor = [UIColor whiteColor];
     cell.titleLabel.text = [_dataSource objectAtIndex:indexPath.row];
     
     return cell;
