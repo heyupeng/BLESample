@@ -12,7 +12,7 @@ NSString * const kUIWebViewJSContext = @"documentView.webView.mainFrame.javaScri
 
 @implementation UIWebView (YPJSContext)
 
-- (JSContext *)jsContext {
+- (JSContext *)yp_jsContext {
     JSContext * jscontext = [self valueForKeyPath:kUIWebViewJSContext];
     return jscontext;
 }

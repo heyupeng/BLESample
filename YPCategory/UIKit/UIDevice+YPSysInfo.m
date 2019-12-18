@@ -9,7 +9,7 @@
 #import "UIDevice+YPSysInfo.h"
 #import <sys/utsname.h>
 
-@implementation UIDevice (YPPlatform)
+@implementation UIDevice (yp_Platform)
 
 - (NSString *)machine {
     struct utsname systemInfo;
@@ -45,12 +45,16 @@
     if ([platform isEqualToString:@"iPhone10,4"])   return @"iPhone 8"; //美版(Global/A1905)
     if ([platform isEqualToString:@"iPhone10,2"])   return @"iPhone 8 Plus"; //国行(A1864)、日行(A1898)
     if ([platform isEqualToString:@"iPhone10,5"])   return @"iPhone 8 Plus"; //美版(Global/A1897)
+    
     if ([platform isEqualToString:@"iPhone10,3"])   return @"iPhone X"; //国行(A1865)、日行(A1902)
     if ([platform isEqualToString:@"iPhone10,6"])   return @"iPhone X"; //美版(Global/A1901)
     if ([platform isEqualToString:@"iPhone11,2"])   return @"iPhone XS";
     if ([platform isEqualToString:@"iPhone11,4"])   return @"iPhone XS Max";
     if ([platform isEqualToString:@"iPhone11,6"])   return @"iPhone XS Max";
     if ([platform isEqualToString:@"iPhone11,8"])   return @"iPhone XR";
+    if ([platform isEqualToString:@"iPhone12,1"]) return @"iPhone 11";
+    if ([platform isEqualToString:@"iPhone12,3"]) return @"iPhone 11 Pro";
+    if ([platform isEqualToString:@"iPhone12,5"]) return @"iPhone 11 Pro Max";
     
     // iPod
     if ([platform isEqualToString:@"iPod1,1"])      return @"iPod Touch 1G";
@@ -109,25 +113,59 @@
     return platform;
 }
 
+- (BOOL)isSimulator {
+    if ([[self deviceType] isEqualToString:@"Simulator"]) {
+        return YES;
+    };
+    return NO;
+}
+
 - (NSString *)platformString {
     NSString * platform = [self deviceType];
     if ([platform isEqualToString:@"Simulator"]) {
-        platform = self.model;
+        platform = self.name;
     }
     return platform;
 }
 
+@end
+
+
+@implementation UIDevice (yp_iPhoneX)
+
 - (BOOL)isIPhoneX {
     NSString * platform = [self deviceType];
     if ([platform isEqualToString:@"Simulator"]) {
-        
+        platform = [[UIDevice currentDevice] name];
     }
     return [[self platformString] hasPrefix:@"iPhone X"];
 }
 
 - (BOOL)isIPhoneXSize {
     CGSize screenSize = [UIScreen mainScreen].bounds.size;
-    return CGSizeEqualToSize(CGSizeMake(375, 813), screenSize) || CGSizeEqualToSize(CGSizeMake(813, 375), screenSize);;
+    return CGSizeEqualToSize(CGSizeMake(375, 812), screenSize) || CGSizeEqualToSize(CGSizeMake(812, 375), screenSize);
+}
+
+/**
+ * 刘海屏。通过设备尺寸比例判断状态了是否为刘海屏。
+ * iPhone   |   Size    |   AspectRatio
+ * iPhone4      320x480      0.667      3.5
+ * iPhone5      320x568      0.562      4.0
+ * iPhone6      375x667      0.563      4.7
+ * iPhone6S    414x736      0.562      5.5
+ * iPhoneX      375x812      0.462      5.8
+ * iPhoneXR   414x896      0.462       6.5
+ *
+ */
+- (BOOL)isIPhoneXLine {
+    if (TARGET_OS_IPHONE) {
+        CGSize screenSize = [UIScreen mainScreen].bounds.size;
+        float screenRatio = MIN(screenSize.width, screenSize.height) / MAX(screenSize.width, screenSize.height);
+        if (screenRatio < 0.56) {
+            return YES;
+        }
+    }
+    return NO;
 }
 
 @end

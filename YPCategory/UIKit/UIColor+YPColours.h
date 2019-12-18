@@ -13,8 +13,12 @@
 @end
 
 
-@interface UIColor (randomColor)
+@interface UIColor (yp_randomColor)
 
-+ (UIColor *)randomColor;
++ (UIColor *)yp_randomColor;
 
+@end
+
+@interface UIColor (yp_additional)
+- (UIColor *)yp_reverseColor;
 @end

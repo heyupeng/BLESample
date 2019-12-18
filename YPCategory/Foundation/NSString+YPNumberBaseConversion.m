@@ -10,14 +10,6 @@
 
 @implementation NSString (YPNumberBaseConversion)
 
-///**
-// Convert hex to decimal 16进制字符串转long型数字
-// */
-//+ (long)hexStringToLongValue: (NSString *)hexString {
-//    const char * cstr = [hexString cStringUsingEncoding:NSUTF8StringEncoding];
-//    return strtol(cstr, nil, 16);
-//}
-
 /**
  Convert hex string to decimal string 16进制字符串转十进制字符串
  */
@@ -143,7 +135,7 @@
 /**
  Convert decimal string to hex string 十进制字符串转十六进制字符串
  */
-+ (NSString *)decimalToHex:(NSString *)decimalString {
++ (NSString *)hexStringByDecimalString:(NSString *)decimalString {
     long long decimal = [decimalString longLongValue];
     NSString * hex =@"";
 
@@ -193,7 +185,7 @@
 }
 
 - (NSString *)decimalToHex {
-    return [NSString decimalToHex:self];
+    return [NSString hexStringByDecimalString:self];
 }
 
 - (NSString *)decimalToBinary {

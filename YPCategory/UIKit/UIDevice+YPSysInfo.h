@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface UIDevice (YPPlatform)
+@interface UIDevice (yp_Platform)
 
 - (NSString *)machine;
 
@@ -18,7 +18,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSString *)platformString;
 
+- (BOOL)isSimulator;
+
+@end
+
+@interface UIDevice (yp_iPhoneX)
+
 - (BOOL)isIPhoneX;
+
+- (BOOL)isIPhoneXLine;
+
 @end
 
 NS_ASSUME_NONNULL_END

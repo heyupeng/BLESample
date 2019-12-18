@@ -10,7 +10,7 @@
 #define UIKit_YPExtension_h
 
 #import "UIColor+YPColours.h"
-#import "UIDevice/UIDevice+YPSysInfo.h"
+#import "UIDevice+YPSysInfo.h"
 
 #import "UITableView+Extension.h"
 #import "UIWebView+YPJSContext.h"

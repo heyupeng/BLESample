@@ -53,12 +53,6 @@ static NSMutableDictionary * cacheClassPropertiesDict_;
     // 2.
     for (int i = 0; i < outCount; i ++) {
         objc_property_t property = properties[i];
-        // 成员属性名
-        const char * name = property_getName(property);
-        // 成员属性类型
-        const char * attributes = property_getAttributes(property);
-        
-//        printf(" name: %s \t attribrute: %s \n", name, attributes);
         
         YPProperty * pro = objc_getAssociatedObject([YPProperty class], property);
         if (!pro) {
@@ -68,9 +62,7 @@ static NSMutableDictionary * cacheClassPropertiesDict_;
         }
         
         pro.srcClass = cls;
-        [array addObject:pro];
-        
-//        printf(" property: %p \t %p \n", property, pro);
+        [array addObject:pro];        
     }
     
     // 3.

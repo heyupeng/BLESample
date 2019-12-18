@@ -18,77 +18,81 @@ void decToBin(int num, char *buffer) {
 }
 
 // 16进制字符串转二进制数据流
-+(NSData*)hexStringToByte:(NSString*)string
-{
-    NSString *hexString=[[string uppercaseString] stringByReplacingOccurrencesOfString:@" " withString:@""];
+- (NSData *)yp_hexStringToBytes {
+    NSString *hexString = self;
+    if ([hexString hasPrefix:@"0x"]) {
+        hexString = [hexString substringFromIndex:2];
+    }
+    if ([hexString rangeOfString:@" "].location != NSNotFound) {
+        hexString = [hexString stringByReplacingOccurrencesOfString:@" " withString:@""];
+    }
     if ([hexString length]%2!=0) {
         return nil;
     }
-    Byte tempbyt[1]={0};
+    
     NSMutableData* bytes=[NSMutableData data];
-    for(int i=0;i<[hexString length];i++)
-    {
-        unichar hex_char1 = [hexString characterAtIndex:i]; ////两位16进制数中的第一位(高位*16)
-        int int_ch1;
-        if(hex_char1 >= '0' && hex_char1 <='9')
-            int_ch1 = (hex_char1-48)*16;   //// 0 的Ascll - 48
-        else if(hex_char1 >= 'A' && hex_char1 <='F')
-            int_ch1 = (hex_char1-55)*16; //// A 的Ascll - 65
+    Byte byte = 0;
+    for(int i=0;i<[hexString length];i++) {
+        unichar ch = [hexString characterAtIndex:i]; ////两位16进制数中的第一位(高位*16)
+        int value;
+        if (ch >= '0' && ch <='9')
+            value = ch - 48;    // '0' == 48
+        else if (ch >= 'A' && ch <='F')
+            value = ch - 'A' + 10;    // 'A' == 65
+        else if (ch >= 'a' && ch <= 'f')
+            value = ch - 'a' + 10;  // 'a' == 97
         else
-            return nil;
-        i++;
+            break;;
         
-        unichar hex_char2 = [hexString characterAtIndex:i]; ///两位16进制数中的第二位(低位)
-        int int_ch2;
-        if(hex_char2 >= '0' && hex_char2 <='9')
-            int_ch2 = (hex_char2-48); //// 0 的Ascll - 48
-        else if(hex_char2 >= 'A' && hex_char2 <='F')
-            int_ch2 = hex_char2-55; //// A 的Ascll - 65
-        else
-            return nil;
+        if (i%2 == 0) byte = 0;
         
-        tempbyt[0] = int_ch1+int_ch2;  ///将转化后的数放入Byte数组里
-        [bytes appendBytes:tempbyt length:1];
+        byte = byte * 16 + value;
+        if (i%2 == 1) {
+            [bytes appendBytes:&byte length:1];
+        }
     }
     return bytes;
 }
 
-
-/**
- Convert hex to decimal 16进制字符串转long型数字
- */
-+ (long)hexStringToLongValue: (NSString *)hexString {
-    const char * cstr = [hexString cStringUsingEncoding:NSUTF8StringEncoding];
+- (long)yp_hexStringToLongValue {
+    const char * cstr = [self cStringUsingEncoding:NSUTF8StringEncoding];
     return strtol(cstr, nil, 16);
 }
 
-// 16进制字符串转char字符串
-+ (NSString *)hexStringToCharString:(NSString *)hexString {
-    if (hexString.length % 2 == 1) {
-        return @"";
+- (long)yp_hexValue {
+    NSString * hexString = [self uppercaseString];
+    if ([hexString rangeOfString:@" "].location != NSNotFound) {
+        hexString = [hexString stringByReplacingOccurrencesOfString:@" " withString:@""];
     }
-    
-    NSString * string = @"";
-    for (int i = 0; i < hexString.length; i += 2) {
-        NSRange range = NSMakeRange(i, 2);
-        NSString * s = [hexString substringWithRange:range];
-        unichar ch = [NSString hexStringToLongValue:s];
+    if ([hexString length]%2 != 0) {return 0;}
         
-        string = [string stringByAppendingString: [NSString stringWithFormat:@"%c", ch]];
+    long b = 0;
+    for(int i=0;i<[hexString length];i++) {
+        unichar ch = [hexString characterAtIndex:i]; ////两位16进制数中的第一位(高位*16)
+        int value;
+        if (ch >= '0' && ch <='9')
+            value = ch - 48;    // '0' == 48
+        else if (ch >= 'A' && ch <='F')
+            value = ch - 'A' + 10;    // 'A' == 65
+        else if (ch >= 'a' && ch <= 'f')
+            value = ch - 'a' + 10;  // 'a' == 97
+        else
+            break;
+        
+        b = b * 16 + value;
     }
-    return string;
+    return b;
 }
 
+// 16进制字符串转char字符串
 + (NSString *)charStringFromHexString:(NSString *)hexString {
     NSString * str = @"";
-    NSMutableData * mdata = [NSMutableData new];
 
     for (int i = 0; i < hexString.length; i+=2) {
         NSString * s = [hexString substringWithRange:NSMakeRange(i, 2)];
         const char * cstr = [s cStringUsingEncoding:NSUTF8StringEncoding];
         unichar  ch = strtoll(cstr, nil, 16);
         
-        [mdata appendBytes:&ch length:1];
         str = [str stringByAppendingString:[NSString stringWithFormat:@"%c",ch & 0xff]];
     }
     return str;
@@ -103,11 +107,6 @@ void decToBin(int num, char *buffer) {
         str = [str stringByAppendingString:cs];
     }
     return str;
-}
-
-- (long)hexStringToLongValue {
-    const char * cstr = [self cStringUsingEncoding:NSUTF8StringEncoding];
-    return strtol(cstr, nil, 16);
 }
 
 - (NSString *)hexStringToCharString {
@@ -141,5 +140,4 @@ void decToBin(int num, char *buffer) {
 }
 
 @end
-
 

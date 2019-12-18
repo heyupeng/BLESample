@@ -11,6 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface NSString (YPNumberBaseConversion)
+
 /**
  Convert hex to decimal 16进制字符串转十进制字符串
  */
@@ -34,7 +35,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Convert decimal string to hex string 十进制字符串转十六进制字符串
  */
-+ (NSString *)decimalToHex:(NSString *)decimalString;
++ (NSString *)hexStringByDecimalString:(NSString *)decimalString;
 
 /**
  Convert decimal string to hex string 十进制字符串转二进制字符串
