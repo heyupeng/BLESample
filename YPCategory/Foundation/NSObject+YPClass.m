@@ -8,14 +8,14 @@
 
 #import "NSObject+YPClass.h"
 #import <objc/runtime.h>
+#import <CoreData/CoreData.h>
 
 @implementation NSObject (YPClass)
 
-+ (BOOL)isFromFoundation:(Class)cls {
-    if (cls == [NSObject class]) {
-        // 几乎所有类都继承自NSObject, 不能用(isKindOfClass:). 
-        return YES;
-    }
++ (BOOL)yp_isFromFoundation:(Class)cls {
+    // 几乎所有类都继承自NSObject, 不能用(isKindOfClass:).
+    if (cls == [NSObject class] || cls == [NSManagedObject class]) return YES;
+    
     return NO;
 }
 
@@ -46,7 +46,7 @@
         // .2
         class = class_getSuperclass(class);
         // .3
-        if ([self isFromFoundation:class]) {
+        if ([self yp_isFromFoundation:class]) {
             break;
         }
     }

@@ -143,7 +143,7 @@
 /**
  Convert decimal string to hex string 十进制字符串转十六进制字符串
  */
-+ (NSString *)decimalToHex:(NSString *)decimalString {
++ (NSString *)hexStringByDecimalString:(NSString *)decimalString {
     long long decimal = [decimalString longLongValue];
     NSString * hex =@"";
 
@@ -193,7 +193,7 @@
 }
 
 - (NSString *)decimalToHex {
-    return [NSString decimalToHex:self];
+    return [NSString hexStringByDecimalString:self];
 }
 
 - (NSString *)decimalToBinary {

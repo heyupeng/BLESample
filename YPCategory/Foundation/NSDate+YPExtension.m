@@ -22,8 +22,6 @@ static NSDateFormatter * dateFormatter_;
         [dateFormatter_ setDateFormat:@"yyyy-MM-dd HH:mm:ss.SSS Z"];
     }
     return [dateFormatter_ stringFromDate:self];
-//    [NSTimeZone systemTimeZone];
-    return nil;
 }
 
 @end

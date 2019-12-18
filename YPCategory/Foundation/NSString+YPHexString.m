@@ -68,27 +68,17 @@
         return @"";
     }
     
-    NSString * string = @"";
-    for (int i = 0; i < hexString.length; i += 2) {
-        NSRange range = NSMakeRange(i, 2);
-        NSString * s = [hexString substringWithRange:range];
-        unichar ch = [NSString hexStringToLongValue:s];
-        
-        string = [string stringByAppendingString: [NSString stringWithFormat:@"%c", ch]];
-    }
-    return string;
+    return [hexString hexStringToCharString];
 }
 
 + (NSString *)charStringFromHexString:(NSString *)hexString {
     NSString * str = @"";
-    NSMutableData * mdata = [NSMutableData new];
 
     for (int i = 0; i < hexString.length; i+=2) {
         NSString * s = [hexString substringWithRange:NSMakeRange(i, 2)];
         const char * cstr = [s cStringUsingEncoding:NSUTF8StringEncoding];
         unichar  ch = strtoll(cstr, nil, 16);
         
-        [mdata appendBytes:&ch length:1];
         str = [str stringByAppendingString:[NSString stringWithFormat:@"%c",ch & 0xff]];
     }
     return str;
