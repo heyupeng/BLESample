@@ -12,16 +12,26 @@
 
 @end
 
-static NSDateFormatter * dateFormatter_;
-
 @implementation NSDate (YPDescription)
 
-- (NSString *)yp_description {
-    if (!dateFormatter_) {
-        dateFormatter_ = [[NSDateFormatter alloc] init];
-        [dateFormatter_ setDateFormat:@"yyyy-MM-dd HH:mm:ss.SSS Z"];
+- (NSString *)yp_format:(NSString *)format {
+    if (!format) {return nil;}
+    
+    static NSDateFormatter * dateFormatter;
+    if (!dateFormatter) {
+        dateFormatter = [[NSDateFormatter alloc] init];
     }
-    return [dateFormatter_ stringFromDate:self];
+    dateFormatter.dateFormat = format;
+
+    return [dateFormatter stringFromDate:self];
+}
+
+- (NSString *)yp_description {
+    return [self yp_format:@"yyyy-MM-dd HH:mm:ss.SSS Z"];
+}
+
+- (NSString *)yp_short_description {
+    return [self yp_format:@"HH:mm:ss.SSS"];
 }
 
 @end

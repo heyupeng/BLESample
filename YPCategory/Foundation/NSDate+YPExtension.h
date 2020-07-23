@@ -15,7 +15,11 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface NSDate (YPDescription)
+- (NSString *)yp_format:(NSString *)format;
+
 - (NSString *)yp_description;
+
+- (NSString *)yp_short_description;
 @end
 
 NS_ASSUME_NONNULL_END
