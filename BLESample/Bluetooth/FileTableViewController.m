@@ -9,7 +9,7 @@
 #import "FileTableViewController.h"
 
 @interface FileTableViewController ()<UITableViewDelegate, UITableViewDataSource>
-
+@property (nonatomic, strong) NSString * rootPath;
 @end
 
 @implementation FileTableViewController
@@ -28,6 +28,8 @@
     self.tableView = tablezView;
     [self.view addSubview:tablezView];
     [self.tableView reloadData];
+    
+    self.transitioningDelegate = self;
 }
 
 - (void)viewDidLayoutSubviews {
@@ -122,6 +124,31 @@
     if ([fileName.pathExtension isEqualToString:@"mov"] || [fileName.pathExtension isEqualToString:@"mp4"]) {
         
     }
+    
+    NSError * error;
+    NSArray * subpaths = [[NSFileManager defaultManager] subpathsOfDirectoryAtPath:_filePath error:&error];
+    if (!error && subpaths && subpaths.count > 0) {
+        FileTableViewController * fvc = [[FileTableViewController alloc] init];
+        fvc.rootPath = _filePath;
+        [self.navigationController pushViewController:fvc animated:YES];
+    }
+    
+    return;
+    NSURL *fileURL = [NSURL fileURLWithPath:fileName];
+    [self openDocumentShare:fileURL];
+}
+
+- (void)openDocumentShare:(NSURL *)fileURL {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIDocumentInteractionController * c = [UIDocumentInteractionController interactionControllerWithURL:fileURL];
+        __weak FileTableViewController * weakSelf = self;
+        c.delegate = weakSelf ;
+        [c presentOpenInMenuFromRect:self.view.frame inView:self.view animated:YES];
+    });
+}
+
+- (UIViewController *)documentInteractionControllerViewControllerForPreview:(UIDocumentInteractionController *)controller {
+    return self;
 }
 
 - (NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -140,13 +167,17 @@
     
     NSMutableArray *retval = [NSMutableArray array];
     
-    // 1.
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *publicDocumentsDir = [paths objectAtIndex:0];
+    if (!_rootPath) {
+        // 1.
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *publicDocumentsDir = [paths objectAtIndex:0];
+        _rootPath = publicDocumentsDir;
+    }
+   
     
     // 2.
     NSError *error;
-    NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:publicDocumentsDir error:&error];
+    NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:_rootPath error:&error];
     if (files == nil) {
         NSLog(@"Error reading contents of documents directory: %@", [error localizedDescription]);
         return retval;
@@ -163,15 +194,15 @@
     
     // 4.
     for (NSString *file in files) {
-        if ([file.pathExtension compare:@"zip" options:NSCaseInsensitiveSearch] == NSOrderedSame || [file.pathExtension compare:@"bin" options:NSCaseInsensitiveSearch] == NSOrderedSame || [file.pathExtension compare:@"img" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
-            NSString *fullPath = [publicDocumentsDir stringByAppendingPathComponent:file];
+//        if ([file.pathExtension compare:@"zip" options:NSCaseInsensitiveSearch] == NSOrderedSame || [file.pathExtension compare:@"bin" options:NSCaseInsensitiveSearch] == NSOrderedSame || [file.pathExtension compare:@"img" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
+            NSString *fullPath = [_rootPath stringByAppendingPathComponent:file];
             [retval addObject:fullPath];
-        }
+//        }
     }
     
     // 1.
     BOOL isDir = YES;
-    NSString * inboxPath = [publicDocumentsDir stringByAppendingPathComponent:@"Inbox"]; // 文件共享(第三方App导入)
+    NSString * inboxPath = [_rootPath stringByAppendingPathComponent:@"Inbox"]; // 文件共享(第三方App导入)
     
     // 2.
     BOOL existInbox = [[NSFileManager defaultManager] fileExistsAtPath:inboxPath isDirectory:&isDir];

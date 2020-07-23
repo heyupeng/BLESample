@@ -69,12 +69,35 @@
 		<dict>
 			<key>Handler rank</key>
 			<string>Owner</string>
+			<key>Type Role</key>
+			<string>eidtor</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
 			<key>UTTypeDescription</key>
-			<string>public.item</string>
+			<string>public.data</string>
 			<key>UTTypeIconFiles</key>
 			<array/>
 			<key>UTTypeIdentifier</key>
-			<string>public.item</string>
+			<string>com.public.data</string>
+		</dict>
+	</array>
+	<key>UTImportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>Handler rank</key>
+			<string>owner</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.content</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>public.content</string>
+			<key>UTTypeIconFiles</key>
+			<array/>
+			<key>UTTypeIdentifier</key>
+			<string>com.public.content</string>
 		</dict>
 	</array>
 </dict>
