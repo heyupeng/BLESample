@@ -55,12 +55,24 @@
 }
 - (void)panGestureRecognizerActionForFrame:(UIPanGestureRecognizer *)sender {
     // 获取手势的移动，也是相对于最开始的位置
-    CGPoint transP = [sender translationInView:_logBtn];
+    UIView * v = sender.view;
+    CGPoint transP = [sender translationInView:v];
     
-    _logBtn.transform = CGAffineTransformTranslate(_logBtn.transform, transP.x, transP.y);
+    CGRect offset = CGRectOffset(v.frame, transP.x, transP.y);
+    if (offset.origin.x < 0) {
+        transP.x += 0 - offset.origin.x;
+    } else if (CGRectGetMaxX(offset) > CGRectGetWidth(v.superview.frame)) {
+        transP.x += CGRectGetWidth(v.superview.frame) - CGRectGetMaxX(offset);
+    }
+    if (offset.origin.y < 20) {
+        transP.y += 20 - offset.origin.y;
+    } else if (CGRectGetMaxY(offset) > CGRectGetHeight(v.superview.frame)) {
+        transP.y += CGRectGetHeight(v.superview.frame) - CGRectGetMaxY(offset);
+    }
+    v.transform = CGAffineTransformTranslate(v.transform, transP.x, transP.y);
     
     // 复位
-    [sender setTranslation:CGPointZero inView:_logBtn];
+    [sender setTranslation:CGPointZero inView:v];
     
     if (sender.state == UIGestureRecognizerStateEnded) {
         [UIView animateWithDuration:0.2 animations:^{
@@ -295,7 +307,7 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         NSString * name = notification.name;
         if ([name isEqualToString:YPBLEManager_DidUpdateState]) {
-            if (_blueManager.manager.state == CBManagerStatePoweredOn) {
+            if (self.blueManager.manager.state == CBManagerStatePoweredOn) {
                 [self.navigationItem.rightBarButtonItem setTitle:@"Scan"];
                 self.navigationItem.rightBarButtonItem.enabled = YES;
             }else {
@@ -305,8 +317,8 @@
         }
         
         if ([name isEqualToString:YPBLEManager_DidDiscoverDevice]) {
-            [_dataSource setArray:_blueManager.discoverDevices];
-            [_tableView reloadData];
+            [self.dataSource setArray:self.blueManager.discoverDevices];
+            [self.tableView reloadData];
         }
     });
 }
@@ -380,8 +392,11 @@
     YPBleDevice * device = [_dataSource objectAtIndex:indexPath.row];
     
     NSMutableString * str = [NSMutableString new];
+    __block NSTimeInterval time = 0;
     [device.RSSIRecords enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        [str appendFormat: @"%@: %@\n", [(NSDate *)[obj objectForKey:@"date"] yp_description], [[obj objectForKey:@"rssi"] stringValue]];
+        NSTimeInterval time1 = [(NSDate *)[obj objectForKey:@"date"] timeIntervalSince1970];
+        [str appendFormat: @"%@: %@ (%.4f ms)\n", [(NSDate *)[obj objectForKey:@"date"] yp_short_description], [[obj objectForKey:@"rssi"] stringValue], time==0?0:time1 - time];
+        time = time1;
     }];
     
     UIAlertController * ac = [UIAlertController alertControllerWithTitle:[@"RSSI" stringByAppendingFormat:@"(dBm) %lu More", device.RSSIRecords.count] message:str preferredStyle:UIAlertControllerStyleActionSheet];
