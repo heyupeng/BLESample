@@ -8,11 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-#import "YPBlueManager.h"
-
+#import "YPBleManager.h"
+#import "YPBleMacro.h"
 
 @interface YPBlueViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
 
-@property (nonatomic, strong) YPBlueManager * blueManager;
+@property (nonatomic, strong) YPBleManager * blueManager;
 
 @end

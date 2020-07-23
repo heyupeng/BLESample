@@ -8,8 +8,6 @@
 
 #import "YPBlueViewController.h"
 
-#import "YPBlueConst.h"
-
 #import "YPDeviceViewController.h"
 #import "YPCmdViewController.h"
 #import "ObjdectModel.h"
@@ -94,8 +92,8 @@
     [super viewDidAppear:animated];
     
     [self addNotificationObserver];
-    _blueManager = [YPBlueManager share];
-    [_blueManager updateState];
+    _blueManager = [YPBleManager share];
+    [_blueManager bleEnabled];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

@@ -7,16 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "YPBlueManager.h"
+#import "YPBleManager.h"
 #import "YPBleDevice.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-//@class YPBlueManager, YPBleDevice;
+//@class YPBleManager, YPBleDevice;
 
 @interface YPCmdViewController : UIViewController
 
-@property (nonatomic, strong) YPBlueManager * blueManager;
+@property (nonatomic, strong) YPBleManager * blueManager;
 @property (nonatomic, strong) YPBleDevice * device;
 
 @end

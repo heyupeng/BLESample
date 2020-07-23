@@ -9,7 +9,7 @@
 #import "YPSUOTA.h"
 #import <UIKit/UIKit.h>
 
-#import "YPBlueConst.h"
+#import "YPBleConst.h"
 
 #import "CBUUID+YPExtension.h"
 

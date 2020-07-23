@@ -20,6 +20,7 @@
 @property (nonatomic, readonly) NSData * companysData;
 @property (nonatomic, readonly) NSData * specificData;
 @property (nonatomic, readonly) NSData * mac; // In ManufacturerData
+@property (nonatomic, readonly) NSData * macReverseInServiceForFE95; // In Service For FE95
 @end
 
 
@@ -68,8 +69,15 @@
 
 - (void)writeValueWithoutResponse:(NSData *)data forCharacteristicUUID:(CBUUID*)characteristicUUID serviceUUID:(CBUUID*)serviceUUID peripheral:(CBPeripheral *)peripheral;
 
-- (void)writeFFValue:(NSString *)FFString;
+/// Write hex string Value to a characteristic that is NordicUARTTxCharacteristic
+/// @method writeFFValue
+/// @param FFString The hex string value to write.
+/// @return Bool
+/// @discussion Writes <i>hex string value</i> to <i>NordicUARTTxCharacteristicUUIDString</i>'s characteristic value.
+///             the <code>CBCharacteristicWriteWithResponse</code> type is specified.
+- (BOOL)writeFFValue:(NSString *)FFString;
 
+- (void)writeFFValue:(NSString *)FFString completion:(void(^)(BOOL success))completion;
 @end
 
 @interface YPBleDevice (yp_BleOperation_depaecated_1_0)

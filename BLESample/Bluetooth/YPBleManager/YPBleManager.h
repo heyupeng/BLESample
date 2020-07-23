@@ -1,5 +1,5 @@
 //
-//  YPBlueManager.h
+//  YPBleManager.h
 //  YPDemo
 //
 //  Created by Peng on 2017/11/3.
@@ -9,34 +9,32 @@
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 
+#import "YPBleConst.h"
+
 #define MAX_RSSI_VALUE 60
 #define SCAN_TIME_OUT 30
-
-typedef enum {
-    BLEOperationStateNone = 0,
-    BLEOperationStateScanning,
-    BLEOperationStateStopScan,
-    BLEOperationStateConnecting,
-    BLEOperationStateConnected,
-    BLEOperationStatedisConnecting,
-    BLEOperationStatedisConnected,
-} BLEOperationState; // Ble Operation State
+#define CONNECT_TIME_OUT 10
 
 @class YPBleDevice;
 
-@protocol YPBlueManagerDelegate;
+@protocol YPBleManagerDelegate;
 
-@interface YPBlueManager : NSObject <CBCentralManagerDelegate>
+@interface YPBleManager : NSObject <CBCentralManagerDelegate>
 
 @property (nonatomic, strong) CBCentralManager * manager;
 @property (nonatomic, strong) NSMutableArray * discoverDevices;
 @property (nonatomic, strong) NSMutableArray * discoverperipheral;
 @property (nonatomic, strong) YPBleDevice * currentDevice;
 
-@property (nonatomic, weak) id<YPBlueManagerDelegate> bleDelegate;
+@property (nonatomic, weak) id<YPBleManagerDelegate> bleDelegate;
+
+/// 默认NO。{manager.state == CBManagerStatePoweredOn}时为YES。
+@property (nonatomic, readonly) BOOL bleEnabled;
 
 @property (nonatomic) BOOL autoScanWhilePoweredOn;
-@property (nonatomic) BOOL isScaning;
+@property (nonatomic, readonly) BOOL isScaning;
+@property (nonatomic, readonly) BLEOperationState bleOpState;
+@property (nonatomic, readonly) BLEOperationErrorCode bleOpError;
 
 /* config */
 @property (nonatomic) NSInteger RSSIValue;
@@ -45,11 +43,14 @@ typedef enum {
 
 @property (nonatomic) NSInteger scanTimeout;
 
+@property (nonatomic) BOOL openConnectionTimekeeper;
+@property (nonatomic) NSInteger connectionTime;
+
 - (void)startScan;
 - (void)stopScan;
 
 - (void)connectDevice:(YPBleDevice *)device;
-- (void)disConnectDevice:(YPBleDevice *)device;
+- (void)disconnectDevice:(YPBleDevice *)device;
 
 + (instancetype)share;
 + (void)destroy;
@@ -58,12 +59,12 @@ typedef enum {
 
 @end
 
-@protocol YPBlueManagerDelegate <NSObject>
+@protocol YPBleManagerDelegate <NSObject>
 @optional
-- (void)didUpdateState:(YPBlueManager *)blueManager;
+- (void)didUpdateState:(YPBleManager *)blueManager;
 
-- (void)didDiscoverBTDevice:(YPBleDevice *)device;
+- (void)didDiscoverBleDevice:(YPBleDevice *)device;
 
-- (void)didConnectedBTDevice:(YPBleDevice *)device;
+- (void)didConnectedBleDevice:(YPBleDevice *)device;
 
 @end

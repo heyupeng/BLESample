@@ -18,8 +18,8 @@
 		04279C3B222CC40E001FC02C /* BLESampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279C3A222CC40E001FC02C /* BLESampleTests.m */; };
 		04279C46222CC40E001FC02C /* BLESampleUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279C45222CC40E001FC02C /* BLESampleUITests.m */; };
 		04279D8D222E61C2001FC02C /* YPBlueViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D58222E61C2001FC02C /* YPBlueViewController.m */; };
-		04279D8E222E61C2001FC02C /* YPBlueManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D5A222E61C2001FC02C /* YPBlueManager.m */; };
-		04279D8F222E61C2001FC02C /* YPBlueConst.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D5F222E61C2001FC02C /* YPBlueConst.m */; };
+		04279D8E222E61C2001FC02C /* YPBleManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D5A222E61C2001FC02C /* YPBleManager.m */; };
+		04279D8F222E61C2001FC02C /* YPBleConst.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D5F222E61C2001FC02C /* YPBleConst.m */; };
 		04279D90222E61C2001FC02C /* YPBleDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D60222E61C2001FC02C /* YPBleDevice.m */; };
 		04279D91222E61C2001FC02C /* YPSUOTA.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D62222E61C2001FC02C /* YPSUOTA.m */; };
 		04279D92222E61C2001FC02C /* FileTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D63222E61C2001FC02C /* FileTableViewController.m */; };
@@ -90,12 +90,12 @@
 		04279CDC222CF5EB001FC02C /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		04279D57222E61C2001FC02C /* YPDeviceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPDeviceViewController.h; sourceTree = "<group>"; };
 		04279D58222E61C2001FC02C /* YPBlueViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPBlueViewController.m; sourceTree = "<group>"; };
-		04279D5A222E61C2001FC02C /* YPBlueManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPBlueManager.m; sourceTree = "<group>"; };
-		04279D5B222E61C2001FC02C /* YPBlueConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPBlueConst.h; sourceTree = "<group>"; };
+		04279D5A222E61C2001FC02C /* YPBleManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPBleManager.m; sourceTree = "<group>"; };
+		04279D5B222E61C2001FC02C /* YPBleConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPBleConst.h; sourceTree = "<group>"; };
 		04279D5C222E61C2001FC02C /* YPBleDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPBleDevice.h; sourceTree = "<group>"; };
 		04279D5D222E61C2001FC02C /* YPSUOTA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPSUOTA.h; sourceTree = "<group>"; };
-		04279D5E222E61C2001FC02C /* YPBlueManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPBlueManager.h; sourceTree = "<group>"; };
-		04279D5F222E61C2001FC02C /* YPBlueConst.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPBlueConst.m; sourceTree = "<group>"; };
+		04279D5E222E61C2001FC02C /* YPBleManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPBleManager.h; sourceTree = "<group>"; };
+		04279D5F222E61C2001FC02C /* YPBleConst.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPBleConst.m; sourceTree = "<group>"; };
 		04279D60222E61C2001FC02C /* YPBleDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPBleDevice.m; sourceTree = "<group>"; };
 		04279D61222E61C2001FC02C /* YPBlueDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPBlueDefines.h; sourceTree = "<group>"; };
 		04279D62222E61C2001FC02C /* YPSUOTA.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPSUOTA.m; sourceTree = "<group>"; };
@@ -128,6 +128,7 @@
 		04FBA92725676A5000D9EB91 /* NSString+YPNumberBaseConversion.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+YPNumberBaseConversion.m"; sourceTree = "<group>"; };
 		042958BC224DB10200496C8E /* ObjdectModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjdectModel.h; sourceTree = "<group>"; };
 		042958BD224DB10200496C8E /* ObjdectModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObjdectModel.m; sourceTree = "<group>"; };
+		0442981E256E149400D7CF4D /* YPBleMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPBleMacro.h; sourceTree = "<group>"; };
 		045072502268726D008B4C60 /* YPNordicDFU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPNordicDFU.h; sourceTree = "<group>"; };
 		045072512268726D008B4C60 /* YPNordicDFU.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPNordicDFU.m; sourceTree = "<group>"; };
 		0475F00C255E3E7300D330A4 /* NSObject+YPClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+YPClass.h"; sourceTree = "<group>"; };
@@ -252,7 +253,7 @@
 				04592B2D256E04340026EC44 /* CoreBluetooth+Extension */,
 				04AB1D47227E8E1400B801E9 /* SOCDFUSDK */,
 				04279D87222E61C2001FC02C /* CommunicationProtocol */,
-				04279D59222E61C2001FC02C /* YPBluetooth */,
+				04279D59222E61C2001FC02C /* YPBleManager */,
 				04592B65256E0C150026EC44 /* NordicDFU */,
 				04FFB33123976A77004E26C5 /* SUOTA */,
 				04279D8A222E61C2001FC02C /* YPBlueViewController.h */,
@@ -271,17 +272,18 @@
 			path = Bluetooth;
 			sourceTree = "<group>";
 		};
-		04279D59222E61C2001FC02C /* YPBluetooth */ = {
+		04279D59222E61C2001FC02C /* YPBleManager */ = {
 			isa = PBXGroup;
 			children = (
-				04279D5B222E61C2001FC02C /* YPBlueConst.h */,
-				04279D5F222E61C2001FC02C /* YPBlueConst.m */,
-				04279D5E222E61C2001FC02C /* YPBlueManager.h */,
-				04279D5A222E61C2001FC02C /* YPBlueManager.m */,
+				0442981E256E149400D7CF4D /* YPBleMacro.h */,
+				04279D5B222E61C2001FC02C /* YPBleConst.h */,
+				04279D5F222E61C2001FC02C /* YPBleConst.m */,
+				04279D5E222E61C2001FC02C /* YPBleManager.h */,
+				04279D5A222E61C2001FC02C /* YPBleManager.m */,
 				04279D5C222E61C2001FC02C /* YPBleDevice.h */,
 				04279D60222E61C2001FC02C /* YPBleDevice.m */,
 			);
-			path = YPBluetooth;
+			path = YPBleManager;
 			sourceTree = "<group>";
 		};
 		04279D87222E61C2001FC02C /* CommunicationProtocol */ = {
@@ -597,7 +599,7 @@
 				04FBA92825676A5000D9EB91 /* NSString+YPNumberBaseConversion.m in Sources */,
                 04FFB3302397521B004E26C5 /* NSDate+YPExtension.m in Sources */,
 				04279DBA222E61CD001FC02C /* UITableView+Extension.m in Sources */,
-				04279D8F222E61C2001FC02C /* YPBlueConst.m in Sources */,
+				04279D8F222E61C2001FC02C /* YPBleConst.m in Sources */,
 				042958BE224DB10200496C8E /* ObjdectModel.m in Sources */,
 				04279DA2222E61C2001FC02C /* YPCmdViewController.m in Sources */,
 				04279C23222CC40C001FC02C /* ViewController.m in Sources */,
@@ -610,7 +612,7 @@
 				045072522268726D008B4C60 /* YPNordicDFU.m in Sources */,
 				04279DBC222E61CD001FC02C /* NSObject+YPProperty.m in Sources */,
 				15A8508122A7562100223C9E /* CBPeripheral+YPExtension.m in Sources */,
-				04279D8E222E61C2001FC02C /* YPBlueManager.m in Sources */,
+				04279D8E222E61C2001FC02C /* YPBleManager.m in Sources */,
 				04279DB9222E61CD001FC02C /* UIWebView+YPJSContext.m in Sources */,
 				04279D92222E61C2001FC02C /* FileTableViewController.m in Sources */,
 				040F636722410CC1002B0598 /* NSData+YPHexString.m in Sources */,

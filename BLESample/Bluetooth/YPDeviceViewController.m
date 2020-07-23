@@ -10,9 +10,7 @@
 #import "YPUpgradeViewController.h"
 #import "YPCmdViewController.h"
 
-#import "CoreBluetooth+Extension.h"
-
-#import "YPBluetooth/YPBlueConst.h"
+#import "YPBleMacro.h"
 
 #import "CommunicationProtocol/SOCBluetoothWriteData.h"
 
@@ -54,7 +52,7 @@
 }
 
 - (void)dealloc {
-    [_blueManager disConnectDevice:_device];
+    [_blueManager disconnectDevice:_device];
     [self removeNotificationObserver];
 }
 /** ============== **/

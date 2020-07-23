@@ -8,7 +8,7 @@
 
 #import "YPBleDevice.h"
 
-#import "YPBlueConst.h"
+#import "YPBleConst.h"
 
 #import "CBPeripheral+YPExtension.h"
 #import "CBUUID+YPExtension.h"
@@ -135,7 +135,7 @@
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
-    [self logWithFormat:@"did Write Value: \n\t UUID %@ \n\t Value %@", [characteristic UUID], [characteristic value]];
+//    [self logWithFormat:@"did Write Value: \n\t UUID %@ \n\t Value %@", [characteristic UUID], [characteristic value]];
     if (error) {
         [self logWithFormat:@"error: %@", error.localizedDescription];
     }
@@ -154,7 +154,7 @@
         _logger(string);
     } else {
         NSLog(@"%@", string);
-        [[YPLogger share] appendLog:string];
+//        [[YPLogger share] appendLog:string];
     }
 }
 
@@ -162,15 +162,18 @@
 
 @implementation YPBleDevice (yp_BleOperation)
 
-- (void)writeValue:(NSData *)data forCharacteristicUUID:(CBUUID*)characteristicUUID serviceUUID:(CBUUID*)serviceUUID peripheral:(CBPeripheral *)peripheral type:(CBCharacteristicWriteType)type {
+- (BOOL)writeValue:(NSData *)data forCharacteristicUUID:(CBUUID*)characteristicUUID serviceUUID:(CBUUID*)serviceUUID peripheral:(CBPeripheral *)peripheral type:(CBCharacteristicWriteType)type {
     CBCharacteristic *characteristic = [peripheral yp_findCharacteristicWithUUID:characteristicUUID serviceUUID:serviceUUID];
     if (!characteristic) {
-        return;
+        NSLog(@"======= characteristic is nil =======");
+        return NO;
     }
     if (!data) {
         NSLog(@"======= data is nil =======");
+        return NO;
     }
     [peripheral writeValue:data forCharacteristic:characteristic type:type];
+    return YES;
 }
 
 - (void)writeValue:(NSData *)data forCharacteristicUUID:(CBUUID *)characteristicUUID serviceUUID:(CBUUID *)serviceUUID peripheral:(CBPeripheral *)peripheral {
@@ -181,14 +184,19 @@
     [self writeValue:data forCharacteristicUUID:characteristicUUID serviceUUID:serviceUUID peripheral:peripheral type:CBCharacteristicWriteWithoutResponse];
 }
 
-- (void)writeFFValue:(NSString *)FFString {
+- (BOOL)writeFFValue:(NSString *)FFString {
+    NSLog(@"Write Value: %@", FFString);
     NSData * data = [NSData dataWithHexString:FFString];
     CBUUID * characteristicUUID = [CBUUID UUIDWithString:NordicUARTTxCharacteristicUUIDString];
     CBUUID * serviceUUID = [CBUUID UUIDWithString:NordicUARTServiceUUIDString];
     
-    [self writeValue:data forCharacteristicUUID:characteristicUUID serviceUUID: serviceUUID peripheral:_peripheral type:CBCharacteristicWriteWithResponse];
+    return [self writeValue:data forCharacteristicUUID:characteristicUUID serviceUUID: serviceUUID peripheral:_peripheral type:CBCharacteristicWriteWithResponse];
 }
 
+- (void)writeFFValue:(NSString *)FFString completion:(void (^)(BOOL))completion {
+    if (completion) completion([self writeFFValue:FFString]);
+    [self writeFFValue:FFString];
+}
 
 - (void)readValueForCharacteristicUUID:(CBUUID*)characteristicUUID serviceUUID:(CBUUID*)serviceUUID peripheral:(CBPeripheral *)peripheral {
     CBCharacteristic *characteristic = [peripheral yp_findCharacteristicWithUUID:characteristicUUID serviceUUID:serviceUUID];
@@ -227,9 +235,7 @@
 }
 
 - (NSData *)manufacturerData {
-    if (!self.advertisementData) {
-        return nil;
-    }
+    if (!self.advertisementData) {return nil;}
     if (![[self.advertisementData allKeys] containsObject:CBAdvertisementDataManufacturerDataKey]) {
         return nil;
     }
@@ -239,9 +245,7 @@
 }
 
 - (NSData *)companysData {
-    if (!self.manufacturerData) {
-        return nil;
-    }
+    if (!self.manufacturerData) {return nil;}
     if (self.manufacturerData.length < 2) {
         return [self.manufacturerData mutableCopy];
     }
@@ -251,12 +255,8 @@
 }
 
 - (NSData *)specificData {
-    if (!self.manufacturerData) {
-        return nil;
-    }
-    if (self.manufacturerData.length < 3) {
-        return nil;
-    }
+    if (!self.manufacturerData) {return nil;}
+    if (self.manufacturerData.length < 3) {return nil;}
     
     NSData * manufacturerData = [self manufacturerData];
     NSData * specificData = [manufacturerData subdataWithRange:NSMakeRange(2, manufacturerData.length - 2)];
@@ -274,6 +274,13 @@
     NSData * manufacturerData = [self manufacturerData];
     NSData * macData = [manufacturerData subdataWithRange:NSMakeRange(manufacturerData.length - 6, 6)];
     return macData;
+}
+
+- (NSData *)macReverseInServiceForFE95 {
+    NSDictionary * dict = [self.advertisementData objectForKey:CBAdvertisementDataServiceDataKey];
+    NSData * fe95Data = [dict objectForKey:[CBUUID UUIDWithString:@"FE95"]];
+    NSData * addressData = [fe95Data subdataWithRange:NSMakeRange(fe95Data.length - 1 - 6 - 1, 6)];
+    return addressData;
 }
 
 @end
