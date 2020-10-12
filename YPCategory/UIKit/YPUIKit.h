@@ -10,7 +10,10 @@
 #define YPUIKit_h
 
 #import "UIColor+YPColours.h"
+
 #import "UIDevice+YPSysInfo.h"
+
+#import "UIScreen+NotchScreen.h"
 
 #import "UITableView+Extension.h"
 #import "UIWebView+YPJSContext.h"

@@ -12,21 +12,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface UIDevice (yp_Platform)
 
+/// 设备硬件号，如"iPhone10,3"
 - (NSString *)machine;
 
+/// 设备型号
 - (NSString *)deviceType;
 
 - (NSString *)platformString;
 
 - (BOOL)isSimulator;
-
-@end
-
-@interface UIDevice (yp_iPhoneX)
-
-- (BOOL)isIPhoneX;
-
-- (BOOL)isIPhoneXLine;
 
 @end
 
