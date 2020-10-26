@@ -1,6 +1,6 @@
 //
 //  CBUUID+YPExtension.h
-//  SOOCASBLE
+//  BLESample
 //
 //  Created by Peng on 2019/5/20.
 //  Copyright © 2019 heyupeng. All rights reserved.

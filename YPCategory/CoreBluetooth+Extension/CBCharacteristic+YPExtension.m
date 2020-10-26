@@ -1,6 +1,6 @@
 //
 //  CBCharacteristic+YPExtension.m
-//  SOOCASBLE
+//  BLESample
 //
 //  Created by Peng on 2019/5/20.
 //  Copyright © 2019 heyupeng. All rights reserved.
@@ -21,42 +21,51 @@
  CBCharacteristicPropertyIndicateEncryptionRequired NS_ENUM_AVAILABLE(10_9, 6_0)    = 0x200
  */
 
-static NSArray * propertyDescriptions__;
+static NSArray * _propertyDescriptions_;
 
 @implementation CBCharacteristic (PropertyDescriptions)
 
-- (NSArray *)propertyDescriptions_ {
-    if (!propertyDescriptions__) {
-        propertyDescriptions__ = @[@"Broadcast", @"Read", @"WriteWithoutResponse", @"Write", @"Notify", @"Indicate", @"AuthenticatedSignedWrites", @"ExtendedProperties", @"NotifyEncryptionRequired", @"IndicateEncryptionRequired"];
+- (NSArray *)propertyDescriptions {
+    if (!_propertyDescriptions_) {
+        _propertyDescriptions_ = @[
+            @"Broadcast",
+            @"Read",
+            @"WriteWithoutResponse",
+            @"Write",
+            @"Notify",
+            @"Indicate",
+            @"AuthenticatedSignedWrites",
+            @"ExtendedProperties",
+            @"NotifyEncryptionRequired",
+            @"IndicateEncryptionRequired",
+        ];
     }
-    return propertyDescriptions__;
+    return _propertyDescriptions_;
 }
 
 - (NSArray<NSString *> *)yp_propertyDescriptions {
     CBCharacteristicProperties properties = [self properties];
-    /*
-     @[@"Broadcast", @"Read", @"WriteWithoutResponse", @"Write", @"Notify", @"Indicate", @"AuthenticatedSignedWrites", @"ExtendedProperties", @"NotifyEncryptionRequired", @"IndicateEncryptionRequired"]
-     */
-    NSArray * descriptions_ = [self propertyDescriptions_];
+    NSArray * propertyKeys = [self propertyDescriptions];
     NSMutableArray * descriptions = [[NSMutableArray alloc] initWithCapacity:10];
     
-    if (properties & CBCharacteristicPropertyBroadcast) {
-        [descriptions addObject:descriptions_[0]];
-    }
-    if (properties & CBCharacteristicPropertyRead) {
-        [descriptions addObject:descriptions_[1]];
-    }
-    if (properties & CBCharacteristicPropertyWriteWithoutResponse) {
-        [descriptions addObject:descriptions_[2]];
-    }
-    if (properties & CBCharacteristicPropertyWrite) {
-        [descriptions addObject:descriptions_[3]];
-    }
-    if (properties & CBCharacteristicPropertyNotify) {
-        [descriptions addObject:descriptions_[4]];
-    }
-    if (properties & CBCharacteristicPropertyIndicate) {
-        [descriptions addObject:descriptions_[5]];
+    NSArray * options = @[
+        @(0x01),
+        @(0x02),
+        @(0x04),
+        @(0x08),
+        @(0x10),
+        @(0x20),
+        @(0x40),
+        @(0x80),
+        @(0x100),
+        @(0x200),
+    ];
+    
+    for (NSNumber * option in options) {
+       if (properties & [option unsignedIntegerValue]) {
+           NSUInteger index = [options indexOfObject:option];
+           [descriptions addObject:propertyKeys[index]];
+       }
     }
     return descriptions;
 }

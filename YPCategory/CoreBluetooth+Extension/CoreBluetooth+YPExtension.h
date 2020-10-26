@@ -6,12 +6,13 @@
 //  Copyright © 2019年 heyupeng. All rights reserved.
 //
 
-#ifndef CoreBluetooth_Extension_h
-#define CoreBluetooth_Extension_h
+#ifndef CoreBluetooth_YPExtension_h
+#define CoreBluetooth_YPExtension_h
 
-#import "CBUUID+YPExtension.h"
 #import "CBCharacteristic+YPExtension.h"
+#import "CBManager+YPAuthorization.h"
 #import "CBPeripheral+YPExtension.h"
+#import "CBUUID+YPExtension.h"
 
 
-#endif /* CoreBluetooth_Extension_h */
+#endif /* CoreBluetooth_YPExtension_h */

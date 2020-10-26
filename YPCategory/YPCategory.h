@@ -15,4 +15,6 @@
 /* UI */
 #import "UIKit/YPUIKit.h"
 
+#import "CoreBluetooth+YPExtension.h"
+
 #endif /* YPCategory_h */

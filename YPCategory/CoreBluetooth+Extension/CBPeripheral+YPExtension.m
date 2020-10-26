@@ -1,6 +1,6 @@
 //
 //  CBPeripheral+YPExtension.m
-//  SOOCASBLE
+//  BLESample
 //
 //  Created by Pro on 2019/6/5.
 //  Copyright © 2019 heyupeng. All rights reserved.
@@ -8,10 +8,6 @@
 
 #import "CBPeripheral+YPExtension.h"
 #import "CBUUID+YPExtension.h"
-
-@implementation CBPeripheral (YPExtension)
-
-@end
 
 @implementation CBPeripheral (yp_BleOperation)
 
@@ -21,7 +17,8 @@
         return;
     }
     if (!data) {
-        NSLog(@"======= data is nil =======");
+        NSLog(@"ERROR: The data being written is nil.");
+        return;
     }
     [self writeValue:data forCharacteristic:characteristic type:type];
 }
@@ -31,7 +28,6 @@
     if (!characteristic) {
         return;
     }
-    NSLog(@"characteristic with UUID %s on service with UUID %s\n", [characteristicUUID UUIDToString], [serviceUUID UUIDToString]);
     [self readValueForCharacteristic:characteristic];
 }
 
@@ -41,41 +37,66 @@
     if (!characteristic) {
         return;
     }
-    
     [peripheral setNotifyValue:value forCharacteristic:characteristic];
 }
+@end
 
-- (CBService *)yp_findServiceWithUUID:(CBUUID *)UUID {
-    return [self yp_findServiceWithUUID:UUID peripheral:self];
+
+@implementation CBPeripheral (yp_ServiceAndCharacteristic)
+
+- (CBService *)yp_serviceWithUUID:(CBUUID *)serviceUUID {
+    CBPeripheral * peripheral = self;
+    for(int i = 0; i < peripheral.services.count; i++) {
+        CBService *s = [peripheral.services objectAtIndex:i];
+        if ([s.UUID isEqualToUUID:serviceUUID]) return s;
+    }
+    NSLog(@"ERROR: The service (UUID %s) is not found on peripheral (UUID %@) .\n", [serviceUUID UUIDToString], peripheral.identifier);
+    return nil; // Service is not found on this peripheral
 }
 
-- (CBCharacteristic *)yp_findCharacteristicWithUUID:(CBUUID *)UUID serviceUUID:(CBUUID *)serviceUUID peripheral:(CBPeripheral *)peripheral {
-    CBService *service = [self yp_findServiceWithUUID:serviceUUID peripheral:peripheral];
+
+- (CBCharacteristic *)yp_characteristicWithUUID:(CBUUID *)UUID serviceUUID:(CBUUID *)serviceUUID {
+    CBPeripheral * peripheral = self;
+    CBService *service = [self yp_findServiceWithUUID:serviceUUID];
     if (!service) {
         return nil;
     }
-    CBCharacteristic *characteristic = [self yp_findCharacteristicWithUUID:UUID service:service];
-    return characteristic;
+    
+    for(int i=0; i < service.characteristics.count; i++) {
+        CBCharacteristic *c = [service.characteristics objectAtIndex:i];
+        if ([c.UUID isEqualToUUID:UUID]) return c;
+    }
+    NSLog(@"ERROR: The characteristic (UUID %s) is not found on service (UUID %s) .\n", [UUID UUIDToString], [[service UUID] UUIDToString]);
+    return nil; // Characteristic is not found on this service
 }
+@end
 
-- (CBCharacteristic *)yp_findCharacteristicWithUUID:(CBUUID *)UUID serviceUUID:(CBUUID *)serviceUUID {
-    return [self yp_findCharacteristicWithUUID:UUID serviceUUID:serviceUUID peripheral:self];
-}
+
+@implementation CBPeripheral (yp_Deprecated)
 
 /**
  @method findServiceWithUUID: peripheral:
  
  @param UUID       The Bluetooth UUID of the service.
- @param peripheral The peripheral this service belongs to
  @return           Return a service if found
  */
-- (CBService *)yp_findServiceWithUUID:(CBUUID *)UUID peripheral:(CBPeripheral *)peripheral {
+- (CBService *)yp_findServiceWithUUID:(CBUUID *)UUID {
+    CBPeripheral * peripheral = self;
     for(int i = 0; i < peripheral.services.count; i++) {
         CBService *s = [peripheral.services objectAtIndex:i];
         if ([s.UUID isEqualToUUID:UUID]) return s;
     }
     NSLog(@"Could not find service with UUID %s on peripheral with UUID %@\r\n", [UUID UUIDToString], peripheral.identifier);
     return nil; //Service not found on this peripheral
+}
+
+- (CBCharacteristic *)yp_findCharacteristicWithUUID:(CBUUID *)UUID serviceUUID:(CBUUID *)serviceUUID {
+    CBService *service = [self yp_findServiceWithUUID:serviceUUID];
+    if (!service) {
+        return nil;
+    }
+    CBCharacteristic *characteristic = [self yp_findCharacteristicWithUUID:UUID service:service];
+    return characteristic;
 }
 
 /**

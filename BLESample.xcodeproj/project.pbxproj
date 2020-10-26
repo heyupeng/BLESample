@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		040F636722410CC1002B0598 /* NSData+YPHexString.m in Sources */ = {isa = PBXBuildFile; fileRef = 040F636622410CC1002B0598 /* NSData+YPHexString.m */; };
+		0415A141254662FD00B1FFB7 /* CBManager+YPAuthorization.m in Sources */ = {isa = PBXBuildFile; fileRef = 0415A140254662FD00B1FFB7 /* CBManager+YPAuthorization.m */; };
 		04279C20222CC40C001FC02C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279C1F222CC40C001FC02C /* AppDelegate.m */; };
 		04279C23222CC40C001FC02C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279C22222CC40C001FC02C /* ViewController.m */; };
 		04279C26222CC40C001FC02C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 04279C24222CC40C001FC02C /* Main.storyboard */; };
@@ -67,10 +68,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		040F62EB223B429E002B0598 /* CoreBluetooth+Extension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CoreBluetooth+Extension.h"; sourceTree = "<group>"; };
+		040F62EB223B429E002B0598 /* CoreBluetooth+YPExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CoreBluetooth+YPExtension.h"; sourceTree = "<group>"; };
 		040F63142241047B002B0598 /* BLESample-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BLESample-Bridging-Header.h"; sourceTree = "<group>"; };
 		040F636522410CC1002B0598 /* NSData+YPHexString.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSData+YPHexString.h"; sourceTree = "<group>"; };
 		040F636622410CC1002B0598 /* NSData+YPHexString.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSData+YPHexString.m"; sourceTree = "<group>"; };
+		0415A13F254662FD00B1FFB7 /* CBManager+YPAuthorization.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CBManager+YPAuthorization.h"; sourceTree = "<group>"; };
+		0415A140254662FD00B1FFB7 /* CBManager+YPAuthorization.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "CBManager+YPAuthorization.m"; sourceTree = "<group>"; };
 		04279C1B222CC40C001FC02C /* BLESample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BLESample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		04279C1E222CC40C001FC02C /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		04279C1F222CC40C001FC02C /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -253,7 +256,6 @@
 		04279D56222E61C2001FC02C /* Bluetooth */ = {
 			isa = PBXGroup;
 			children = (
-				04592B2D256E04340026EC44 /* CoreBluetooth+Extension */,
 				04AB1D47227E8E1400B801E9 /* SOCDFUSDK */,
 				04279D87222E61C2001FC02C /* CommunicationProtocol */,
 				04279D59222E61C2001FC02C /* YPBleManager */,
@@ -306,6 +308,7 @@
 				04279DA7222E61CC001FC02C /* YPCategory.h */,
 				04AB1D59227EC78000B801E9 /* Foundation */,
 				04AB1D5B227ECA9F00B801E9 /* UIKit */,
+				04592B2D256E04340026EC44 /* CoreBluetooth+Extension */,
 			);
 			path = YPCategory;
 			sourceTree = "<group>";
@@ -313,13 +316,15 @@
 		04592B2D256E04340026EC44 /* CoreBluetooth+Extension */ = {
 			isa = PBXGroup;
 			children = (
-				040F62EB223B429E002B0598 /* CoreBluetooth+Extension.h */,
+				040F62EB223B429E002B0598 /* CoreBluetooth+YPExtension.h */,
 				04998B5D22923F0500AE418E /* CBCharacteristic+YPExtension.h */,
 				04998B5E22923F0500AE418E /* CBCharacteristic+YPExtension.m */,
 				04998B602292530700AE418E /* CBUUID+YPExtension.h */,
 				04998B612292530700AE418E /* CBUUID+YPExtension.m */,
 				15A8507F22A7562100223C9E /* CBPeripheral+YPExtension.h */,
 				15A8508022A7562100223C9E /* CBPeripheral+YPExtension.m */,
+				0415A13F254662FD00B1FFB7 /* CBManager+YPAuthorization.h */,
+				0415A140254662FD00B1FFB7 /* CBManager+YPAuthorization.m */,
 			);
 			path = "CoreBluetooth+Extension";
 			sourceTree = "<group>";
@@ -620,6 +625,7 @@
 				0487E3FC25345AAB002F4780 /* UIScreen+NotchScreen.m in Sources */,
 				04279D8E222E61C2001FC02C /* YPBleManager.m in Sources */,
 				04279DB9222E61CD001FC02C /* UIWebView+YPJSContext.m in Sources */,
+				0415A141254662FD00B1FFB7 /* CBManager+YPAuthorization.m in Sources */,
 				04279D92222E61C2001FC02C /* FileTableViewController.m in Sources */,
 				040F636722410CC1002B0598 /* NSData+YPHexString.m in Sources */,
 				04279D9F222E61C2001FC02C /* YPUpgradeViewController.m in Sources */,
