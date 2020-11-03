@@ -28,22 +28,31 @@
 
 @property (nonatomic, weak) id<YPBleManagerDelegate> bleDelegate;
 
-/// 默认NO。{manager.state == CBManagerStatePoweredOn}时为YES。
+/// 蓝牙是否可用。默认NO。{manager.state == CBManagerStatePoweredOn}时为YES。
 @property (nonatomic, readonly) BOOL bleEnabled;
-
-@property (nonatomic) BOOL autoScanWhilePoweredOn;
+/// 是否正在检索状态。
 @property (nonatomic, readonly) BOOL isScaning;
+/// 管理器状态。
 @property (nonatomic, readonly) BLEOperationState bleOpState;
+/// 管理器操作错误码
 @property (nonatomic, readonly) BLEOperationErrorCode bleOpError;
 
-/* config */
+/* 设备拦截设置 */
+/// 信号值。超过信号值的将被拦截。
 @property (nonatomic) NSInteger RSSIValue;
+/// 设备名。广播信息中的LocalName字段未携带localName的将被拦截。
 @property (nonatomic, copy) NSString * localName;
+/// 地址。当mac不为nil， 检索目标设备，其他设备将被拦截
 @property (nonatomic, copy) NSString * mac;
 
+/* 管理器操作设置 */
+/// 默认 NO。当autoScanWhilePoweredOn 为YES，打开蓝牙时自动检索。
+@property (nonatomic) BOOL autoScanWhilePoweredOn;
+/// 检索时间。默认 30 sec。
 @property (nonatomic) NSInteger scanTimeout;
-
+/// 开启连接计时。配合 connectionTime 使用
 @property (nonatomic) BOOL openConnectionTimekeeper;
+/// 连接时间。默认 10 sec。
 @property (nonatomic) NSInteger connectionTime;
 
 - (void)startScan;

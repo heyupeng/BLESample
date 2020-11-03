@@ -11,6 +11,9 @@
 #import "YPBleDevice.h"
 #import "YPBleConst.h"
 
+#import "CoreBluetooth+YPExtension.h"
+#import "NSData+YPHexString.h"
+
 NSString * CBManagerStateGetDescription(CBManagerState state) {
     NSString * desc;
     switch (state) {
@@ -42,6 +45,9 @@ NSString * CBManagerStateGetDescription(CBManagerState state) {
 static YPBleManager *shareManager;
 
 @interface YPBleManager ()
+{
+    dispatch_block_t _connect_timer_block;
+}
 
 @property (nonatomic, strong) NSTimer * scannerTimer;
 @property (nonatomic) NSInteger countDownTime;
@@ -86,12 +92,25 @@ static YPBleManager *shareManager;
 }
 
 - (void)configuration {
-    _RSSIValue = MAX_RSSI_VALUE;
-    _scanTimeout = SCAN_TIME_OUT;
-    _connectionTime = CONNECT_TIME_OUT;
-    
     _discoverDevices = [[NSMutableArray alloc] init];
     _discoverperipheral = [NSMutableArray new];
+    
+    [self deviceInterceptSetup];
+    
+    [self operationSetup];
+}
+
+- (void)deviceInterceptSetup {
+    _RSSIValue = MAX_RSSI_VALUE;
+    _localName = nil;
+    _mac = nil;
+}
+
+- (void)operationSetup {
+    _autoScanWhilePoweredOn = NO;
+    _scanTimeout = SCAN_TIME_OUT;
+    _openConnectionTimekeeper = NO;
+    _connectionTime = CONNECT_TIME_OUT;
 }
 
 - (CBCentralManager *)createCenteralManager {
@@ -250,7 +269,7 @@ static YPBleManager *shareManager;
     NSLog(@"Error: %@", BLEOperationErrorGetDetailDescription(error));
     
     _bleOpError = error;
-    [[NSNotificationCenter defaultCenter] postNotificationName: YPBLEManager_BleOperationError object:@{@"bleOpError": @(BLEOperationErrorDisconnected)}];
+    [[NSNotificationCenter defaultCenter] postNotificationName: YPBLEManager_BleOperationError object:@{@"bleOpError": @(_bleOpError)}];
 }
 
 #pragma mark - central delegate
@@ -308,7 +327,7 @@ static YPBleManager *shareManager;
 - (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
     NSLog(@"Manager did disconnected device");
     /*!
-     1. 非主动断开(连接信号中断，如:设备复位、距离过远), 即不是通过“{cancelPeripheralConnection}”断开, error 不为空;
+     1. 非主动断开、意外中断(连接信号中断，如:设备复位、距离过远), 即不是通过“{cancelPeripheralConnection}”断开, error 不为空;
         Error Domain=CBErrorDomain Code=6 "The connection has timed out unexpectedly." UserInfo={NSLocalizedDescription=The connection has timed out unexpectedly.}
         
      2. 开启自定义连接计时器，超时断开; 在一定时间内，由“{@link connectPeripheral:options:}”开启的连接未能完成，当响应连接超时处理机制而调用“{cancelPeripheralConnection}”;
@@ -351,10 +370,15 @@ static YPBleManager *shareManager;
 - (void)updateBleOperationState:(BLEOperationState)state {
     _bleOpState = state;
     switch (state) {
+        case BLEOperationNone:
+            [self cancel_connect_timer_block]; // 连接时被中断，取消block；
+            break;
         case BLEOperationScanning:
 //            [self logWithFormat:@"BLE Operation: Scanning..."];
             break;
-            
+        case BLEOperationConnected:
+            [self cancel_connect_timer_block];
+            break;
         default:
             break;
     }
@@ -424,17 +448,28 @@ static YPBleManager *shareManager;
 - (void)openCustomTimerForConneting:(YPBleDevice *)device {
     if (!self.openConnectionTimekeeper && self.connectionTime > 0) {return;}
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.connectionTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_block_t block = dispatch_block_create(DISPATCH_BLOCK_BARRIER, ^{
 //        if (self.bleOpState == BLEOperationConnecting || device.peripheral.state == CBPeripheralStateConnecting) {
         if (device.peripheral.state == CBPeripheralStateConnecting) {
             [self.manager cancelPeripheralConnection:device.peripheral];
         }
     });
+    _connect_timer_block = block;
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.connectionTime * NSEC_PER_SEC)), dispatch_get_main_queue(), block);
+}
+
+- (void)cancel_connect_timer_block {
+    if (!_connect_timer_block) {
+        return;
+    }
+    dispatch_block_cancel(_connect_timer_block);
+    _connect_timer_block = nil;
 }
 
 - (void)connectDevice:(YPBleDevice *)device {
     if (self.manager.state != CBManagerStatePoweredOn) {
-        _bleOpError = BLEOperationErrorDisconnected;
+        _bleOpError = BLEOperationErrorFailToConnect;
         [[NSNotificationCenter defaultCenter] postNotificationName: YPBLEManager_BleOperationError object:@{@"bleState": @(self.manager.state), @"bleOpError":@(3), @"bleOperation": @"connect"}];
         return;
     }

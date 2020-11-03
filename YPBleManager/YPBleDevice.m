@@ -8,10 +8,12 @@
 
 #import "YPBleDevice.h"
 
+#import <objc/runtime.h>
+
 #import "YPBleConst.h"
 
-#import "CBPeripheral+YPExtension.h"
-#import "CBUUID+YPExtension.h"
+#import "CoreBluetooth+YPExtension.h"
+#import "NSData+YPHexString.h"
 
 @implementation YPBleDevice
 
@@ -88,20 +90,6 @@
         if (characteristic.properties & CBCharacteristicPropertyRead) {
 //            [peripheral readValueForCharacteristic:characteristic];
         }
-        
-//        if ([service.UUID isEqual:[CBUUID UUIDWithString:NordicUARTServiceUUIDString]]) {
-//            if ([[characteristic.UUID description] isEqualToString:NordicUARTRxCharacteristicUUIDString]) {
-//                /*
-//                 _RxCharacteristic = characteristic;
-//                 */
-//                [peripheral setNotifyValue:YES forCharacteristic:characteristic];
-//            }
-//            if ([[characteristic.UUID description] isEqualToString:NordicUARTTxCharacteristicUUIDString]) {
-//                /*
-//                _TxCharacteristic = characteristic;
-//                 */
-//            }
-//        }
     }
     
     [[NSNotificationCenter defaultCenter] postNotificationName:YPBLEDevice_DidDiscoverCharacteristics object:service];

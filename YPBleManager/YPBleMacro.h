@@ -9,7 +9,7 @@
 #ifndef YPBluetooth_h
 #define YPBluetooth_h
 
-#import "CoreBluetooth+Extension.h"
+#import "CoreBluetooth+YPExtension.h"
 
 #import "YPBleConst.h"
 #import "YPBleManager.h"
