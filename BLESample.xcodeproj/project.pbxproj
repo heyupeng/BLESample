@@ -53,6 +53,7 @@
 		04279C41222CC40E001FC02C /* BLESampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BLESampleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		04279C45222CC40E001FC02C /* BLESampleUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BLESampleUITests.m; sourceTree = "<group>"; };
 		04279C47222CC40E001FC02C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+        045E58B125512E2F0008214B /* Enumability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Enumability.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +84,7 @@
 		04279C12222CC40C001FC02C = {
 			isa = PBXGroup;
 			children = (
+                045E58B025512D3B0008214B /* Enumability */,
 				04279C1D222CC40C001FC02C /* BLESample */,
 				04279C39222CC40E001FC02C /* BLESampleTests */,
 				04279C44222CC40E001FC02C /* BLESampleUITests */,
@@ -133,6 +135,14 @@
 				04279C47222CC40E001FC02C /* Info.plist */,
 			);
 			path = BLESampleUITests;
+			sourceTree = "<group>";
+		};
+        045E58B025512D3B0008214B /* Enumability */ = {
+			isa = PBXGroup;
+			children = (
+                045E58B125512E2F0008214B /* Enumability.h */,
+			);
+			path = Enumability;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
