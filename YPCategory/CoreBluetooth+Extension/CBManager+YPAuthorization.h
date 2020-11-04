@@ -7,14 +7,11 @@
 //
 
 #import <CoreBluetooth/CoreBluetooth.h>
+#import "Enumability.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CBManager (yp_Authorization)
-
-#define DECLARE_ENUM_STRING_TRANSFORMATION(EnumType) \
-NSString *NSStringFrom##EnumType(EnumType value); \
-EnumType EnumType##FromNSString(NSString *string); \
 
 #ifndef __IPHONE_13_0
 typedef NS_ENUM(NSInteger, CBManagerAuthorization) {
@@ -29,7 +26,7 @@ typedef NS_ENUM(NSInteger, CBManagerAuthorization) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
 
-DECLARE_ENUM_STRING_TRANSFORMATION(CBManagerAuthorization)
+DECLARE_ENUM_VALUE_STRING_TRANSFORMATION(CBManagerAuthorization)
 
 /// 对 CBManager.authorization 的低版本兼容
 + (CBManagerAuthorization)yp_authorization;
