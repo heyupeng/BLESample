@@ -13,11 +13,16 @@
 #define __ENUM_VALUE_NAME(value) __VAR_NAME(value)
 
 #define __ENUM_CASE(value) case value: __str = __ENUM_VALUE_NAME(value);
+
+#ifndef __ENUM_CASE_RETURN_STRING
 #define __ENUM_CASE_RETURN_STRING(value) case value: return __ENUM_VALUE_NAME(value);
+#endif
 
-
+#ifndef __ENUM_STRCMP_NAME
 #define __ENUM_STRCMP_NAME(name,value) \
 if ([name isEqualToString:__ENUM_VALUE_NAME(value)]) return value;
+#endif
+
 #define __ENUM_STRCMP(value) __ENUM_STRCMP_NAME(string, value)
 
 /*
@@ -35,7 +40,7 @@ if ([name isEqualToString:__ENUM_VALUE_NAME(value)]) return value;
     __FUNC_PARAMS_GET_MACRO(__VA_ARGS__, __FUNC_PARAMS7, __FUNC_PARAMS6,__FUNC_PARAMS5,__FUNC_PARAMS4,__FUNC_PARAMS3,__FUNC_PARAMS2,__FUNC_PARAMS1, 0) \
     (func, __VA_ARGS__)
 
-#define __ENUM_STRING_IMPL__(value, EnumValue, ...) ({\
+#define __ENUM_VUALUE_TO_STRING_IMPL__(value, EnumValue, ...) ({\
     NSString * __str = @"Unknown"; \
     switch (value) { \
     __FUNC_PARAMS(__ENUM_CASE, EnumValue, __VA_ARGS__) ;\
@@ -44,10 +49,10 @@ if ([name isEqualToString:__ENUM_VALUE_NAME(value)]) return value;
     }\
     __str;\
 })
-#define __NSStringFromEnumValue(value, EnumValue, ...) __ENUM_STRING_IMPL__(value, EnumValue,__VA_ARGS__)
+#define __NSStringFromEnumValue(value, EnumValue, ...) __ENUM_VUALUE_TO_STRING_IMPL__(value, EnumValue,__VA_ARGS__)
 */
 
-#define DEFINE_ENUM_STRING_TRANSFROMATION_IPMPL(EnumType, DECLARE_ENUM) \
+#define DEFINE_ENUM_STRING_TRANSFORMATION_IMPL(EnumType, DECLARE_ENUM) \
 NSString *NSStringFrom##EnumType(EnumType value) \
 {\
 switch (value) { \
@@ -62,19 +67,37 @@ EnumType EnumType##FromNSString(NSString *string) \
 { \
 DECLARE_ENUM(__ENUM_STRCMP); \
 return (EnumType)0;\
-}
+}\
+\
+NSString *NSStringFrom##EnumType##WithoutPrefix(EnumType value) \
+{ \
+NSString * str = NSStringFrom##EnumType(value);\
+NSString * enumType = __ENUM_VALUE_NAME(EnumType);\
+if ([str hasPrefix:enumType]) {\
+    str = [str substringFromIndex:enumType.length];\
+}\
+return str;\
+}\
+
 
 @implementation CBManager (YPAuthorization)
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
 
-#define DECLARE_ENUM_CBManagerAuthorization(FUNC) \
-FUNC(CBManagerAuthorizationNotDetermined)\
-FUNC(CBManagerAuthorizationRestricted)\
-FUNC(CBManagerAuthorizationDenied)\
-FUNC(CBManagerAuthorizationAllowedAlways)\
+DEFINE_ENUM_VALUE_STRING_TRANSFORMATION_IMPL(CBManagerAuthorization,
+                                             CBManagerAuthorizationNotDetermined,
+                                             CBManagerAuthorizationRestricted,
+                                             CBManagerAuthorizationDenied,
+                                             CBManagerAuthorizationAllowedAlways
+                                             );
 
-DEFINE_ENUM_STRING_TRANSFROMATION_IPMPL(CBManagerAuthorization, DECLARE_ENUM_CBManagerAuthorization);
+//#define DECLARE_ENUM_CBManagerAuthorization(FUNC) \
+//FUNC(CBManagerAuthorizationNotDetermined)\
+//FUNC(CBManagerAuthorizationRestricted)\
+//FUNC(CBManagerAuthorizationDenied)\
+//FUNC(CBManagerAuthorizationAllowedAlways)\
+//
+//DEFINE_ENUM_STRING_TRANSFORMATION_IMPL(CBManagerAuthorization, DECLARE_ENUM_CBManagerAuthorization);
 
 //NSString *NSStringFromCBManagerAuthorization(CBManagerAuthorization value) {
 //    NSString * __str = @"Unknown";
@@ -96,6 +119,15 @@ DEFINE_ENUM_STRING_TRANSFROMATION_IPMPL(CBManagerAuthorization, DECLARE_ENUM_CBM
 //    __ENUM_STRCMP(CBManagerAuthorizationAllowedAlways);
 //    return -999;
 //}
+//
+//NSString *NSStringFromCBManagerAuthorizationWithoutPrefix(CBManagerAuthorization value) {
+//    NSString * str = NSStringFromCBManagerAuthorization(value);
+//    NSString * enumType = ENUM_VALUE_NAME_STRING(CBManagerAuthorization);
+//    if ([str hasPrefix:enumType]) {
+//        str = [str substringFromIndex:enumType.length];
+//    }
+//    return str;
+//}
 
 + (CBManagerAuthorization)yp_authorization {
 #ifdef __IPHONE_13_0
@@ -110,7 +142,8 @@ DEFINE_ENUM_STRING_TRANSFROMATION_IPMPL(CBManagerAuthorization, DECLARE_ENUM_CBM
         authorization = [[CBCentralManager alloc] init].authorization;
 #endif
         NSString * str = NSStringFromCBManagerAuthorization(authorization);
-        NSLog(@"%@ = %zi", str, authorization);
+        NSString *npstr = NSStringFromCBManagerAuthorizationWithoutPrefix(authorization);
+        NSLog(@"%@(%@) = %zi", str, npstr, authorization);
         return authorization;
 //    } else
 #else
