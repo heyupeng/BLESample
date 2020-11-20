@@ -8,4 +8,6 @@ target ‘BLESample’ do
   pod 'SSZipArchive', '~> 1.7'
   
   pod 'iOSDFULibrary', :path => '../IOS-Pods-DFU-Library/'
+  
+  pod 'Enumability', '~>1.0.0'
 end
