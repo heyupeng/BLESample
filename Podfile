@@ -5,4 +5,5 @@ use_frameworks!
 
 target ‘BLESample’ do
   
+  pod 'Enumability', '~>1.0.0'
 end

@@ -145,7 +145,6 @@
 		04279C12222CC40C001FC02C = {
 			isa = PBXGroup;
 			children = (
-                045E58B025512D3B0008214B /* Enumability */,
 				04279DA3222E61CC001FC02C /* YPCategory */,
 				04279C1D222CC40C001FC02C /* BLESample */,
 				04279C39222CC40E001FC02C /* BLESampleTests */,
@@ -231,14 +230,6 @@
 			path = YPCategory;
 			sourceTree = "<group>";
 		};
-		045E58B025512D3B0008214B /* Enumability */ = {
-			isa = PBXGroup;
-			children = (
-				045E58B125512E2F0008214B /* Enumability.h */,
-			);
-			path = Enumability;
-			sourceTree = "<group>";
-		};
 		04AB1D59227EC78000B801E9 /* Foundation */ = {
 			isa = PBXGroup;
 			children = (
@@ -251,10 +242,6 @@
 				04FBA92725676A5000D9EB91 /* NSString+YPNumberBaseConversion.m */,
 				04279DA9222E61CC001FC02C /* NSString+YPMessageDigest.h */,
 				04279DB4222E61CD001FC02C /* NSString+YPMessageDigest.m */,
-				0475F00C255E3E7300D330A4 /* NSObject+YPClass.h */,
-				0475F00D255E3E7300D330A4 /* NSObject+YPClass.m */,
-				04279DA5222E61CC001FC02C /* NSObject+YPProperty.h */,
-				04279DAF222E61CD001FC02C /* NSObject+YPProperty.m */,
 				04FFB32E2397521A004E26C5 /* NSDate+YPExtension.h */,
 				04FFB32F2397521A004E26C5 /* NSDate+YPExtension.m */,
 			);
@@ -467,9 +454,6 @@
                 04FFB3302397521B004E26C5 /* NSDate+YPExtension.m in Sources */,
 				04279DBA222E61CD001FC02C /* UITableView+Extension.m in Sources */,
 				04279DB9222E61CD001FC02C /* UIWebView+YPJSContext.m in Sources */,
-				04279DBC222E61CD001FC02C /* NSObject+YPProperty.m in Sources */,
-				0475F00E255E3E7300D330A4 /* NSObject+YPClass.m in Sources */,
-				042958BE224DB10200496C8E /* ObjdectModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
