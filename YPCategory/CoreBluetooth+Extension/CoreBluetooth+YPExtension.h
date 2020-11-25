@@ -1,9 +1,9 @@
 //
-//  CoreBluetooth+Extension.h
-//  YPDemo
+//  CoreBluetooth+YPExtension.h
+//  BLESample
 //
-//  Created by Peng on 2019/3/15.
-//  Copyright © 2019年 heyupeng. All rights reserved.
+//  Created by Mac on 2020/10/26.
+//  Copyright © 2020 heyupeng. All rights reserved.
 //
 
 #ifndef CoreBluetooth_YPExtension_h
@@ -13,6 +13,5 @@
 #import "CBManager+YPAuthorization.h"
 #import "CBPeripheral+YPExtension.h"
 #import "CBUUID+YPExtension.h"
-
 
 #endif /* CoreBluetooth_YPExtension_h */

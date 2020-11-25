@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)yp_isNotchScreen;
 @end
 
-/// 状态栏API变更兼容 (iOS 13 )
+/// 状态栏API变更兼容 (iOS 13，状态栏相关属性转移到 UIStatusBarManager 下)
 @interface UIApplication (yp_StatusBarManager)
 
 /// 状态栏是否隐藏。

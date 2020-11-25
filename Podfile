@@ -9,5 +9,11 @@ target ‘BLESample’ do
   
   pod 'iOSDFULibrary', :path => '../IOS-Pods-DFU-Library/'
   
-  pod 'Enumability', '~>1.0.0'
+  # YPCategory.podspec 依赖 Enumability
+  # pod 'Enumability', '~>1.0.0'
+  
+  # YPCategory
+  pod 'YPCategory', :path => './'
+  
+  
 end

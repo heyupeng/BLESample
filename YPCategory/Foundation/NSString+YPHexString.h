@@ -11,19 +11,16 @@
 @interface NSString (YPHexString)
 
 // 16进制字符串转二进制数据流 @"03000c0004000643" => <03000c00 04000643>
-+ (NSData*)hexStringToByte:(NSString*)string;
+- (NSData *)yp_hexStringToBytes;
+
+/// 16进制字符串转long型数字
+- (long)yp_hexStringToLongValue;
 
 // 16进制字符串转char字符串
-+ (NSString *)hexStringToCharString:(NSString *)hexString;
 + (NSString *)charStringFromHexString:(NSString *)hexString;
 
 // char字符串转16进制字符串
 + (NSString *)hexStringFromCharString:(NSString *)string;
-
-/**
-16进制字符串转long型数字
-*/
-- (long)hexStringToLongValue;
 
 - (NSString *)hexStringToCharString;
 

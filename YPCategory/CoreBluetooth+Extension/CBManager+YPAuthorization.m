@@ -81,6 +81,8 @@ return str;\
 
 
 @implementation CBManager (YPAuthorization)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
 
 DEFINE_ENUM_VALUE_STRING_TRANSFORMATION_IMPL(CBManagerAuthorization,
                                              CBManagerAuthorizationNotDetermined,
@@ -129,7 +131,7 @@ DEFINE_ENUM_VALUE_STRING_TRANSFORMATION_IMPL(CBManagerAuthorization,
 
 + (CBManagerAuthorization)yp_authorization {
 #ifdef __IPHONE_13_0
-    NSString * systemVersion = [[UIDevice currentDevice] systemVersion];
+//    NSString * systemVersion = [[UIDevice currentDevice] systemVersion];
 //    if ([systemVersion floatValue] >= 13.0) {
         CBManagerAuthorization authorization;
 #ifdef __IPHONE_13_1
@@ -155,5 +157,7 @@ DEFINE_ENUM_VALUE_STRING_TRANSFORMATION_IMPL(CBManagerAuthorization,
 #endif
     return 0;
 }
+
+#pragma clang diagnostic push
 
 @end
