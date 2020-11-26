@@ -16,9 +16,6 @@
 #import "NSString+YPMessageDigest.h"
 #import "NSString+YPNumberBaseConversion.h"
 
-#import "NSObject+YPClass.h"
-#import "NSObject+YPProperty.h"
-
 #import "NSDate+YPExtension.h"
 
 #endif /* Foundation_YPExtension_h */
