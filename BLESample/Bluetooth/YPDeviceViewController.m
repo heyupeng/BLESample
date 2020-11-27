@@ -180,7 +180,7 @@
     [detailText appendFormat:@"Value: (0x%@)", [character value].hexString];
     
     if ([UUID.UUIDString isEqualToString:@"2A19"]) {
-        long value = [[character value].hexString hexStringToLongValue];
+        long value = [[character value].hexString yp_hexStringToLongValue];
         [detailText appendFormat: @" %ld %%", value];
     } else {
         [detailText appendFormat: @" %@", valueString];
