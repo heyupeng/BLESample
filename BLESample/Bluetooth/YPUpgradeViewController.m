@@ -238,14 +238,14 @@
     
     NSString * ext = [filePath pathExtension];
     if ([ext isEqualToString:@"img"]) {
-        _dfuManager_xiaosu = [[YPSUOTA alloc] initWithDevice:_blueManager.currentDevice];
+        _dfuManager_xiaosu = [[YPSUOTA alloc] initWithDevice:_bleManager.currentDevice];
         [_dfuManager_xiaosu setUrl: [filePath UTF8String]];
         [_dfuManager_xiaosu startUpgrade];
         return;
     }
     //    _dfuManager.firmwareFilePath = filePath;
-    //    [_dfuManager setCentralManager:_blueManager.manager];
-    //    [_dfuManager connectDevice:_blueManager.currentDevice.peripheral];
+    //    [_dfuManager setCentralManager:_bleManager.manager];
+    //    [_dfuManager connectDevice:_bleManager.currentDevice.peripheral];
     
     [self startDFU];
 }
@@ -256,7 +256,7 @@
     NSArray * encrptBuffers_X5 = [NSArray arrayWithObjects:[NSNumber numberWithInteger:0x15], [NSNumber numberWithInteger:0xf1], nil];
     NSArray * encrptBuffers_M1S = [NSArray arrayWithObjects:[NSNumber numberWithInteger:0x85], [NSNumber numberWithInteger:0x15], [NSNumber numberWithInteger:0x06], [NSNumber numberWithInteger:0x16], nil];
     
-    _nordicDFU = [[YPNordicDFU alloc] initWithCentralManager:_blueManager.manager peripheral:_blueManager.currentDevice.peripheral];
+    _nordicDFU = [[YPNordicDFU alloc] initWithCentralManager:_bleManager.manager peripheral:_bleManager.currentDevice.peripheral];
     _nordicDFU.delegate = self;
     
     DFUFirmware * firmware = [[DFUFirmware alloc] initWithUrlToZipFile:[NSURL URLWithString:filePath]];

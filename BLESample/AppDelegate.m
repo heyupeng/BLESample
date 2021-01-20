@@ -19,7 +19,10 @@
     // Override point for customization after application launch.
     
     // In iOS 13,on iPhone X line , while navigationController.navigationBar.prefersLargeTitles is YES, the statusBar backgroundColor is transparent.
-    self.window.rootViewController.view.backgroundColor = [UIColor systemOrangeColor];
+    
+    // 3BB9BF
+    self.window.rootViewController.view.backgroundColor = [UIColor colorWithRed:0x3d/255.0 green:0xB9/255.0 blue:0xBF/255.0 alpha:1];
+
     return YES;
 }
 

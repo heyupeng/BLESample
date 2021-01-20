@@ -10,11 +10,11 @@
 
 typedef NS_ENUM(NSUInteger, OpType) {
     OpTypeEmpty = 0,
-    OpTypeFunctionSet = 0x01, //工作时间s设置
+    OpTypeFunctionSet = 0x01, //工作时间设置
     OpTypeRequestRecords = 0x02, // 请求数据
     OpTypeLocalTimeSet = 0x03, // 本地时间设置
     OpTypeRequestDFU = 0x04, // 请求DFU
-    OpTypeElectricity = 0x05, // 电量获取
+    OpTypeBattery = 0x05, // 电量获取
     OpTypeDeviceInfo = 0x06, // 设备信息获取
     OpTypeFadeInSet = 0x07, // 渐强模式设置
     OpTypeAddonSet = 0x08, // 附加模式设置

@@ -82,11 +82,11 @@
         [weakSelf textforTextViewByAppending:log];
     }];
     
-    if (_blueManager.currentDevice.peripheral.state == CBPeripheralStateConnected) {
+    if (_bleManager.currentDevice.peripheral.state == CBPeripheralStateConnected) {
         [_device setNotifyVuale:YES forCharacteristicUUID:[CBUUID UUIDWithString:NordicUARTRxCharacteristicUUIDString] serviceUUID:[CBUUID UUIDWithString:NordicUARTServiceUUIDString]];
         return;
     }
-    [_blueManager connectDevice:_device];
+    [_bleManager connectDevice:_device];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -229,7 +229,7 @@
 
 /** ============== **/
 - (void)addNotificationObserver {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutBlueManager:) name:YPBLEManager_DidConnectedDevice object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutBleManager:) name:YPBLEManager_DidConnectedDevice object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutdevice:) name: YPBLEDevice_DidDiscoverServices object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutdevice:) name: YPBLEDevice_DidDiscoverCharacteristics object:nil];
@@ -243,7 +243,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)notificationAboutBlueManager: (NSNotification *)notification {
+- (void)notificationAboutBleManager: (NSNotification *)notification {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         
         if ([notification.name isEqualToString:YPBLEManager_DidConnectedDevice]) {
@@ -498,7 +498,7 @@ int byteStart = 0;
 //    CBService * service = [_dataSource objectAtIndex:indexPath.section];
     
     //    YPUpgradeViewController * viewController = [[YPUpgradeViewController alloc] init];
-    //    viewController.blueManager = _blueManager;
+    //    viewController.bleManager = _bleManager;
     //    viewController.title = @"固件升级";
     //    [self.navigationController pushViewController:viewController animated:YES];
 }
@@ -724,7 +724,7 @@ int byteStart = 0;
     }
     else if ([title isEqualToString:@"固件升级"]) {
         YPUpgradeViewController * vc = [[YPUpgradeViewController alloc] init];
-        vc.blueManager = _blueManager;
+        vc.bleManager = _bleManager;
         
         [self.navigationController pushViewController:vc animated:YES];
         return;

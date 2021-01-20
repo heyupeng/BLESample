@@ -13,6 +13,6 @@
 
 @interface YPBlueViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
 
-@property (nonatomic, strong) YPBleManager * blueManager;
+@property (nonatomic, strong) YPBleManager * bleManager;
 
 @end

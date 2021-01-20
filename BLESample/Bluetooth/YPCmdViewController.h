@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface YPCmdViewController : UIViewController
 
-@property (nonatomic, strong) YPBleManager * blueManager;
+@property (nonatomic, strong) YPBleManager * bleManager;
 @property (nonatomic, strong) YPBleDevice * device;
 
 @end

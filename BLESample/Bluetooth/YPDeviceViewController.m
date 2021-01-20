@@ -42,7 +42,7 @@
     
     [self addNotificationObserver];
 
-    [_blueManager connectDevice:_device];
+    [_bleManager connectDevice:_device];
     
 }
 
@@ -52,7 +52,7 @@
 }
 
 - (void)dealloc {
-    [_blueManager disconnectDevice:_device];
+    [_bleManager disconnectDevice:_device];
     [self removeNotificationObserver];
 }
 /** ============== **/
@@ -101,7 +101,7 @@
 
 /** ============== **/
 - (void)addNotificationObserver {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutBlueManager:) name:YPBLEManager_DidConnectedDevice object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutBleManager:) name:YPBLEManager_DidConnectedDevice object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutManagerError:) name:YPBLEManager_BleOperationError object:nil];
     
@@ -115,7 +115,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)notificationAboutBlueManager: (NSNotification *)notification {
+- (void)notificationAboutBleManager: (NSNotification *)notification {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         
         if ([notification.name isEqualToString:YPBLEManager_DidConnectedDevice]) {
@@ -196,7 +196,7 @@
     NSString * valueString = [[NSString alloc] initWithData:[character value] encoding:NSUTF8StringEncoding];
     
     cell.textLabel.numberOfLines = 2;
-    cell.textLabel.text = [NSString stringWithFormat:@"Characteristic: %@", CBUUIDGetDescription(UUID)];
+    cell.textLabel.text = [NSString stringWithFormat:@"%@", CBUUIDGetDescription(UUID)];
     
     NSMutableString * detailText = [[NSMutableString alloc] init];
     [detailText appendFormat:@"UUID: %@\n", [UUID UUIDString]];
@@ -225,6 +225,16 @@ NSString * CBUUIDGetDescription(CBUUID * UUID) {
     if ([UUIDString isEqualToString:LegacyDFUControlPointUUIDString])   return @"Legacy DFU Control Point";
     if ([UUIDString isEqualToString:LegacyDFUPacketUUIDString])         return @"Legacy DFU Packet";
     if ([UUIDString isEqualToString:LegacyDFUVersionUUIDString])        return @"Legacy DFU Version";
+    
+    if ([UUIDString isEqualToString:SecureDFUServiceUUIDString])        return @"Secure DFU Service";
+    if ([UUIDString isEqualToString:SecureDFUControlPointUUIDString])   return @"Secure DFU Control Point";
+    if ([UUIDString isEqualToString:SecureDFUPacketUUIDString])         return @"Secure DFU Packet";
+    
+    if ([UUIDString isEqualToString:ButtonlessDFUServiceUUIDString])          return @"Buttonless DFU Service";
+    if ([UUIDString isEqualToString:ButtonlessDFUCharacteristicUUIDString])   return @"Buttonless DFU";
+    if ([UUIDString isEqualToString:ButtonlessDFUWithoutBondsUUIDString])     return @"Buttonless DFU Without Bonds";
+    if ([UUIDString isEqualToString:ButtonlessDFUWithBondsUUIDString])        return @"Buttonless DFU With Bonds";
+    
     return UUID.description;
 }
 
@@ -238,7 +248,7 @@ NSString * CBUUIDGetDescription(CBUUID * UUID) {
     NSString * UUIDName = CBUUIDGetDescription(UUID);
     
     header.textLabel.numberOfLines = 2;
-    header.textLabel.text = [NSString stringWithFormat:@"Service:%@", UUIDName];
+    header.textLabel.text = [NSString stringWithFormat:@"%@", UUIDName];
     header.detailTextLabel.text = [NSString stringWithFormat:@"UUID: 0x%@", title];
     return header;
 }
@@ -262,7 +272,7 @@ NSString * CBUUIDGetDescription(CBUUID * UUID) {
         [_device setNotifyVuale:YES forCharacteristicUUID:[CBUUID UUIDWithString:NordicUARTRxCharacteristicUUIDString] serviceUUID:[CBUUID UUIDWithString:NordicUARTServiceUUIDString]];
         
         YPCmdViewController * cmdVC = [[YPCmdViewController alloc] init];
-        cmdVC.blueManager = _blueManager;
+        cmdVC.bleManager = _bleManager;
         cmdVC.device = _device;
         cmdVC.title = @"Cmd";
         [self.navigationController pushViewController:cmdVC animated:YES];
@@ -271,7 +281,7 @@ NSString * CBUUIDGetDescription(CBUUID * UUID) {
     
     if ([service.UUID isEqual:[CBUUID UUIDWithString:@"00001530-1212-EFDE-1523-785FEABCD123"]] || [service.UUID isEqual:[CBUUID UUIDWithString:@"FE59"]]) {
         YPUpgradeViewController * viewController = [[YPUpgradeViewController alloc] init];
-        viewController.blueManager = _blueManager;
+        viewController.bleManager = _bleManager;
         [self.navigationController pushViewController:viewController animated:YES];
         [_device writeFFValue:[SOCBluetoothWriteData commandForSetFuncionWith:0]];
         return;

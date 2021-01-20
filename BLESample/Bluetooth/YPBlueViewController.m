@@ -22,8 +22,9 @@
 @property (nonatomic, strong) NSMutableArray * dataSource;
 
 @property (nonatomic, strong) UILabel * rssiValueLable;
-@property (nonatomic, strong) UITextField * nameTextField;;
-@property (nonatomic, strong) UITextField * macTextField;;
+
+/// @[nameTF, macTF, nameInterceptTF]
+@property (nonatomic, strong) NSMutableArray<UITextField *> * textFields;
 
 @end
 
@@ -41,7 +42,7 @@
     [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [btn addTarget:self action:@selector(showLogAction:) forControlEvents:UIControlEventTouchUpInside];
     btn.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
-    btn.frame = CGRectMake(0, 44, 60, 60);
+    btn.frame = CGRectMake(88, 44, 60, 60);
     btn.layer.cornerRadius = 60 * 0.5;
     btn.layer.zPosition = 10;
     [[UIApplication sharedApplication].keyWindow addSubview:btn];
@@ -58,7 +59,11 @@
     CGPoint offset = [sender translationInView:v];
     
     CGRect bounds = v.superview.frame;
-    UIEdgeInsets insets = UIEdgeInsetsMake(44, 0, 34, 0);
+    UIEdgeInsets insets = UIEdgeInsetsMake(0, -10, -10, -10);
+    if (sender.state == UIGestureRecognizerStateEnded) {
+        insets = [[UIApplication sharedApplication] yp_safeAreaInsets]; // UIEdgeInsetsMake(44, 0, 34, 0);
+    }
+    
     bounds = UIEdgeInsetsInsetRect(bounds, insets);
     
     CGRect newFrame = CGRectOffset(v.frame, offset.x, offset.y);
@@ -73,6 +78,7 @@
     } else if (CGRectGetMaxY(newFrame) > CGRectGetMaxY(bounds)) {
         offset.y += CGRectGetMaxY(bounds) - CGRectGetMaxY(newFrame);
     }
+    
     v.transform = CGAffineTransformTranslate(v.transform, offset.x, offset.y);
     
     // 复位
@@ -98,8 +104,8 @@
     [super viewDidAppear:animated];
     
     [self addNotificationObserver];
-    _blueManager = [YPBleManager share];
-    [_blueManager bleEnabled];
+    
+    [_bleManager bleEnabled];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -126,9 +132,21 @@
             @"localName": @"SMI-",
             @"mac": @"",
             @"RSSI": @60,
+            @"ignoreLocalName": @"",
         };
     }
     _bleConfig = bleConfig;
+    
+    _bleManager = [YPBleManager share];
+    _bleManager.bleConfiguration.services = [self services];
+    _bleManager.bleConfiguration.RSSIValue = [[bleConfig objectForKey:@"RSSI"] intValue];
+    _bleManager.bleConfiguration.localName = [bleConfig objectForKey:@"localName"];
+    _bleManager.bleConfiguration.mac = [bleConfig objectForKey:@"mac"];
+    
+    NSString * ignoreLocalName = [bleConfig objectForKey:@"ignoreLocalName"];
+    _bleManager.bleConfiguration.ignoreLocalNames = ignoreLocalName.length > 0? [ignoreLocalName componentsSeparatedByString:@","] : nil;
+//    _bleManager.bleConfiguration.withoutDataIntercept = YES;
+//    _bleManager.bleConfiguration.unnamedIntercept = YES;
 }
 
 - (void)setBleConfig:(NSDictionary *)info {
@@ -158,65 +176,12 @@
     right.enabled = NO;
     self.navigationItem.rightBarButtonItem = right;
     
-    // tool bar
-    UIView *view1 = [[UIView alloc] initWithFrame:CGRectMake(0, 10, SCREENWIDTH, 44)];
-    [self.view addSubview:view1];
-    
-    UILabel * titleLable = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 60, 44)];
-    titleLable.text = @"RSSI";
-    [view1 addSubview:titleLable];
-    
-    UISlider * slider = [[UISlider alloc] initWithFrame:CGRectMake(80, 0, SCREENWIDTH * 0.5, 44)];
-    slider.minimumValue = 20;
-    slider.maximumValue = 100;
-    slider.value = [(NSNumber *)[_bleConfig objectForKey:@"RSSI"] intValue]; // 60;
-    [slider addTarget:self action:@selector(sliderValueChanged:) forControlEvents:UIControlEventValueChanged];
-    [view1 addSubview:slider];
-    
-    UILabel * deltailLable = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(slider.frame) + 10, 0, 88, 44)];
-    deltailLable.text = [NSString stringWithFormat:@"-%.0f dBm", slider.value];
-    [view1 addSubview:deltailLable];
-    _rssiValueLable = deltailLable;
-    
-    // name tag
-    UIView *view2 = [[UIView alloc] initWithFrame:CGRectMake(0,CGRectGetMaxY(view1.frame), SCREENWIDTH, 44)];
-    [self.view addSubview:view2];
-    
-    UILabel * titleLable2 = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 60, 44)];
-    titleLable2.text = @"Name";
-    [view2 addSubview:titleLable2];
-    
-    UITextField * tf = [[UITextField alloc] initWithFrame:CGRectMake(80, 0 + (44  - 36)*0.5, SCREENWIDTH * 0.5, 36)];
-    tf.borderStyle = UITextBorderStyleRoundedRect;
-    tf.keyboardType = UIKeyboardTypeASCIICapable;
-    tf.text = [_bleConfig objectForKey:@"localName"];
-    tf.delegate = self;
-//    tf.userInteractionEnabled = NO;
-    [view2 addSubview:tf];
-    _nameTextField = tf;
-    [tf addTarget:self action:@selector(textFieldValueChanged:) forControlEvents:UIControlEventValueChanged];
-    
-    // mac tag
-    UIView *view3 = [[UIView alloc] initWithFrame:CGRectMake(0,CGRectGetMaxY(view2.frame), SCREENWIDTH, 44)];
-    [self.view addSubview:view3];
-    
-    UILabel * titleLable_mac = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 60, 44)];
-    titleLable_mac.text = @"Mac";
-    [view3 addSubview:titleLable_mac];
-    
-    UITextField * tf_mac = [[UITextField alloc] initWithFrame:CGRectMake(80, 0 + (44  - 36)*0.5, SCREENWIDTH * 0.5, 36)];
-    tf_mac.borderStyle = UITextBorderStyleRoundedRect;
-    tf_mac.keyboardType = UIKeyboardTypeASCIICapable;
-    tf_mac.text = [_bleConfig valueForKey:@"mac"];
-    tf_mac.delegate = self;
-    [tf_mac addTarget:self action:@selector(textFieldValueChanged:) forControlEvents:UIControlEventValueChanged];
-
-    [view3 addSubview:tf_mac];
-    _macTextField = tf_mac;
+    UIBarButtonItem * left = [[UIBarButtonItem alloc] initWithTitle:@"Filter" style:UIBarButtonItemStylePlain target:self action:@selector(leftBarButtonAction:)];
+    self.navigationItem.leftBarButtonItem = left;
     
     // 主列表
     UITableView * tableView = [self createTableVie];
-    tableView.frame = CGRectMake(0, CGRectGetMaxY(view3.frame) , SCREENWIDTH, SCREENHEIGHT - CGRectGetMaxY(view3.frame));
+    tableView.frame = CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGHT);
     tableView.clipsToBounds = YES;
     [self.view addSubview: tableView];
     _tableView = tableView;
@@ -234,6 +199,108 @@
     _tableView.frame = frame;
 }
 
+- (void)leftBarButtonAction:(UIBarButtonItem *)button {
+    // tool bar
+    static UIView * configView;
+    
+    if (!button) {
+        configView.superview.hidden = YES;
+        return;
+    }
+    if (configView) {
+        configView.superview.hidden = !configView.superview.hidden;
+        return;
+    }
+    _textFields = [[NSMutableArray alloc] initWithCapacity:4];
+    
+    configView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREENWIDTH, 44)];
+    configView.backgroundColor = [UIColor whiteColor];
+    
+    UIView *view1 = [[UIView alloc] initWithFrame:CGRectMake(0, 10, SCREENWIDTH, 44)];
+    [configView addSubview:view1];
+    
+    UILabel * titleLable = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 60, 44)];
+    titleLable.text = @"RSSI";
+    [view1 addSubview:titleLable];
+    
+    UISlider * slider = [[UISlider alloc] initWithFrame:CGRectMake(80, 0, SCREENWIDTH * 0.5, 44)];
+    slider.minimumValue = 20;
+    slider.maximumValue = 100;
+    slider.value = [(NSNumber *)[_bleConfig objectForKey:@"RSSI"] intValue]; // 60;
+    [slider addTarget:self action:@selector(sliderValueChanged:) forControlEvents:UIControlEventValueChanged];
+    [view1 addSubview:slider];
+    
+    UILabel * deltailLable = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(slider.frame) + 10, 0, 88, 44)];
+    deltailLable.text = [NSString stringWithFormat:@"-%.0f dBm", slider.value];
+    [view1 addSubview:deltailLable];
+    _rssiValueLable = deltailLable;
+    
+    // 1. name tag
+    UIView *view2 = [[UIView alloc] initWithFrame:CGRectMake(0,CGRectGetMaxY(view1.frame), SCREENWIDTH, 44)];
+    [configView addSubview:view2];
+    
+    UILabel * titleLable2 = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 60, 44)];
+    titleLable2.text = @"Name";
+    [view2 addSubview:titleLable2];
+    
+    UITextField * tf = [[UITextField alloc] initWithFrame:CGRectMake(80, 0 + (44  - 36)*0.5, SCREENWIDTH * 0.5, 36)];
+    tf.borderStyle = UITextBorderStyleRoundedRect;
+    tf.keyboardType = UIKeyboardTypeASCIICapable;
+    tf.text = [_bleConfig objectForKey:@"localName"];
+    tf.delegate = self;
+//    tf.userInteractionEnabled = NO;
+//    [tf addTarget:self action:@selector(textFieldValueChanged:) forControlEvents:UIControlEventValueChanged];
+    
+    [view2 addSubview:tf];
+    _textFields[0] = tf;
+    
+    // 2. mac tag
+    UIView *view3 = [[UIView alloc] initWithFrame:CGRectMake(0,CGRectGetMaxY(view2.frame), SCREENWIDTH, 44)];
+    [configView addSubview:view3];
+    
+    UILabel * titleLable_mac = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 60, 44)];
+    titleLable_mac.text = @"Mac";
+    [view3 addSubview:titleLable_mac];
+    
+    UITextField * tf_mac = [[UITextField alloc] initWithFrame:CGRectMake(80, 0 + (44  - 36)*0.5, SCREENWIDTH * 0.5, 36)];
+    tf_mac.borderStyle = UITextBorderStyleRoundedRect;
+    tf_mac.keyboardType = UIKeyboardTypeASCIICapable;
+    tf_mac.text = [_bleConfig valueForKey:@"mac"];
+    tf_mac.delegate = self;
+//    [tf_mac addTarget:self action:@selector(textFieldValueChanged:) forControlEvents:UIControlEventValueChanged];
+
+    [view3 addSubview:tf_mac];
+    _textFields[1] = tf_mac;
+    
+    // 2. 拦截携带名称
+    UIView *view4 = [[UIView alloc] initWithFrame:CGRectMake(0,CGRectGetMaxY(view3.frame), SCREENWIDTH, 44)];
+    [configView addSubview:view4];
+    
+    UILabel * titleLable3 = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 60, 44)];
+    titleLable3.text = @"忽略名";
+    [view4 addSubview:titleLable3];
+    
+    UITextField * tf3 = [[UITextField alloc] initWithFrame:CGRectMake(80, 0 + (44  - 36)*0.5, SCREENWIDTH * 0.5, 36)];
+    tf3.borderStyle = UITextBorderStyleRoundedRect;
+    tf3.keyboardType = UIKeyboardTypeASCIICapable;
+    tf3.delegate = self;
+//    [tf3 addTarget:self action:@selector(textFieldValueChanged:) forControlEvents:UIControlEventValueChanged];
+    [view4 addSubview:tf3];
+    _textFields[2] = tf3;
+    tf3.placeholder = @"多个忽略名以,分隔";
+    tf3.text = [_bleConfig valueForKey:@"ignoreLocalName"];
+    
+    CGRect newFrame = configView.frame;
+    newFrame.size.height = CGRectGetMaxY(view4.frame);
+    configView.frame = newFrame;
+    
+    UIView * v = [[UIView alloc] initWithFrame:self.view.bounds];
+    v.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.2];
+    [v addSubview:configView];
+    
+    [self.view addSubview:v];
+}
+
 - (void)rightBarButtonAction:(UIBarButtonItem *)button {
     if ([button.title isEqualToString:@"Scan"]) {
         _dataSource = [NSMutableArray new];
@@ -241,43 +308,54 @@
         
         [[YPLogger share] clean];
         
-        NSString * localName = _nameTextField.text;
-        NSString * mac = _macTextField.text;
-        
-        [self setBleConfig:@{@"localName": localName, @"mac": mac}];
-        
-        _blueManager.bleConfiguration.localName = localName;
-        _blueManager.bleConfiguration.mac = mac;
-        _blueManager.bleConfiguration.withoutDataIntercept = YES;
-        _blueManager.bleConfiguration.unnamedIntercept = YES;
-
-        [_blueManager startScan];
+        [_bleManager startScan];
         button.title = @"Stop scan";
     } else {
-        [_blueManager stopScan];
+        [_bleManager stopScan];
         button.title = @"Scan";
     }
     
+    [self leftBarButtonAction: nil];
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     [super touchesBegan:touches withEvent:event];
-    [_nameTextField resignFirstResponder];
-    [_macTextField resignFirstResponder];
+    
+    for (UITextField * textField in _textFields) {
+        [textField resignFirstResponder];
+    }
 }
 
 - (void)sliderValueChanged:(UISlider *)slider {
     _rssiValueLable.text = [NSString stringWithFormat:@"-%.0f dBm", slider.value];
     
-    _blueManager.bleConfiguration.RSSIValue = slider.value;
+    [self setBleConfig:@{@"RSSI": @((int)slider.value)}];
     
+    _bleManager.bleConfiguration.RSSIValue = slider.value;
 }
 
-- (void)textFieldValueChanged:(UITextField *)tf {
-    if (tf == _nameTextField) {
+- (void)textFieldDidEndEditing:(UITextField *)tf {
+    if (tf == _textFields[0]) {
+        NSString * localName = _textFields[0].text ? : @"";
         
-    } else {
+        [self setBleConfig:@{@"localName": localName}];
         
+        _bleManager.bleConfiguration.localName = localName;
+    }
+    else if (tf == _textFields[1]) {
+        NSString * mac = _textFields[1].text? : @"";
+        
+        [self setBleConfig:@{@"mac": mac}];
+        
+        _bleManager.bleConfiguration.mac = mac;
+    }
+    else if (tf == _textFields[2]) {
+        NSString * ignoreName = _textFields[2].text? : @"";
+        
+        [self setBleConfig:@{@"ignoreLocalName": ignoreName}];
+        
+        NSArray * ignoreLocalNames = ignoreName ? [ignoreName componentsSeparatedByString:@","]: nil;
+        _bleManager.bleConfiguration.ignoreLocalNames = ignoreLocalNames;
     }
 }
 
@@ -328,7 +406,7 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         NSString * name = notification.name;
         if ([name isEqualToString:YPBLEManager_DidUpdateState]) {
-            if (self.blueManager.manager.state == CBManagerStatePoweredOn) {
+            if (self.bleManager.manager.state == CBManagerStatePoweredOn) {
                 [self.navigationItem.rightBarButtonItem setTitle:@"Scan"];
                 self.navigationItem.rightBarButtonItem.enabled = YES;
             }else {
@@ -338,7 +416,7 @@
         }
         
         if ([name isEqualToString:YPBLEManager_DidDiscoverDevice]) {
-            [self.dataSource setArray:self.blueManager.discoverDevices];
+            [self.dataSource setArray:self.bleManager.discoverDevices];
             [self.tableView reloadData];
         }
     });
@@ -382,9 +460,13 @@
     if (companyID) companyID = [NSString stringWithFormat:@"<0x%@>", companyID];
     NSString * detailText = [NSString stringWithFormat:@"UUID: %@ \
                                  \nLocalName: %@ \
-                                 \nCompany: %@ \
-                                 \nSpecificData: %@ \
-                                 \nMac: %@",device.identifier, localName, companyID, specificDataHexString, device.mac.hexString.uppercaseString];
+                                 ",device.identifier, localName];
+    if (companyID)
+        detailText = [detailText stringByAppendingFormat:@"\nCompany: %@ \
+                  \nSpecificData: %@ \
+                  \nMac: %@", companyID, specificDataHexString, device.mac.hexString.uppercaseString];
+    else
+        if (fe95) detailText = [detailText stringByAppendingString:[NSString stringWithFormat:@"\nFE95: %@", fe95.debugDescription]];
     
     cell.detailTextLabel.numberOfLines = detailTextNumberOfLines;
     cell.detailTextLabel.text = detailText;
@@ -400,10 +482,10 @@
     [[tableView cellForRowAtIndexPath:indexPath] setSelected:NO];
     YPBleDevice * device = [_dataSource objectAtIndex:indexPath.row];
     
-    [_blueManager stopScan];
+    [_bleManager stopScan];
     
     YPDeviceViewController * viewController = [[YPDeviceViewController alloc] init];
-    viewController.blueManager = _blueManager;
+    viewController.bleManager = _bleManager;
     viewController.device = device;
     viewController.title = @"Services";
     [self.navigationController pushViewController:viewController animated:YES];
@@ -417,8 +499,9 @@
     NSMutableString * str = [NSMutableString new];
     __block NSTimeInterval time = 0;
     [device.RSSIRecords enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        NSTimeInterval time1 = [(NSDate *)[obj objectForKey:@"date"] timeIntervalSince1970];
-        [str appendFormat: @"%@: %@ (%.4f ms)\n", [(NSDate *)[obj objectForKey:@"date"] yp_short_description], [[obj objectForKey:@"rssi"] stringValue], time==0?0:time1 - time];
+        NSDate * date = (NSDate *)[obj objectForKey:@"date"];
+        NSTimeInterval time1 = [date timeIntervalSince1970];
+        [str appendFormat: @"%@: %@ (%.4f s)\n", [date yp_short_description], [[obj objectForKey:@"rssi"] stringValue], time == 0 ? 0 : (time1 - time)];
         time = time1;
     }];
     

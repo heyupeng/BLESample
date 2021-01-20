@@ -13,7 +13,7 @@
 
 @interface YPDeviceViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
 
-@property (nonatomic, strong) YPBleManager * blueManager;
+@property (nonatomic, strong) YPBleManager * bleManager;
 @property (nonatomic, strong) YPBleDevice * device;
 
 @end

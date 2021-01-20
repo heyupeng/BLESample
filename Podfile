@@ -13,7 +13,8 @@ target ‘BLESample’ do
   # pod 'Enumability', '~>1.0.0'
   
   # YPCategory
-  pod 'YPCategory', :path => './'
+#  pod 'YPCategory', :path => './'
+  pod 'HYPCategory', '~> 1.0.2'
   
   
 end

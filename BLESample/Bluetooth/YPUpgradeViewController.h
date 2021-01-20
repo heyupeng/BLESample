@@ -12,7 +12,7 @@
 
 @interface YPUpgradeViewController : UIViewController
 
-@property (nonatomic, strong) YPBleManager * blueManager;
+@property (nonatomic, strong) YPBleManager * bleManager;
 
 @property (nonatomic, strong) UILabel * fileLabel;
 @end
