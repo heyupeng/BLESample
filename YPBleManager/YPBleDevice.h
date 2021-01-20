@@ -9,20 +9,34 @@
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 
-@protocol BleAdvertisementData <NSObject>
+@protocol AdvertisementDataExtendMethods <NSObject>
 @required
 @property (nonatomic, strong) NSDictionary * advertisementData;
 
 @optional
 // advertisementData info
+@property (nonatomic, readonly, getter=isConnectable) BOOL connectable;
 @property (nonatomic, readonly) NSString * localName;
 @property (nonatomic, readonly) NSData * manufacturerData;
+@property (nonatomic, readonly) NSDictionary * serviceData;
+
+// Data in manufacturerData
 @property (nonatomic, readonly) NSData * companysData;
 @property (nonatomic, readonly) NSData * specificData;
 @property (nonatomic, readonly) NSData * mac; // In ManufacturerData
+
+// Data in serviceData
 @property (nonatomic, readonly) NSData * macReverseInServiceForFE95; // In Service For FE95
+
 @end
 
+@interface AdvertisementDataHelper : NSObject <AdvertisementDataExtendMethods>
+
+@property (nonatomic, strong) NSDictionary * advertisementData;
+
+- (instancetype)initWithAdvertisementData:(NSDictionary *)advertisementData;
+
+@end
 
 // 设备广播发射频率记录
 @protocol RSSIRecord <NSObject>
@@ -32,7 +46,7 @@
 @end
 
 // Class - YPBleDevice
-@interface YPBleDevice : NSObject <CBPeripheralDelegate, BleAdvertisementData, RSSIRecord>
+@interface YPBleDevice : NSObject <CBPeripheralDelegate, AdvertisementDataExtendMethods, RSSIRecord>
 
 @property (nonatomic, strong) CBPeripheral *peripheral;
 @property (nonatomic, strong) NSDictionary * advertisementData;
@@ -63,11 +77,11 @@
 
 - (void)setNotifyVuale:(BOOL)value forCharacteristicUUID:(CBUUID*)characteristicUUID serviceUUID:(CBUUID*)serviceUUID;
 
-- (void)readValueForCharacteristicUUID:(CBUUID*)characteristicUUID serviceUUID:(CBUUID*)serviceUUID peripheral:(CBPeripheral *)peripheral;
+- (void)readValueForCharacteristicUUID:(CBUUID*)characteristicUUID serviceUUID:(CBUUID*)serviceUUID;
 
-- (void)writeValue:(NSData *)data forCharacteristicUUID:(CBUUID *)characteristicUUID serviceUUID:(CBUUID *)serviceUUID peripheral:(CBPeripheral *)peripheral;
+- (void)writeValue:(NSData *)data forCharacteristicUUID:(CBUUID *)characteristicUUID serviceUUID:(CBUUID *)serviceUUID;
 
-- (void)writeValueWithoutResponse:(NSData *)data forCharacteristicUUID:(CBUUID*)characteristicUUID serviceUUID:(CBUUID*)serviceUUID peripheral:(CBPeripheral *)peripheral;
+- (void)writeValueWithoutResponse:(NSData *)data forCharacteristicUUID:(CBUUID*)characteristicUUID serviceUUID:(CBUUID*)serviceUUID;
 
 /// Write hex string Value to a characteristic that is NordicUARTTxCharacteristic
 /// @method writeFFValue
@@ -78,12 +92,5 @@
 - (BOOL)writeFFValue:(NSString *)FFString;
 
 - (void)writeFFValue:(NSString *)FFString completion:(void(^)(BOOL success))completion;
-@end
-
-@interface YPBleDevice (yp_BleOperation_depaecated_1_0)
-
-- (void)writeValue:(CBUUID*)serviceUUID characteristicUUID:(CBUUID*)characteristicUUID p:(CBPeripheral *)p data:(NSData *)data NS_DEPRECATED_IOS(4_0, 5_0, "Use instead");
-
-- (void)writeValueWithoutResponse:(CBUUID*)serviceUUID characteristicUUID:(CBUUID*)characteristicUUID p:(CBPeripheral *)p data:(NSData *)data NS_DEPRECATED_IOS(4_0, 5_0, "Use instead");
 
 @end

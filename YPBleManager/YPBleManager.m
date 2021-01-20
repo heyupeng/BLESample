@@ -14,33 +14,63 @@
 #import "CoreBluetooth+YPExtension.h"
 #import "NSData+YPHexString.h"
 
-NSString * CBManagerStateGetDescription(CBManagerState state) {
-    NSString * desc;
-    switch (state) {
-        case CBManagerStatePoweredOff:
-            desc = @"Bluetooth is powered off";
-            break;
-        case CBManagerStatePoweredOn:
-            desc = @"Bluetooth is powered on and ready";
-            break;
-        case CBManagerStateResetting:
-            desc = @"Bluetooth is resetting";
-            break;
-        case CBManagerStateUnauthorized:
-            desc = @"Bluetooth is unauthorized";
-            break;
-        case CBManagerStateUnknown:
-            desc = @"Bluetooth is unknown";
-            break;
-        case CBManagerStateUnsupported:
-            desc = @"Bluetooth is unsupported";
-            break;
-        default:
-            desc = @"Unknown state";
-            break;
-    }
-    return desc;
+@implementation YPBleConfiguration
+
+- (instancetype)init {
+    self = [super init];
+    if (self) { [self setup]; }
+    return self;
 }
+
+- (void)setup {
+    _services = nil;
+    
+    _RSSIValue = MAX_RSSI_VALUE;
+    
+    _localName = nil;
+    _mac = nil;
+    
+//    self.unnamedIntercept = YES;
+//    self.withoutDataIntercept = YES;
+//    self.ignoreLocalNames = nil;
+}
+
+- (BOOL)filterUsingPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI{
+    if (abs(RSSI.intValue) > self.RSSIValue) { return NO; }
+    if (self.unnamedIntercept && peripheral.name == nil) { return NO; }
+    
+    AdvertisementDataHelper * helper = [[AdvertisementDataHelper alloc] initWithAdvertisementData:advertisementData];
+    
+    NSString * localName = helper.localName;
+    if (self.localName && self.localName.length > 0) {
+        if (![localName localizedCaseInsensitiveContainsString:localName]) return NO;
+    }
+    
+    if (self.ignoreLocalNames && self.ignoreLocalNames.count > 0 && localName) {
+        for (NSString * ignoreLocalName in self.ignoreLocalNames) {
+            if ([localName localizedCaseInsensitiveContainsString:ignoreLocalName]) return NO;
+        }
+    }
+    
+    if (self.withoutDataIntercept && helper.manufacturerData == nil && ![advertisementData.allKeys containsObject:CBAdvertisementDataServiceDataKey]) {
+        return NO;
+    }
+    
+    if (self.mac && self.mac.length > 0) {
+        NSString * mac = helper.mac.hexString;
+        return [mac.lowercaseString isEqualToString:self.mac.lowercaseString];
+    }
+    
+    return YES;
+}
+
+- (BOOL)filter:(YPBleDevice *)device {
+    return [self filterUsingPeripheral:device.peripheral advertisementData:device.advertisementData RSSI:device.RSSI];
+}
+
+@end
+
+NSString * BLEGetCBManagerStateDescription(CBManagerState state);
 
 static YPBleManager *shareManager;
 
@@ -101,9 +131,7 @@ static YPBleManager *shareManager;
 }
 
 - (void)deviceInterceptSetup {
-    _RSSIValue = MAX_RSSI_VALUE;
-    _localName = nil;
-    _mac = nil;
+    _bleConfiguration = [[YPBleConfiguration alloc] init];
 }
 
 - (void)operationSetup {
@@ -135,9 +163,7 @@ static YPBleManager *shareManager;
     [self stopScan];
     
     if (self.discoverDevices.count == 0) {
-        _bleOpError = BLEOperationErrorNotFound;
-        NSDictionary * info = @{@"bleOpError": @(BLEOperationErrorNotFound)};
-        [[NSNotificationCenter defaultCenter] postNotificationName: YPBLEManager_BleOperationError object:info];
+        [self didReceiveBleError:BLEOperationErrorNotFound];
     }
 }
 
@@ -221,21 +247,13 @@ static YPBleManager *shareManager;
     
     if (!device) {
         device = [[YPBleDevice alloc] initWithDevice:peripheral];
-        device.advertisementData = advertisementData;
-        device.RSSI = RSSI;
+        [_discoverDevices addObject:device];
     }
+    device.advertisementData = advertisementData;
+    device.RSSI = RSSI;
     
     [device addRSSIRecord:RSSI];
-    
-    if (self.mac && self.mac.length > 0) {
-        if (![device.mac.hexString.uppercaseString containsString:self.mac.uppercaseString]) {
-            return;
-        };
-    }
-    
-    [_discoverDevices addObject:device];
-    
-//    NSLog(@"Discovered peripheral: identifier = %@ RSSI= %@ specificData = %@", [peripheral identifier], RSSI, aDevice.specificData.hexString.uppercaseString);
+        
     [self logWithFormat:@"Discovered peripheral: identifier(%@) RSSI(%@) specificData = %@", [peripheral identifier], RSSI, device.specificData.hexString.uppercaseString];
     
     [[NSNotificationCenter defaultCenter] postNotificationName: YPBLEManager_DidDiscoverDevice object:device];
@@ -274,7 +292,7 @@ static YPBleManager *shareManager;
 
 #pragma mark - central delegate
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central {
-    NSLog(@"Manager: %@", CBManagerStateGetDescription(central.state));
+    NSLog(@"Manager state: %@", BLEGetCBManagerStateDescription(central.state));
     
     [self didUpdateState:central];
     
@@ -335,7 +353,7 @@ static YPBleManager *shareManager;
     
     if (error) {
         // 1.连接意外中断
-        NSLog(@"Disconnection Error: Code=%ld LocalizedDescription=%@", error.code, error.localizedDescription);
+        NSLog(@"Disconnection Error: Code=%zi LocalizedDescription=%@", error.code, error.localizedDescription);
         [self didReceiveBleError:BLEOperationErrorDisconnected];
         return;
     }
@@ -356,7 +374,7 @@ static YPBleManager *shareManager;
 - (void)centralManager:(CBCentralManager *)central didFailToConnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
     NSLog(@"Manager did fail to connecting device");
     if (error) {
-        NSLog(@"Connection Error: Code=%ld LocalizedDescription=%@", error.code, error.localizedDescription);
+        NSLog(@"Connection Error: Code=%zi LocalizedDescription=%@", error.code, error.localizedDescription);
         [self didReceiveBleError:BLEOperationErrorFailToConnect];
     }
 }
@@ -371,13 +389,13 @@ static YPBleManager *shareManager;
     _bleOpState = state;
     switch (state) {
         case BLEOperationNone:
-            [self cancel_connect_timer_block]; // 连接时被中断，取消block；
+            [self cancelConnectionTimerBlock]; // 连接时被中断，取消block；
             break;
         case BLEOperationScanning:
 //            [self logWithFormat:@"BLE Operation: Scanning..."];
             break;
         case BLEOperationConnected:
-            [self cancel_connect_timer_block];
+            [self cancelConnectionTimerBlock];
             break;
         default:
             break;
@@ -385,33 +403,38 @@ static YPBleManager *shareManager;
     [[NSNotificationCenter defaultCenter] postNotificationName:YPBLEManager_BleOperationStateDidChange object:@(state)];
 }
 
-/**
- a collection of service allowed
-
- @return a collection of service allowed
- */
-- (NSArray<CBUUID *> *)services {
-    CBUUID * serviceUUID1 = [CBUUID UUIDWithString:@"FE59"];
-    CBUUID * serviceUUID2 = [CBUUID UUIDWithString:@"180A"];
-    CBUUID * serviceUUID3 = [CBUUID UUIDWithString:@"FEF5"]; // 小素晶片suota
-    return @[serviceUUID1, serviceUUID2, serviceUUID3];
+- (BOOL)filterPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI {
+    return ![self.bleConfiguration filterUsingPeripheral:peripheral advertisementData:advertisementData RSSI:RSSI];
 }
 
-- (BOOL)filterPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI {
-    if (abs([RSSI intValue]) > _RSSIValue) { return YES; }
+/// 开启自有连接定时器。
+- (void)openCustomTimerForConnecting:(YPBleDevice *)device {
+    if (!self.openConnectionTimekeeper && self.connectionTime > 0) {return;}
     
-    if (self.localName && self.localName.length > 0 && [[[advertisementData objectForKey:CBAdvertisementDataLocalNameKey] lowercaseString] rangeOfString:self.localName.lowercaseString].location == NSNotFound) {
-        return YES;
+    dispatch_block_t block = dispatch_block_create(DISPATCH_BLOCK_BARRIER, ^{
+//        if (self.bleOpState == BLEOperationConnecting || device.peripheral.state == CBPeripheralStateConnecting) {
+        if (device.peripheral.state == CBPeripheralStateConnecting) {
+            [self.manager cancelPeripheralConnection:device.peripheral];
+        }
+    });
+    _connect_timer_block = block;
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.connectionTime * NSEC_PER_SEC)), dispatch_get_main_queue(), block);
+}
+
+/// 取消自有连接定时器的回调的调用
+- (void)cancelConnectionTimerBlock {
+    if (!_connect_timer_block) {
+        return;
     }
-    
-    return NO;
+    dispatch_block_cancel(_connect_timer_block);
+    _connect_timer_block = nil;
 }
 
 /**/
 - (void)startScan {
     if (self.manager.state != CBManagerStatePoweredOn) {
-        _bleOpError = BLEOperationErrorScanInterrupted;
-        [[NSNotificationCenter defaultCenter] postNotificationName: YPBLEManager_BleOperationError object:@{@"bleState": @(self.manager.state), @"bleOpError":@(2), @"bleOperation": @"scan"}];
+        [self didReceiveBleError:BLEOperationErrorScanInterrupted];
         return;
     }
     
@@ -420,7 +443,7 @@ static YPBleManager *shareManager;
     _discoverDevices = [NSMutableArray new];
     _manager.delegate = self;
     
-    NSArray * services = [self services];
+    NSArray * services = self.bleConfiguration.services;
     NSDictionary * options = @{CBCentralManagerScanOptionAllowDuplicatesKey:@YES};
     [_manager scanForPeripheralsWithServices:services options: options];
         
@@ -444,33 +467,9 @@ static YPBleManager *shareManager;
     [self logWithFormat:@"BLE Operation: Stop scan"];
 }
 
-/// 自定义连接定时器。
-- (void)openCustomTimerForConneting:(YPBleDevice *)device {
-    if (!self.openConnectionTimekeeper && self.connectionTime > 0) {return;}
-    
-    dispatch_block_t block = dispatch_block_create(DISPATCH_BLOCK_BARRIER, ^{
-//        if (self.bleOpState == BLEOperationConnecting || device.peripheral.state == CBPeripheralStateConnecting) {
-        if (device.peripheral.state == CBPeripheralStateConnecting) {
-            [self.manager cancelPeripheralConnection:device.peripheral];
-        }
-    });
-    _connect_timer_block = block;
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.connectionTime * NSEC_PER_SEC)), dispatch_get_main_queue(), block);
-}
-
-- (void)cancel_connect_timer_block {
-    if (!_connect_timer_block) {
-        return;
-    }
-    dispatch_block_cancel(_connect_timer_block);
-    _connect_timer_block = nil;
-}
-
 - (void)connectDevice:(YPBleDevice *)device {
     if (self.manager.state != CBManagerStatePoweredOn) {
-        _bleOpError = BLEOperationErrorFailToConnect;
-        [[NSNotificationCenter defaultCenter] postNotificationName: YPBLEManager_BleOperationError object:@{@"bleState": @(self.manager.state), @"bleOpError":@(3), @"bleOperation": @"connect"}];
+        [self didReceiveBleError:BLEOperationDisConnected];
         return;
     }
     
@@ -486,7 +485,7 @@ static YPBleManager *shareManager;
     [self updateBleOperationState:BLEOperationConnecting];
     [self logWithFormat:@"BLE Operation: Connecting"];
     
-    [self openCustomTimerForConneting:device];
+    [self openCustomTimerForConnecting:device];
 }
 
 - (void)disconnectDevice:(YPBleDevice *)device {
@@ -506,3 +505,31 @@ static YPBleManager *shareManager;
 }
 
 @end
+
+NSString * BLEGetCBManagerStateDescription(CBManagerState state) {
+    NSString * desc;
+    switch (state) {
+        case CBManagerStatePoweredOff:
+            desc = @"Bluetooth is powered off";
+            break;
+        case CBManagerStatePoweredOn:
+            desc = @"Bluetooth is powered on and ready";
+            break;
+        case CBManagerStateResetting:
+            desc = @"Bluetooth is resetting";
+            break;
+        case CBManagerStateUnauthorized:
+            desc = @"Bluetooth is unauthorized";
+            break;
+        case CBManagerStateUnknown:
+            desc = @"Bluetooth is unknown";
+            break;
+        case CBManagerStateUnsupported:
+            desc = @"Bluetooth is unsupported";
+            break;
+        default:
+            desc = @"Unknown state";
+            break;
+    }
+    return desc;
+}

@@ -414,7 +414,7 @@ int byteStart = 0;
         
 //        blockData = [byteData subdataWithRange:NSMakeRange(blockStart, blockSize)];
         
-        [_device writeValueWithoutResponse:blockData forCharacteristicUUID:[CBUUID UUIDWithString:Private_Service_Tx_Characteristic_UUID] serviceUUID:[CBUUID UUIDWithString:Private_Service_UUID] peripheral:_device.peripheral];
+        [_device writeValueWithoutResponse:blockData forCharacteristicUUID:[CBUUID UUIDWithString:Private_Service_Tx_Characteristic_UUID] serviceUUID:[CBUUID UUIDWithString:Private_Service_UUID]];
     }
     
     byteStart += byteLength;
@@ -465,7 +465,7 @@ int byteStart = 0;
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ %@", valueString, [character value]];
     
     if ([UUID.UUIDString isEqualToString:@"2A19"]) {
-        long value = [[character value].hexString hexStringToLongValue];
+        long value = [[character value].hexString yp_hexStringToLongValue];
         cell.detailTextLabel.text = [NSString stringWithFormat:@"%ld %% %@", value, [character value]];
         [CBUUID UUIDWithUInt16:0x2a19];
         [UUID UInt16Value];

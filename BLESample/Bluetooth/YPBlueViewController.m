@@ -41,8 +41,8 @@
     [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [btn addTarget:self action:@selector(showLogAction:) forControlEvents:UIControlEventTouchUpInside];
     btn.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
-    btn.frame = CGRectMake(0, 44, 60, 30);
-    btn.layer.cornerRadius = 30 * 0.5;
+    btn.frame = CGRectMake(0, 44, 60, 60);
+    btn.layer.cornerRadius = 60 * 0.5;
     btn.layer.zPosition = 10;
     [[UIApplication sharedApplication].keyWindow addSubview:btn];
     
@@ -51,23 +51,29 @@
     [btn addGestureRecognizer:pan];
     _logBtn = btn;
 }
+
 - (void)panGestureRecognizerActionForFrame:(UIPanGestureRecognizer *)sender {
     // 获取手势的移动，也是相对于最开始的位置
     UIView * v = sender.view;
-    CGPoint transP = [sender translationInView:v];
+    CGPoint offset = [sender translationInView:v];
     
-    CGRect offset = CGRectOffset(v.frame, transP.x, transP.y);
-    if (offset.origin.x < 0) {
-        transP.x += 0 - offset.origin.x;
-    } else if (CGRectGetMaxX(offset) > CGRectGetWidth(v.superview.frame)) {
-        transP.x += CGRectGetWidth(v.superview.frame) - CGRectGetMaxX(offset);
+    CGRect bounds = v.superview.frame;
+    UIEdgeInsets insets = UIEdgeInsetsMake(44, 0, 34, 0);
+    bounds = UIEdgeInsetsInsetRect(bounds, insets);
+    
+    CGRect newFrame = CGRectOffset(v.frame, offset.x, offset.y);
+    
+    if (newFrame.origin.x < CGRectGetMinX(bounds)) {
+        offset.x += CGRectGetMinX(bounds) - newFrame.origin.x;
+    } else if (CGRectGetMaxX(newFrame) > CGRectGetMaxX(bounds)) {
+        offset.x += CGRectGetMaxX(bounds) - CGRectGetMaxX(newFrame);
     }
-    if (offset.origin.y < 20) {
-        transP.y += 20 - offset.origin.y;
-    } else if (CGRectGetMaxY(offset) > CGRectGetHeight(v.superview.frame)) {
-        transP.y += CGRectGetHeight(v.superview.frame) - CGRectGetMaxY(offset);
+    if (newFrame.origin.y < CGRectGetMinY(bounds)) {
+        offset.y += CGRectGetMinY(bounds) - newFrame.origin.y;
+    } else if (CGRectGetMaxY(newFrame) > CGRectGetMaxY(bounds)) {
+        offset.y += CGRectGetMaxY(bounds) - CGRectGetMaxY(newFrame);
     }
-    v.transform = CGAffineTransformTranslate(v.transform, transP.x, transP.y);
+    v.transform = CGAffineTransformTranslate(v.transform, offset.x, offset.y);
     
     // 复位
     [sender setTranslation:CGPointZero inView:v];
@@ -101,13 +107,13 @@
     
     [self removeNotificationObserver];
     
-    NSMutableDictionary * temp = [NSMutableDictionary new];
-    [temp setDictionary:_bleConfig];
-    _blueManager.localName? [temp setObject:_blueManager.localName forKey:@"name"]: 0;
-    [temp setValue:@(_blueManager.RSSIValue) forKey:@"RSSI"];
-    [temp setValue:_blueManager.mac forKey:@"mac"];
-    _bleConfig = temp;
-    [[NSUserDefaults standardUserDefaults] setObject:_bleConfig forKey:@"bleConfig"];
+}
+
+- (NSArray<CBUUID *> *)services {
+    CBUUID * serviceUUID1 = [CBUUID UUIDWithString:@"FE59"];
+    CBUUID * serviceUUID2 = [CBUUID UUIDWithString:@"180A"];
+    CBUUID * serviceUUID3 = [CBUUID UUIDWithString:@"FEF5"]; // 小素晶片suota
+    return @[serviceUUID1, serviceUUID2, serviceUUID3];
 }
 
 /** ============== **/
@@ -117,12 +123,20 @@
     NSDictionary * bleConfig = [[NSUserDefaults standardUserDefaults] objectForKey:@"bleConfig"];
     if (!bleConfig) {
         bleConfig = @{
-            @"name": @"SMI-",
+            @"localName": @"SMI-",
             @"mac": @"",
             @"RSSI": @60,
         };
     }
     _bleConfig = bleConfig;
+}
+
+- (void)setBleConfig:(NSDictionary *)info {
+    NSMutableDictionary * temp = [NSMutableDictionary new];
+    [temp setDictionary:_bleConfig];
+    [temp addEntriesFromDictionary:info];
+    _bleConfig = temp;
+    [[NSUserDefaults standardUserDefaults] setObject:_bleConfig forKey:@"bleConfig"];
 }
 
 - (void)initUI {
@@ -175,7 +189,7 @@
     UITextField * tf = [[UITextField alloc] initWithFrame:CGRectMake(80, 0 + (44  - 36)*0.5, SCREENWIDTH * 0.5, 36)];
     tf.borderStyle = UITextBorderStyleRoundedRect;
     tf.keyboardType = UIKeyboardTypeASCIICapable;
-    tf.text = [_bleConfig objectForKey:@"name"];
+    tf.text = [_bleConfig objectForKey:@"localName"];
     tf.delegate = self;
 //    tf.userInteractionEnabled = NO;
     [view2 addSubview:tf];
@@ -227,8 +241,16 @@
         
         [[YPLogger share] clean];
         
-        _blueManager.localName = _nameTextField.text;
-        _blueManager.mac = _macTextField.text;
+        NSString * localName = _nameTextField.text;
+        NSString * mac = _macTextField.text;
+        
+        [self setBleConfig:@{@"localName": localName, @"mac": mac}];
+        
+        _blueManager.bleConfiguration.localName = localName;
+        _blueManager.bleConfiguration.mac = mac;
+        _blueManager.bleConfiguration.withoutDataIntercept = YES;
+        _blueManager.bleConfiguration.unnamedIntercept = YES;
+
         [_blueManager startScan];
         button.title = @"Stop scan";
     } else {
@@ -246,8 +268,9 @@
 
 - (void)sliderValueChanged:(UISlider *)slider {
     _rssiValueLable.text = [NSString stringWithFormat:@"-%.0f dBm", slider.value];
-
-    _blueManager.RSSIValue = slider.value;
+    
+    _blueManager.bleConfiguration.RSSIValue = slider.value;
+    
 }
 
 - (void)textFieldValueChanged:(UITextField *)tf {
@@ -352,14 +375,16 @@
     NSData * specificData = device.specificData;
     NSString * specificDataHexString = specificData.hexString;
     
-    cell.textLabel.text = [NSString stringWithFormat:@"%@, rssi: %.0f", name, device.RSSI.doubleValue];
+    cell.textLabel.text = [NSString stringWithFormat:@"%@ (📶 %.0f dBm)", name, device.RSSI.doubleValue];
     
     NSInteger detailTextNumberOfLines = 5;
+    NSString * companyID = device.companysData.hexString.hexStringReverse;
+    if (companyID) companyID = [NSString stringWithFormat:@"<0x%@>", companyID];
     NSString * detailText = [NSString stringWithFormat:@"UUID: %@ \
                                  \nLocalName: %@ \
                                  \nCompany: %@ \
                                  \nSpecificData: %@ \
-                                 \nMac: %@",device.identifier, localName, device.companysData.hexString, specificDataHexString, device.mac.hexString.uppercaseString];
+                                 \nMac: %@",device.identifier, localName, companyID, specificDataHexString, device.mac.hexString.uppercaseString];
     
     cell.detailTextLabel.numberOfLines = detailTextNumberOfLines;
     cell.detailTextLabel.text = detailText;

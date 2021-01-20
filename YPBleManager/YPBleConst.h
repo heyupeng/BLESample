@@ -49,9 +49,25 @@ typedef enum {
 UIKIT_EXTERN NSString * BLEOperationErrorGetDescription(BLEOperationErrorCode error);
 UIKIT_EXTERN NSString * BLEOperationErrorGetDetailDescription(BLEOperationErrorCode error);
 
-/*
- Nordic UART Service
- */
+/* Nordic UART Service */
 UIKIT_EXTERN NSString * const NordicUARTServiceUUIDString;
 UIKIT_EXTERN NSString * const NordicUARTTxCharacteristicUUIDString;
 UIKIT_EXTERN NSString * const NordicUARTRxCharacteristicUUIDString;
+
+/* Legacy DFU Service */
+UIKIT_EXTERN NSString * const LegacyDFUServiceUUIDString;
+UIKIT_EXTERN NSString * const LegacyDFUControlPointUUIDString;
+UIKIT_EXTERN NSString * const LegacyDFUPacketUUIDString;
+UIKIT_EXTERN NSString * const LegacyDFUVersionUUIDString;
+
+/* Secure DFU */
+UIKIT_EXTERN NSString * const SecureDFUServiceUUIDString;
+UIKIT_EXTERN NSString * const SecureDFUControlPointUUIDString;
+UIKIT_EXTERN NSString * const SecureDFUPacketUUIDString;
+
+/* Buttonless DFU */
+UIKIT_EXTERN NSString * const ButtonlessDFUServiceUUIDString;
+// The same UUID
+UIKIT_EXTERN NSString * const ButtonlessDFUCharacteristicUUIDString;
+UIKIT_EXTERN NSString * const ButtonlessDFUWithoutBondsUUIDString;
+UIKIT_EXTERN NSString * const ButtonlessDFUWithBondsUUIDString;

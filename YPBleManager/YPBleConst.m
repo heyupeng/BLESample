@@ -34,7 +34,7 @@ NSString * BLEOperationErrorGetDescription(BLEOperationErrorCode error) {
             return @"NotFound";
             break;
         case BLEOperationErrorScanInterrupted:
-            return @"StopScan";
+            return @"ScanInterrupted";
             break;
         case BLEOperationErrorFailToConnect:
             return @"FailToConnect";
@@ -72,10 +72,25 @@ NSString * BLEOperationErrorGetDetailDescription(BLEOperationErrorCode error) {
     return nil;
 }
 
-/*
- Nordic UART Service
- */
+/* Nordic UART Service */
 NSString * const NordicUARTServiceUUIDString = @"6E400001-B5A3-F393-E0A9-E50E24DCCA9E"; // 0x6E400001B5A3F393E0A9E50E24DCCA9E
 NSString * const NordicUARTTxCharacteristicUUIDString = @"6E400002-B5A3-F393-E0A9-E50E24DCCA9E"; // 0x6E400002B5A3F393E0A9E50E24DCCA9E
 NSString * const NordicUARTRxCharacteristicUUIDString = @"6E400003-B5A3-F393-E0A9-E50E24DCCA9E"; // 0x6E400003B5A3F393E0A9E50E24DCCA9E
 
+/* Legacy DFU */
+NSString * const LegacyDFUServiceUUIDString      = @"00001530-1212-EFDE-1523-785FEABCD123";
+NSString * const LegacyDFUControlPointUUIDString = @"00001531-1212-EFDE-1523-785FEABCD123";
+NSString * const LegacyDFUPacketUUIDString       = @"00001532-1212-EFDE-1523-785FEABCD123";
+NSString * const LegacyDFUVersionUUIDString      = @"00001534-1212-EFDE-1523-785FEABCD123";
+
+/* Secure DFU */
+NSString * const SecureDFUServiceUUIDString      = @"FE59";
+NSString * const SecureDFUControlPointUUIDString = @"8EC90001-F315-4F60-9FB8-838830DAEA50";
+NSString * const SecureDFUPacketUUIDString       = @"8EC90002-F315-4F60-9FB8-838830DAEA50";
+
+/* Buttonless DFU */
+NSString * const ButtonlessDFUServiceUUIDString        = @"8E400001-F315-4F60-9FB8-838830DAEA50";
+// The same UUID as the service
+NSString * const ButtonlessDFUCharacteristicUUIDString = @"8E400001-F315-4F60-9FB8-838830DAEA50";
+NSString * const ButtonlessDFUWithoutBondsUUIDString = @"8EC90003-F315-4F60-9FB8-838830DAEA50";
+NSString * const ButtonlessDFUWithBondsUUIDString    = @"8EC90004-F315-4F60-9FB8-838830DAEA50";

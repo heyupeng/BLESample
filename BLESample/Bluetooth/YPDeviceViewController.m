@@ -73,7 +73,7 @@
 /** ============== **/
 - (UITableView *)createTableVie {
     CGRect rect = CGRectMake(0, 0, SCREENWIDTH, SCREENHEIGHT);
-    UITableView * tableView = [[UITableView alloc] initWithFrame:rect style: UITableViewStylePlain];
+    UITableView * tableView = [[UITableView alloc] initWithFrame:rect style: UITableViewStyleGrouped];
     tableView.delegate = self;
     tableView.dataSource = self;
     
@@ -103,6 +103,8 @@
 - (void)addNotificationObserver {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutBlueManager:) name:YPBLEManager_DidConnectedDevice object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutManagerError:) name:YPBLEManager_BleOperationError object:nil];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutdevice:) name: YPBLEDevice_DidDiscoverServices object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutdevice:) name: YPBLEDevice_DidDiscoverCharacteristics object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutdevice:) name: YPBLEDevice_DidUpdateValue object:nil];
@@ -123,6 +125,17 @@
     });
 }
 
+- (void)notificationAboutManagerError: (NSNotification *)notification {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if (![notification.name isEqualToString:YPBLEManager_BleOperationError]) {
+            return;
+        }
+        id obj = [notification object];
+        obj = [obj objectForKey:@"bleOpError"];
+        [self bleManagerError:[obj integerValue]];
+    });
+}
+
 - (void)notificationAboutdevice: (NSNotification *)notification {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         if ([notification.name isEqualToString:YPBLEDevice_DidDiscoverServices]) {
@@ -140,6 +153,17 @@
         }
     });
 }
+
+/* ble Manager */
+- (void)bleManagerError:(BLEOperationErrorCode)error {
+    if (error == BLEOperationErrorFailToConnect) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+    else {
+        
+    }
+}
+
 /*
 #pragma mark - Navigation
 
@@ -172,10 +196,10 @@
     NSString * valueString = [[NSString alloc] initWithData:[character value] encoding:NSUTF8StringEncoding];
     
     cell.textLabel.numberOfLines = 2;
-    cell.textLabel.text = [NSString stringWithFormat:@"Characteristic: %@", UUID];
+    cell.textLabel.text = [NSString stringWithFormat:@"Characteristic: %@", CBUUIDGetDescription(UUID)];
     
     NSMutableString * detailText = [[NSMutableString alloc] init];
-    [detailText appendFormat:@"UUIDString: %@\n", [UUID UUIDString]];
+    [detailText appendFormat:@"UUID: %@\n", [UUID UUIDString]];
     [detailText appendFormat:@"Properies: %@\n", [propertyDescriptions componentsJoinedByString:@"|"]];
     [detailText appendFormat:@"Value: (0x%@)", [character value].hexString];
     
@@ -191,6 +215,19 @@
     return cell;
 }
 
+NSString * CBUUIDGetDescription(CBUUID * UUID) {
+    NSString * UUIDString = UUID.UUIDString;
+    if ([UUIDString isEqualToString:NordicUARTServiceUUIDString])           return @"Nordic UART Service";
+    if ([UUIDString isEqualToString:NordicUARTRxCharacteristicUUIDString])  return @"Rx Characteristic";
+    if ([UUIDString isEqualToString:NordicUARTTxCharacteristicUUIDString])  return @"Tx Characteristic";
+    
+    if ([UUIDString isEqualToString:LegacyDFUServiceUUIDString])        return @"Legacy DFU Service";
+    if ([UUIDString isEqualToString:LegacyDFUControlPointUUIDString])   return @"Legacy DFU Control Point";
+    if ([UUIDString isEqualToString:LegacyDFUPacketUUIDString])         return @"Legacy DFU Packet";
+    if ([UUIDString isEqualToString:LegacyDFUVersionUUIDString])        return @"Legacy DFU Version";
+    return UUID.description;
+}
+
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     UITableViewHeaderFooterView * header = (UITableViewHeaderFooterView *)[tableView dequeueReusableHeaderFooterViewWithIdentifier:@"header"];
     
@@ -198,8 +235,11 @@
     CBUUID * UUID = [service UUID];
     NSString * title = [UUID UUIDString];
     
+    NSString * UUIDName = CBUUIDGetDescription(UUID);
+    
     header.textLabel.numberOfLines = 2;
-    header.textLabel.text = [NSString stringWithFormat:@"CBServices:%@ (0x%@)", UUID, title];
+    header.textLabel.text = [NSString stringWithFormat:@"Service:%@", UUIDName];
+    header.detailTextLabel.text = [NSString stringWithFormat:@"UUID: 0x%@", title];
     return header;
 }
 
@@ -208,7 +248,10 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 60;
+    if (section != 0) {
+        return 60;
+    }
+    return 20+60;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -236,6 +279,7 @@
     
     if ([service.UUID isEqual:[CBUUID UUIDWithString:@"180A"]] || [service.UUID isEqual:[CBUUID UUIDWithString:@"180F"]]) {
         CBCharacteristic * characteristic = [[service characteristics] objectAtIndex:indexPath.row];
+        if (characteristic == nil) { NSLog(@"'无效参数不满足: characteristic != nil"); }
         [_device.peripheral readValueForCharacteristic:characteristic];
     }
 }
