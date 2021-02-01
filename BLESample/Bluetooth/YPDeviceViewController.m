@@ -12,7 +12,7 @@
 
 #import "YPBleMacro.h"
 
-#import "CommunicationProtocol/SOCBluetoothWriteData.h"
+#import "CommunicationProtocol/SOCCommander.h"
 
 @interface YPDeviceViewController ()
 
@@ -283,7 +283,7 @@ NSString * CBUUIDGetDescription(CBUUID * UUID) {
         YPUpgradeViewController * viewController = [[YPUpgradeViewController alloc] init];
         viewController.bleManager = _bleManager;
         [self.navigationController pushViewController:viewController animated:YES];
-        [_device writeFFValue:[SOCBluetoothWriteData commandForSetFuncionWith:0]];
+        [_device writeFFValue:[SOCCommander commandForSetFuncionWith:0]];
         return;
     }
     
