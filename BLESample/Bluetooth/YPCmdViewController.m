@@ -146,11 +146,12 @@
     _btn = btn;
     
     // 2.0
-    CGRect frame = CGRectMake(0, CGRectGetMaxY(view.frame), SCREENWIDTH, CGRectGetHeight(self.view.frame) - CGRectGetMaxY(view.frame) - 5 - 120);
+    CGRect frame = CGRectMake(0, CGRectGetMaxY(view.frame) + 10, SCREENWIDTH, CGRectGetHeight(self.view.frame) - CGRectGetMaxY(view.frame) - 5 - 120);
     
     int volumn = 3;
     UICollectionViewFlowLayout * layout = [[UICollectionViewFlowLayout alloc] init];
-    layout.itemSize = CGSizeMake((CGRectGetWidth(frame) - 10 * (volumn - 1))/volumn, 44);
+    layout.itemSize = CGSizeMake((CGRectGetWidth(frame) - 10 * (volumn - 1) - 10)/volumn, 44);
+    layout.sectionInset = UIEdgeInsetsMake(5, 5, 5, 5);
     
     UICollectionView * collectionView = [[UICollectionView alloc] initWithFrame:frame collectionViewLayout:layout];
     collectionView.backgroundColor = [UIColor groupTableViewBackgroundColor];
@@ -223,7 +224,7 @@
 
 /** ============== **/
 - (void)addNotificationObserver {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutBleManager:) name:YPBLEManager_DidConnectedDevice object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutBleManager:) name:YPBLEManager_DidConnectDevice object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutdevice:) name: YPBLEDevice_DidDiscoverServices object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutdevice:) name: YPBLEDevice_DidDiscoverCharacteristics object:nil];
@@ -240,7 +241,7 @@
 - (void)notificationAboutBleManager: (NSNotification *)notification {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         
-        if ([notification.name isEqualToString:YPBLEManager_DidConnectedDevice]) {
+        if ([notification.name isEqualToString:YPBLEManager_DidConnectDevice]) {
             [self.device.peripheral discoverServices:nil];
         }
         
@@ -515,6 +516,7 @@ int byteStart = 0;
     id item = [_dataSource objectAtIndex:indexPath.row];
     cell.titleLabel.text = [item objectForKey:@"event"]? :[item objectForKey:@"cmd"];
     
+    cell.contentView.layer.borderWidth = 0.5;
     return cell;
 }
 

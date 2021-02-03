@@ -101,7 +101,7 @@
 
 /** ============== **/
 - (void)addNotificationObserver {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutBleManager:) name:YPBLEManager_DidConnectedDevice object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutBleManager:) name:YPBLEManager_DidConnectDevice object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationAboutManagerError:) name:YPBLEManager_BleOperationError object:nil];
     
@@ -118,7 +118,7 @@
 - (void)notificationAboutBleManager: (NSNotification *)notification {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         
-        if ([notification.name isEqualToString:YPBLEManager_DidConnectedDevice]) {
+        if ([notification.name isEqualToString:YPBLEManager_DidConnectDevice]) {
             [self.device.peripheral discoverServices:nil];
         }
 
@@ -155,8 +155,8 @@
 }
 
 /* ble Manager */
-- (void)bleManagerError:(BLEOperationErrorCode)error {
-    if (error == BLEOperationErrorFailToConnect) {
+- (void)bleManagerError:(BLEOpErrorCode)error {
+    if (error == BLEOpErrorConnectionFailed || error == BLEOpErrorConnectionTimeout) {
         [self.navigationController popViewControllerAnimated:YES];
     }
     else {

@@ -13,7 +13,7 @@
 
 #define MAX_RSSI_VALUE 60
 #define SCAN_TIME_OUT 30
-#define CONNECT_TIME_OUT 10
+#define CONNECTTION_TIME_OUT 10
 
 @class YPBleDevice;
 
@@ -44,13 +44,27 @@
 /// 地址。默认 nil 。当 mac 不为 nil ， 检索目标设备，其他设备将被拦截
 @property (nonatomic, copy) NSString * mac;
 
+
+@property (nonatomic) void(^logger)(NSString * message);
+
+/* 管理器操作设置 */
+
+/// 默认 NO。当autoScanWhilePoweredOn 为YES，打开蓝牙时自动检索。
+@property (nonatomic) BOOL autoScanWhilePoweredOn;
+/// 检索时间。默认 30 sec。
+@property (nonatomic) NSInteger scanTimeoutPeriod;
+/// 开启连接计时。配合 connectionTimeoutPeriod 使用
+@property (nonatomic) BOOL openConnectionTimer;
+/// 连接时间。默认 10 sec。
+@property (nonatomic) NSInteger connectionTimeoutPeriod;
+
 @end
+
 
 @interface YPBleManager : NSObject <CBCentralManagerDelegate>
 
 @property (nonatomic, strong) CBCentralManager * manager;
 @property (nonatomic, strong) NSMutableArray * discoverDevices;
-@property (nonatomic, strong) NSMutableArray * discoverperipheral;
 @property (nonatomic, strong) YPBleDevice * currentDevice;
 
 @property (nonatomic, weak) id<YPBleManagerDelegate> bleDelegate;
@@ -60,21 +74,15 @@
 /// 是否正在检索状态。
 @property (nonatomic, readonly) BOOL isScaning;
 /// 管理器状态。
-@property (nonatomic, readonly) BLEOperationState bleOpState;
+@property (nonatomic, readonly) BLEOpState bleOpState;
 /// 管理器操作错误码
-@property (nonatomic, readonly) BLEOperationErrorCode bleOpError;
+@property (nonatomic, readonly) BLEOpErrorCode bleOpError;
 
-@property (nonatomic, strong) YPBleConfiguration * bleConfiguration;
+/// 管理器配置器
+@property (nonatomic, readonly) YPBleConfiguration * bleConfiguration;
 
-/* 管理器操作设置 */
-/// 默认 NO。当autoScanWhilePoweredOn 为YES，打开蓝牙时自动检索。
-@property (nonatomic) BOOL autoScanWhilePoweredOn;
-/// 检索时间。默认 30 sec。
-@property (nonatomic) NSInteger scanTimeout;
-/// 开启连接计时。配合 connectionTime 使用
-@property (nonatomic) BOOL openConnectionTimekeeper;
-/// 连接时间。默认 10 sec。
-@property (nonatomic) NSInteger connectionTime;
++ (instancetype)share;
++ (void)destroy;
 
 - (void)startScan;
 - (void)stopScan;
@@ -82,19 +90,22 @@
 - (void)connectDevice:(YPBleDevice *)device;
 - (void)disconnectDevice:(YPBleDevice *)device;
 
-+ (instancetype)share;
-+ (void)destroy;
-
-- (void)updateState;
-
 @end
 
 @protocol YPBleManagerDelegate <NSObject>
 @optional
-- (void)didUpdateState:(YPBleManager *)bleManager;
+
+/// 蓝牙中央管理器的状态（即 bleManager.manager.state）变更时被调用
+- (void)bleManagerDidUpdateState:(YPBleManager *)bleManager;
 
 - (void)didDiscoverBleDevice:(YPBleDevice *)device;
+- (void)didConnectBleDevice:(YPBleDevice *)device;
+- (void)didDisconnectBleDevice:(YPBleDevice *)device;
 
-- (void)didConnectedBleDevice:(YPBleDevice *)device;
+/// bleManager 执行状态变化时被调动
+- (void)bleManagerOpState:(BLEOpState)state;
+
+/// bleManager 执行任务失败时被调动
+- (void)bleManagerOpError:(BLEOpErrorCode)error;
 
 @end

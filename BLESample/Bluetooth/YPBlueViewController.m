@@ -138,6 +138,10 @@
     _bleConfig = bleConfig;
     
     _bleManager = [YPBleManager share];
+    
+    _bleManager.bleConfiguration.openConnectionTimer = YES;
+    _bleManager.bleConfiguration.connectionTimeoutPeriod = 5;
+    
     _bleManager.bleConfiguration.services = [self services];
     _bleManager.bleConfiguration.RSSIValue = [[bleConfig objectForKey:@"RSSI"] intValue];
     _bleManager.bleConfiguration.localName = [bleConfig objectForKey:@"localName"];
@@ -147,6 +151,10 @@
     _bleManager.bleConfiguration.ignoreLocalNames = ignoreLocalName.length > 0? [ignoreLocalName componentsSeparatedByString:@","] : nil;
 //    _bleManager.bleConfiguration.withoutDataIntercept = YES;
 //    _bleManager.bleConfiguration.unnamedIntercept = YES;
+    
+    _bleManager.bleConfiguration.logger = ^(NSString *message) {
+        [[YPLogger share] appendLog:message];
+    };
 }
 
 - (void)setBleConfig:(NSDictionary *)info {

@@ -9,10 +9,9 @@
 #import "YPBleConst.h"
 
 NSNotificationName const YPBLEManager_DidUpdateState           = @"YPBleManagerDidUpdateState";
-NSNotificationName const YPBLEManager_ReceiveDevices           = @"YPBleManagerReceiveDevices";
 NSNotificationName const YPBLEManager_DidDiscoverDevice        = @"YPBleManagerDiscoverDevice";
-NSNotificationName const YPBLEManager_DidConnectedDevice       = @"YPBleManagerConnectedDevice";
-NSNotificationName const YPBLEManager_DidDisconnectedDevice    = @"YPBleManagerDisconnectedDevice";
+NSNotificationName const YPBLEManager_DidConnectDevice       = @"YPBleManagerConnectedDevice";
+NSNotificationName const YPBLEManager_DidDisconnectDevice    = @"YPBleManagerDisconnectedDevice";
 
 NSNotificationName const YPBLEManager_BleOperationStateDidChange  = @"YPBLEManagerBleOperationStateDidChange";
 NSNotificationName const YPBLEManager_BleOperationError  = @"YPBLEManagerBleOperationError";
@@ -22,24 +21,24 @@ NSNotificationName const YPBLEDevice_DidDiscoverCharacteristics  = @"YPDeviceDid
 NSNotificationName const YPBLEDevice_DidUpdateValue              = @"YPDeviceDidUpdateValue";
 NSNotificationName const YPBLEDevice_DidWriteValue               = @"YPDeviceDidWriteValue";
 
-/* BLEOperationError Description
+/* BLEOpError Description
  */
-NSString * BLEOperationErrorGetDescription(BLEOperationErrorCode error) {
+NSString * BLEOpErrorGetDescription(BLEOpErrorCode error) {
     switch (error) {
-        case BLEOperationErrorUnsupported:
+        case BLEOpErrorUnsupported:
             return @"Unsupported";
-        case BLEOperationErrorUnauthorized:
+        case BLEOpErrorUnauthorized:
             return @"Unauthorized";
-        case BLEOperationErrorNotFound:
+        case BLEOpErrorNotFound:
             return @"NotFound";
             break;
-        case BLEOperationErrorScanInterrupted:
+        case BLEOpErrorScanInterrupted:
             return @"ScanInterrupted";
             break;
-        case BLEOperationErrorFailToConnect:
+        case BLEOpErrorConnectionFailed:
             return @"FailToConnect";
             break;
-        case BLEOperationErrorDisconnected:
+        case BLEOpErrorDisconnected:
             return @"Disconnected";
             break;
         default:
@@ -48,22 +47,25 @@ NSString * BLEOperationErrorGetDescription(BLEOperationErrorCode error) {
     return nil;
 }
 
-NSString * BLEOperationErrorGetDetailDescription(BLEOperationErrorCode error) {
+NSString * BLEOpErrorGetDetailDescription(BLEOpErrorCode error) {
     switch (error) {
-        case BLEOperationErrorUnsupported:
+        case BLEOpErrorUnsupported:
             return @"Bluetooth Unsupported";
-        case BLEOperationErrorUnauthorized:
+        case BLEOpErrorUnauthorized:
             return @"Bluetooth Authorization Denied";
-        case BLEOperationErrorNotFound:
+        case BLEOpErrorNotFound:
             return @"Bluetooth can't find any peripheral";
             break;
-        case BLEOperationErrorScanInterrupted:
+        case BLEOpErrorScanInterrupted:
             return @"Scan interrupted. (Bluetooth become off when it is scanning.)";
             break;
-        case BLEOperationErrorFailToConnect:
+        case BLEOpErrorConnectionTimeout:
+            return @"Connection has timeout";
+            break;
+        case BLEOpErrorConnectionFailed:
             return @"Bluetooth fail to connection";
             break;
-        case BLEOperationErrorDisconnected:
+        case BLEOpErrorDisconnected:
             return @"Connection interrupted. (Bluetooth become off when it is connecting or has been connected.)";
             break;
         default:
@@ -92,5 +94,6 @@ NSString * const SecureDFUPacketUUIDString       = @"8EC90002-F315-4F60-9FB8-838
 NSString * const ButtonlessDFUServiceUUIDString        = @"8E400001-F315-4F60-9FB8-838830DAEA50";
 // The same UUID as the service
 NSString * const ButtonlessDFUCharacteristicUUIDString = @"8E400001-F315-4F60-9FB8-838830DAEA50";
+
 NSString * const ButtonlessDFUWithoutBondsUUIDString = @"8EC90003-F315-4F60-9FB8-838830DAEA50";
 NSString * const ButtonlessDFUWithBondsUUIDString    = @"8EC90004-F315-4F60-9FB8-838830DAEA50";

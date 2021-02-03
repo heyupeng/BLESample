@@ -10,10 +10,9 @@
 #import <UIKit/UIKit.h>
 
 UIKIT_EXTERN NSNotificationName const YPBLEManager_DidUpdateState;
-UIKIT_EXTERN NSNotificationName const YPBLEManager_ReceiveDevices;
 UIKIT_EXTERN NSNotificationName const YPBLEManager_DidDiscoverDevice;
-UIKIT_EXTERN NSNotificationName const YPBLEManager_DidConnectedDevice;
-UIKIT_EXTERN NSNotificationName const YPBLEManager_DidDisconnectedDevice;
+UIKIT_EXTERN NSNotificationName const YPBLEManager_DidConnectDevice;
+UIKIT_EXTERN NSNotificationName const YPBLEManager_DidDisconnectDevice;
 
 UIKIT_EXTERN NSNotificationName const YPBLEManager_BleOperationStateDidChange;
 UIKIT_EXTERN NSNotificationName const YPBLEManager_BleOperationError;
@@ -23,31 +22,32 @@ UIKIT_EXTERN NSNotificationName const YPBLEDevice_DidDiscoverCharacteristics;
 UIKIT_EXTERN NSNotificationName const YPBLEDevice_DidUpdateValue;
 UIKIT_EXTERN NSNotificationName const YPBLEDevice_DidWriteValue;
 
-typedef enum {
-    BLEOperationNone = 0,
-    BLEOperationScanning,
-    BLEOperationStopScan,
-    BLEOperationConnecting,
-    BLEOperationConnected,
-    BLEOperationDisConnecting,
-    BLEOperationDisConnected,
-} BLEOperationState; // Ble Operation State
+/** BLE Operation State. */
+typedef NS_ENUM(NSInteger, BLEOpState) {
+    BLEOpNone = 0,
+    BLEOpScanning,
+    BLEOpStopScan,
+    BLEOpConnecting,
+    BLEOpConnected,
+    BLEOpDisConnecting,
+    BLEOpDisConnected,
+};
 
-/**
-BLE Operation Error Code.
-*/
-typedef enum {
-    BLEOperationErrorNone = 0,
-    BLEOperationErrorUnsupported = 1,
-    BLEOperationErrorUnauthorized,
-    BLEOperationErrorNotFound,
-    BLEOperationErrorScanInterrupted, // Scan Interrupted. Ble is scanning, before it's state become off;
-    BLEOperationErrorFailToConnect, // Ble fail to connect;
-    BLEOperationErrorDisconnected, // Ble is connecting or has did connect, before it's state become off;
-} BLEOperationErrorCode; // Ble Operation Error code
 
-UIKIT_EXTERN NSString * BLEOperationErrorGetDescription(BLEOperationErrorCode error);
-UIKIT_EXTERN NSString * BLEOperationErrorGetDetailDescription(BLEOperationErrorCode error);
+/** BLE Operation Error Code. */
+typedef NS_ENUM(NSInteger, BLEOpErrorCode) {
+    BLEOpErrorNone = 0,
+    BLEOpErrorUnsupported = 1,
+    BLEOpErrorUnauthorized,
+    BLEOpErrorNotFound,
+    BLEOpErrorScanInterrupted, /* 检索中断。扫描时关闭蓝牙 */
+    BLEOpErrorConnectionTimeout, /* 连接超时 */
+    BLEOpErrorConnectionFailed, /* 连接失败 */
+    BLEOpErrorDisconnected, /* 连接意外中断。已连接时关闭蓝牙、关机或距离多远导致的断开连接 */
+};
+
+UIKIT_EXTERN NSString * BLEOpErrorGetDescription(BLEOpErrorCode error);
+UIKIT_EXTERN NSString * BLEOpErrorGetDetailDescription(BLEOpErrorCode error);
 
 /* Nordic UART Service */
 UIKIT_EXTERN NSString * const NordicUARTServiceUUIDString;
@@ -67,7 +67,7 @@ UIKIT_EXTERN NSString * const SecureDFUPacketUUIDString;
 
 /* Buttonless DFU */
 UIKIT_EXTERN NSString * const ButtonlessDFUServiceUUIDString;
-// The same UUID
-UIKIT_EXTERN NSString * const ButtonlessDFUCharacteristicUUIDString;
+UIKIT_EXTERN NSString * const ButtonlessDFUCharacteristicUUIDString; // The same UUID
+
 UIKIT_EXTERN NSString * const ButtonlessDFUWithoutBondsUUIDString;
 UIKIT_EXTERN NSString * const ButtonlessDFUWithBondsUUIDString;
