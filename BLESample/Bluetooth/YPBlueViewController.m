@@ -169,6 +169,23 @@
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.view.backgroundColor = [UIColor whiteColor];
     
+//    self.navigationController.navigationBar.backgroundColor = [UIColor colorWithRed:0x3d/255.0 green:0xB9/255.0 blue:0xBF/255.0 alpha:1];
+    self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0x3d/255.0 green:0xB9/255.0 blue:0xBF/255.0 alpha:1];
+    /**
+     UINavigationBar UI 层级结构
+     UINavigationBar ; 高度 height = 44；大标题风格高度 height = 96；
+        -- _UIBarBackground ; // 背景层。高度 height = 44 + safe.top (20 or 44)
+        -- _UINavigationBarLargeTitleView ; // 大标题层。origin.x = 44;
+        -- _UINavigationBarContentView ; // 导航栏层 (0 0; 375, 44)
+        -- UIView ;
+     
+     */
+    for (UIView * view in self.navigationController.navigationBar.subviews) {
+        NSString * cls = @"_UI"; // @"_UINavigationBarLargeTitleView"; // @"_UIBarBackground"
+        if ([NSStringFromClass(view.class) hasPrefix:cls]) {
+            view.backgroundColor = [UIColor colorWithRed:0x3d/255.0 green:0xB9/255.0 blue:0xBF/255.0 alpha:1];
+        }
+    }
     if (@available(iOS 13.0, *)) {
         self.view.backgroundColor = [UIColor colorWithDynamicProvider:^UIColor * _Nonnull(UITraitCollection * _Nonnull traitCollection) {
             if (traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
@@ -509,11 +526,11 @@
     [device.RSSIRecords enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSDate * date = (NSDate *)[obj objectForKey:@"date"];
         NSTimeInterval time1 = [date timeIntervalSince1970];
-        [str appendFormat: @"%@: %@ (%.4f s)\n", [date yp_short_description], [[obj objectForKey:@"rssi"] stringValue], time == 0 ? 0 : (time1 - time)];
+        [str appendFormat: @"[%@] %@ (%.4f s)\n", [date yp_format:@"hh:mm:ss.SSS"], [[obj objectForKey:@"rssi"] stringValue], time == 0 ? 0 : (time1 - time)];
         time = time1;
     }];
     
-    UIAlertController * ac = [UIAlertController alertControllerWithTitle:[@"RSSI" stringByAppendingFormat:@"(dBm) %lu More", device.RSSIRecords.count] message:str preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertController * ac = [UIAlertController alertControllerWithTitle:[@"RSSI" stringByAppendingFormat:@"(dBm) %zi More", device.RSSIRecords.count] message:str preferredStyle:UIAlertControllerStyleActionSheet];
     [ac addAction:[UIAlertAction actionWithTitle:@"知道了" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         [ac dismissViewControllerAnimated:YES completion:nil];
     }]];

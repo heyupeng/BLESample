@@ -40,11 +40,24 @@ static YPLogger * share_logger ;
 }
 
 - (void)appendLog:(NSString *)log {
-    if (_tv) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.tv.text = self.log;
-        });
+    if (!_tv) {
+        return;
     }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UITextView * tv = self.tv;
+        tv.text = self.log;
+        
+        if (tv.dragging || tv.decelerating || tv.tracking) {
+            return;
+        }
+        CGSize size = tv.contentSize;
+        size.height = size.height - CGRectGetHeight(tv.bounds);
+        if (size.height < 0) {
+            return;
+        }
+        CGPoint offset = CGPointMake(0, size.height);
+        [tv setContentOffset:offset animated:YES];
+    });
 }
 
 - (void)clean {
@@ -98,11 +111,13 @@ static YPLogger * share_logger ;
 
 - (void)appendLog:(NSString *)log {
     if (_log.length < 1) {
-        [_log appendFormat:@"%@ \n", [NSDate date]];
+        NSString * timeStr = [[NSDate date] yp_format:@"MM-dd hh:mm:ss.SSS"];
+        [_log appendFormat:@"%@ \n  ", timeStr];
         [_log appendString: log];
     } else {
         [_log appendString:@"\n"];
-        [_log appendFormat:@"%@ \n", [NSDate date]];
+        NSString * timeStr = [[NSDate date] yp_format:@"MM-dd hh:mm:ss.SSS"];
+        [_log appendFormat:@"%@ \n  ", timeStr];
         [_log appendString:log];
     }
     

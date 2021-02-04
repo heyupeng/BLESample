@@ -79,28 +79,42 @@
     self.view.backgroundColor = [UIColor groupTableViewBackgroundColor];
     self.title = @"固件升级";
     
-    UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(20, 10, SCREENWIDTH - 20 * 2, 40)];
+    CGFloat y = 10;
+    UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(20, y, SCREENWIDTH - 20 * 2, 35)];
     label.numberOfLines = 0;
     label.textAlignment = NSTextAlignmentLeft;
     label.text = @"请先选择文件";
     _fileLabel = label;
     [self.view addSubview:label];
     
-    UIProgressView * progressView = [[UIProgressView alloc] initWithFrame:CGRectMake(20, CGRectGetMaxY(label.frame) + 10, SCREENWIDTH - 20 * 2, 5)];
+    y += CGRectGetHeight(label.frame) + 10;
+    
+    UIProgressView * progressView = [[UIProgressView alloc] initWithFrame:CGRectMake(20, y, SCREENWIDTH - 20 * 2, 5)];
     progressView.progress = 0;
     _progressView = progressView;
     [self.view addSubview:_progressView];
     
-    UIButton * renameBtn = [[UIButton alloc] initWithFrame:CGRectMake(20, CGRectGetMaxY(progressView.frame) + 20, 120, 30)];
+    y += CGRectGetHeight(progressView.frame) + 10;
+    NSString * message = @"Note: \
+        \n1. X5: v1.02以下广播信息 localName 不允许被重置，DFU mode 需携带加密信息0x15f1。v1.02及以上，升级前发送升级许可指令。";
+    UILabel * label_note = [[UILabel alloc] initWithFrame:CGRectMake(20, y, SCREENWIDTH - 20 * 2, 35 * 3)];
+    label_note.numberOfLines = -1;
+    label_note.textAlignment = NSTextAlignmentLeft;
+    label_note.text = message;
+    [self.view addSubview:label_note];
+    
+    y += CGRectGetHeight(label_note.frame) + 10;
+    
+    UIButton * renameBtn = [[UIButton alloc] initWithFrame:CGRectMake(20, y, 120, 30)];
     [renameBtn setTitle:@"Rename" forState:UIControlStateNormal];
     [renameBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    renameBtn.backgroundColor = [UIColor redColor];
+    renameBtn.backgroundColor = [UIColor greenColor];
     renameBtn.selected = _rename;
     renameBtn.layer.borderWidth = 1;
     [self.view addSubview:renameBtn];
     [renameBtn addTarget:self action:@selector(rename:) forControlEvents:UIControlEventTouchUpInside];
     
-    UIButton * encryptBtn = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetMaxX(renameBtn.frame) + 20, CGRectGetMinY(renameBtn.frame), 120, 30)];
+    UIButton * encryptBtn = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetMaxX(renameBtn.frame) + 20, y, 120, 30)];
     [encryptBtn setTitle:@"Encrypt" forState:UIControlStateNormal];
     [encryptBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     encryptBtn.backgroundColor = [UIColor whiteColor];
@@ -109,23 +123,17 @@
     [self.view addSubview:encryptBtn];
     [encryptBtn addTarget:self action:@selector(encrypt:) forControlEvents:UIControlEventTouchUpInside];
     
-    UILabel * label_note = [[UILabel alloc] initWithFrame:CGRectMake(20, CGRectGetMaxY(renameBtn.frame), SCREENWIDTH - 20 * 2, 40 * 2)];
-    label_note.numberOfLines = -1;
-    label_note.textAlignment = NSTextAlignmentLeft;
-    label_note.text = @"Note: X5 v1.02以下advertisement localName不允许reset，DFU mode加密需携带信息。";
-    [self.view addSubview:label_note];
-    
     UIButton * button = [UIButton buttonWithType:UIButtonTypeSystem];
-    button.frame = CGRectMake((SCREENWIDTH - 100) * 0.5, 200, 100, 60);
+    button.frame = CGRectMake(20, 230, SCREENWIDTH - 20 * 2, 44);
     [button setTitle:@"升级" forState:UIControlStateNormal];
-    [button setBackgroundColor:[UIColor yellowColor]];
+    [button setBackgroundColor:[UIColor colorWithRed:0x3d/255.0 green:0xB9/255.0 blue:0xBF/255.0 alpha:1]];
     [button addTarget:self action:@selector(click:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:button];
     
     UITextView * tv = [[UITextView alloc] init];
     tv.backgroundColor = [UIColor whiteColor];
     tv.editable = NO;
-    tv.frame = CGRectMake(0, 300 + 10, SCREENWIDTH, CGRectGetHeight(self.view.bounds) - 300 - 20 - 64 - 44);
+    tv.frame = CGRectMake(0, 280 + 10, SCREENWIDTH, CGRectGetHeight(self.view.bounds) - 300 - 20 - 64 - 44);
     [self.view addSubview:tv];
     _tv = tv;
     
@@ -137,13 +145,22 @@
     _rename = !_rename;
     sender.selected = !sender.selected;
     if (sender.selected) {
-        sender.backgroundColor = [UIColor redColor];
+        sender.backgroundColor = [UIColor greenColor];
     } else {
         sender.backgroundColor = [UIColor whiteColor];
     }
 }
 
 - (void)encrypt:(UIButton *)sender {
+    void(^encrypt)(BOOL) = ^(BOOL encrypt) {
+        sender.selected = encrypt;
+        if (sender.selected) {
+            sender.backgroundColor = [UIColor greenColor];
+        } else {
+            sender.backgroundColor = [UIColor whiteColor];
+        }
+    };
+    
     UIAlertController * alertC = [UIAlertController alertControllerWithTitle:@"Encrypt" message:@"" preferredStyle:UIAlertControllerStyleAlert];
     
     [alertC addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
@@ -159,12 +176,8 @@
         }
         self.encryptString = text;
         self.encrypt = YES;
-        sender.selected = self.encrypt;
-        if (sender.selected) {
-            sender.backgroundColor = [UIColor redColor];
-        } else {
-            sender.backgroundColor = [UIColor whiteColor];
-        }
+        
+        encrypt(self.encrypt);
     }]];
     
     [alertC addAction:[UIAlertAction actionWithTitle:@"0x85150616" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
@@ -174,12 +187,8 @@
         }
         self.encryptString = text;
         self.encrypt = YES;
-        sender.selected = self.encrypt;
-        if (sender.selected) {
-            sender.backgroundColor = [UIColor redColor];
-        } else {
-            sender.backgroundColor = [UIColor whiteColor];
-        }
+        
+        encrypt(self.encrypt);
     }]];
     
     [alertC addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
@@ -190,12 +199,8 @@
         
         self.encryptString = text;
         self.encrypt = YES;
-        sender.selected = self.encrypt;
-        if (sender.selected) {
-            sender.backgroundColor = [UIColor redColor];
-        } else {
-            sender.backgroundColor = [UIColor whiteColor];
-        }
+        
+        encrypt(self.encrypt);
     }]];
     
     [alertC addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {

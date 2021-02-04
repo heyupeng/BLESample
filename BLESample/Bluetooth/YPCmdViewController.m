@@ -139,7 +139,7 @@
     
     UIButton * btn = [UIButton buttonWithType:UIButtonTypeSystem];
     btn.frame = CGRectMake(1/5.0 *0.5 * SCREENWIDTH, CGRectGetMaxY(tf.frame) + 5, SCREENWIDTH * 4/5.0, 44);
-    btn.backgroundColor = [UIColor greenColor];
+    btn.backgroundColor = [UIColor colorWithRed:0x3d/255.0 green:0xB9/255.0 blue:0xBF/255.0 alpha:1];
     [btn setTitle:@"写入数据" forState:UIControlStateNormal];
     [btn addTarget:self action:@selector(btnAction:) forControlEvents:UIControlEventTouchUpInside];
     [view addSubview:btn];
@@ -272,6 +272,8 @@
 
 //
 - (void)writeFFValue:(NSString *)value {
+    if (value.length == 0) return;
+    
     NSString * log = [NSString stringWithFormat:@"\nWrite HexValue: %@", value];
     [self textforTextViewByAppending:log];
     
