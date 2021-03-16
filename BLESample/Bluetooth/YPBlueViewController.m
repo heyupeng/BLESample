@@ -42,8 +42,8 @@
     [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [btn addTarget:self action:@selector(showLogAction:) forControlEvents:UIControlEventTouchUpInside];
     btn.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
-    btn.frame = CGRectMake(88, 44, 60, 60);
-    btn.layer.cornerRadius = 60 * 0.5;
+    btn.frame = CGRectMake(88, 44, 44, 44);
+    btn.layer.cornerRadius = CGRectGetHeight(btn.bounds) * 0.5;
     btn.layer.zPosition = 10;
     [[UIApplication sharedApplication].keyWindow addSubview:btn];
     
@@ -478,7 +478,7 @@
     NSData * specificData = device.specificData;
     NSString * specificDataHexString = specificData.hexString;
     
-    cell.textLabel.text = [NSString stringWithFormat:@"%@ (📶 %.0f dBm)", name, device.RSSI.doubleValue];
+    cell.textLabel.text = [NSString stringWithFormat:@"%@ (%.0f dBm)", name, device.RSSI.doubleValue];
     
     NSInteger detailTextNumberOfLines = 5;
     NSString * companyID = device.companysData.hexString.hexStringReverse;

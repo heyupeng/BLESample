@@ -23,6 +23,7 @@
 
 @property (nonatomic) YPSUOTA * dfuManager_xiaosu;
 
+// UI
 @property (nonatomic, strong) UIProgressView * progressView;
 
 @property (nonatomic, strong) UITextView * tv;

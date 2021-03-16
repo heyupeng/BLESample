@@ -6,8 +6,8 @@
 //  Copyright (c) 2014 Martijn Houtman_ All rights reserved_
 //
 
-#ifndef YPBlueDefines_h
-#define YPBlueDefines_h
+#ifndef YPSUOTADefines_h
+#define YPSUOTADefines_h
 
 typedef enum {
     SUOTA,

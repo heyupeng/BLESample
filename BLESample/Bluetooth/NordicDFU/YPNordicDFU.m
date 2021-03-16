@@ -8,9 +8,6 @@
 
 #import "YPNordicDFU.h"
 
-@interface YPNordicDFU ()<DFUServiceDelegate, DFUProgressDelegate, LoggerDelegate>
-
-@end
 @implementation YPNordicDFU
 
 - (instancetype)initWithCentralManager:(CBCentralManager *)central peripheral:(CBPeripheral *)peripheral {

@@ -25,7 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface YPNordicDFU : NSObject
+@interface YPNordicDFU : NSObject <DFUServiceDelegate, DFUProgressDelegate, LoggerDelegate>
 
 // Nordic DFU
 @property (nonatomic, readonly) DFUServiceInitiator * dfuInitiator;

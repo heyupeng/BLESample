@@ -14,6 +14,7 @@
 #import "CommunicationProtocol/CMDType.h"
 
 #import "YPUpgradeViewController.h"
+#import "YPSUOTAViewController.h"
 
 @interface YPCollectionViewCell : UICollectionViewCell
 
@@ -759,6 +760,14 @@ int byteStart = 0;
         
     }
     else if ([title isEqualToString:@"固件升级"]) {
+        if ([_device.peripheral yp_serviceWithUUID:[CBUUID  UUIDWithUInt16:SPOTA_SERVICE_UUID]]) {
+            YPSUOTAViewController * vc = [[YPSUOTAViewController alloc] init];
+            vc.bleManager = _bleManager;
+            
+            [self.navigationController pushViewController:vc animated:YES];
+            return;
+        }
+        
         YPUpgradeViewController * vc = [[YPUpgradeViewController alloc] init];
         vc.bleManager = _bleManager;
         

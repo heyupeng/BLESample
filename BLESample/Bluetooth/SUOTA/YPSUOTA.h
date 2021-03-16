@@ -7,8 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "YPSUOTADefines.h"
 #import "YPBleDevice.h"
-#import "YPBlueDefines.h"
 
 @interface YPSUOTA : NSObject
 {

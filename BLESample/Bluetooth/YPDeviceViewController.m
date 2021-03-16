@@ -8,10 +8,11 @@
 
 #import "YPDeviceViewController.h"
 #import "YPUpgradeViewController.h"
-#import "YPCmdViewController.h"
+#import "YPSUOTAViewController.h"
 
 #import "YPBleMacro.h"
 
+#import "YPCmdViewController.h"
 #import "CommunicationProtocol/SOCCommander.h"
 
 @interface YPDeviceViewController ()
@@ -286,6 +287,14 @@ NSString * CBUUIDGetDescription(CBUUID * UUID) {
         [_device writeFFValue:[SOCCommander commandForSetFuncionWith:0]];
         return;
     }
+    if ([_device.peripheral yp_serviceWithUUID:[CBUUID  UUIDWithUInt16:SPOTA_SERVICE_UUID]]) {
+        YPSUOTAViewController * vc = [[YPSUOTAViewController alloc] init];
+        vc.bleManager = _bleManager;
+        
+        [self.navigationController pushViewController:vc animated:YES];
+        return;
+    }
+    
     
     if ([service.UUID isEqual:[CBUUID UUIDWithString:@"180A"]] || [service.UUID isEqual:[CBUUID UUIDWithString:@"180F"]]) {
         CBCharacteristic * characteristic = [[service characteristics] objectAtIndex:indexPath.row];
