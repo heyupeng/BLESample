@@ -13,7 +13,7 @@
 #import "YPBleMacro.h"
 
 #import "YPCmdViewController.h"
-#import "CommunicationProtocol/SOCCommander.h"
+#import "SOCCommander.h"
 
 @interface YPDeviceViewController ()
 

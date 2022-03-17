@@ -12,9 +12,7 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '9.0'
   s.osx.deployment_target = '10.14'
 
-  s.source_files = 'YPBleManager/*', 
-	'YPCategory/CoreBluetooth+YPExtension/*', 
-	'YPCategory/Foundation/NSData+YPHexString.*',
-	'Enumability/*'
-
+  s.source_files = 'YPBleManager/*'
+  
+  s.dependency 'YPCategory', '~>1.0.0'
 end

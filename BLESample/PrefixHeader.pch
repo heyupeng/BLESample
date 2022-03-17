@@ -20,6 +20,4 @@
 
 #import "YPCategory.h"
 
-#import "Bluetooth/YPLoggerViewController.h"
-
 #endif /* PrefixHeader_pch */

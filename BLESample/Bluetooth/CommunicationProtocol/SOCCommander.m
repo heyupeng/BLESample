@@ -231,8 +231,8 @@ NSString * getTimeHexString(NSInteger timestamp, NSInteger geoCode) {
     int tipsTime = (tag ? 38: 30);
     NSString * workTimeStr = [NSString stringWithFormat:@"%.4X",workTime];
     NSString * tipsTimeStr = [NSString stringWithFormat:@"%.4X",tipsTime];
-    NSString * s1 = [NSString hexStringReverse:workTimeStr];
-    NSString * s2 = [NSString hexStringReverse:tipsTimeStr];
+    NSString * s1 = [workTimeStr hexStringReverse];
+    NSString * s2 = [tipsTimeStr hexStringReverse];
     NSString * s = [NSString stringWithFormat:@"%@%@",s1,s2];
     return [self commandWithType:@"0001" length:@"0004" appendData:s];
 }
@@ -324,8 +324,8 @@ NSString * getTimeHexString(NSInteger timestamp, NSInteger geoCode) {
     int tipsTime = (tag ? 38: 30);
     NSString * workTimeStr = [NSString stringWithFormat:@"%.4X",workTime];
     NSString * tipsTimeStr = [NSString stringWithFormat:@"%.4X",tipsTime];
-    NSString * s1 = [NSString hexStringReverse:workTimeStr];
-    NSString * s2 = [NSString hexStringReverse:tipsTimeStr];
+    NSString * s1 = [workTimeStr hexStringReverse];
+    NSString * s2 = [tipsTimeStr hexStringReverse];
     NSString * s = [NSString stringWithFormat:@"%@%@",s1,s2];
     return [self commandWithType:@"0001" length:@"0004" appendData:s];
 }

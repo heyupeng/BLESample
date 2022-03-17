@@ -10,11 +10,12 @@
 
 #import "YPBleMacro.h"
 
-#import "CommunicationProtocol/SOCCommander.h"
-#import "CommunicationProtocol/CMDType.h"
+#import "SOCCommander.h"
+#import "CMDType.h"
 
 #import "YPUpgradeViewController.h"
 #import "YPSUOTAViewController.h"
+#import "YPLoggerViewController.h"
 
 @interface YPCollectionViewCell : UICollectionViewCell
 

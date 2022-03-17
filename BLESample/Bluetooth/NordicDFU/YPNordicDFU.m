@@ -34,8 +34,8 @@
 }
 
 - (void)setBootloaderEncrypt:(BOOL)encrypt data:(NSArray<NSNumber *> *)data {
-    self.dfuInitiator.jumpToBootloaderEncrypt = encrypt;
-    self.dfuInitiator.jumpToBootloaderEncryptData = data;
+//    self.dfuInitiator.jumpToBootloaderEncrypt = encrypt;
+//    self.dfuInitiator.jumpToBootloaderEncryptData = data;
     self.dfuInitiator.alternativeAdvertisingNameEnabled = !encrypt; //默认为YES, bootloader加密下不可重命名
 }
 
@@ -50,8 +50,8 @@
 
 - (void)startDFUWithEncrypt:(BOOL)encrypt encryptData:(NSArray<NSNumber*> *)encryptData filePath:(NSString *)filePath {
     DFUServiceInitiator * dfuInitiator = [self dfuInitiator];
-    dfuInitiator.jumpToBootloaderEncrypt = encrypt; // 自定义属性
-    dfuInitiator.jumpToBootloaderEncryptData = encryptData;
+//    dfuInitiator.jumpToBootloaderEncrypt = encrypt; // 自定义属性
+//    dfuInitiator.jumpToBootloaderEncryptData = encryptData;
     dfuInitiator.alternativeAdvertisingNameEnabled = !encrypt;
     
     dfuInitiator.enableUnsafeExperimentalButtonlessServiceInSecureDfu = YES;

@@ -27,9 +27,8 @@
 		04279DA1222E61C2001FC02C /* SOCCommander.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D89222E61C2001FC02C /* SOCCommander.m */; };
 		04279DA2222E61C2001FC02C /* YPCmdViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04279D8C222E61C2001FC02C /* YPCmdViewController.m */; };
 		042958BE224DB10200496C8E /* ObjdectModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 042958BD224DB10200496C8E /* ObjdectModel.m */; };
-		04429891256E3B4F00D7CF4D /* YPCategory.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 04429890256E3B4F00D7CF4D /* YPCategory.podspec */; };
 		045072522268726D008B4C60 /* YPNordicDFU.m in Sources */ = {isa = PBXBuildFile; fileRef = 045072512268726D008B4C60 /* YPNordicDFU.m */; };
-		04AB1D58227E9C8C00B801E9 /* libSOCDFUSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04AB1D57227E9C8C00B801E9 /* libSOCDFUSDK.a */; };
+		04984D5626009A5A001AE638 /* YPBleManager.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 04984D5526009A5A001AE638 /* YPBleManager.podspec */; };
 		04FEA48825FB142E00ED6F87 /* YPSUOTAViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04FEA48725FB142E00ED6F87 /* YPSUOTAViewController.m */; };
 		15A8507B22A621FA00223C9E /* 1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 15A8507A22A621FA00223C9E /* 1.mp3 */; };
 		15A8507C22A64BAD00223C9E /* CMDType.m in Sources */ = {isa = PBXBuildFile; fileRef = 15A8507722A6145B00223C9E /* CMDType.m */; };
@@ -99,11 +98,9 @@
 		042958BC224DB10200496C8E /* ObjdectModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjdectModel.h; sourceTree = "<group>"; };
 		042958BD224DB10200496C8E /* ObjdectModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObjdectModel.m; sourceTree = "<group>"; };
 		0442981E256E149400D7CF4D /* YPBleMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPBleMacro.h; sourceTree = "<group>"; };
-		04429890256E3B4F00D7CF4D /* YPCategory.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = YPCategory.podspec; sourceTree = "<group>"; };
 		045072502268726D008B4C60 /* YPNordicDFU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YPNordicDFU.h; sourceTree = "<group>"; };
 		045072512268726D008B4C60 /* YPNordicDFU.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YPNordicDFU.m; sourceTree = "<group>"; };
-		04AB1D56227E9C8C00B801E9 /* SOCDFUManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SOCDFUManager.h; sourceTree = "<group>"; };
-		04AB1D57227E9C8C00B801E9 /* libSOCDFUSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libSOCDFUSDK.a; sourceTree = "<group>"; };
+		04984D5526009A5A001AE638 /* YPBleManager.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = YPBleManager.podspec; sourceTree = "<group>"; };
 		04FEA48625FB142E00ED6F87 /* YPSUOTAViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YPSUOTAViewController.h; sourceTree = "<group>"; };
 		04FEA48725FB142E00ED6F87 /* YPSUOTAViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YPSUOTAViewController.m; sourceTree = "<group>"; };
 		15A8507622A6145B00223C9E /* CMDType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMDType.h; sourceTree = "<group>"; };
@@ -122,7 +119,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				04AB1D58227E9C8C00B801E9 /* libSOCDFUSDK.a in Frameworks */,
 				F3BAF91295E8E70D5686937F /* Pods_BLESample.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -212,24 +208,10 @@
 		04279D56222E61C2001FC02C /* Bluetooth */ = {
 			isa = PBXGroup;
 			children = (
-				04AB1D47227E8E1400B801E9 /* SOCDFUSDK */,
 				04279D87222E61C2001FC02C /* CommunicationProtocol */,
 				04592B65256E0C150026EC44 /* NordicDFU */,
 				04FFB33123976A77004E26C5 /* SUOTA */,
-				04279D8A222E61C2001FC02C /* YPBlueViewController.h */,
-				04279D58222E61C2001FC02C /* YPBlueViewController.m */,
-				04279D57222E61C2001FC02C /* YPDeviceViewController.h */,
-				04279D85222E61C2001FC02C /* YPDeviceViewController.m */,
-				04279D8B222E61C2001FC02C /* YPUpgradeViewController.h */,
-				04279D84222E61C2001FC02C /* YPUpgradeViewController.m */,
-				04FEA48625FB142E00ED6F87 /* YPSUOTAViewController.h */,
-				04FEA48725FB142E00ED6F87 /* YPSUOTAViewController.m */,
-				04279D86222E61C2001FC02C /* FileTableViewController.h */,
-				04279D63222E61C2001FC02C /* FileTableViewController.m */,
-				04279D83222E61C2001FC02C /* YPCmdViewController.h */,
-				04279D8C222E61C2001FC02C /* YPCmdViewController.m */,
-				B8F8F49222E5521C00E7195B /* YPLoggerViewController.h */,
-				B8F8F49322E5521C00E7195B /* YPLoggerViewController.m */,
+				B849E48827E2E8540037E823 /* VC */,
 			);
 			path = Bluetooth;
 			sourceTree = "<group>";
@@ -262,7 +244,7 @@
 		0442988F256E3B3400D7CF4D /* Podspec Metadata */ = {
 			isa = PBXGroup;
 			children = (
-				04429890256E3B4F00D7CF4D /* YPCategory.podspec */,
+				04984D5526009A5A001AE638 /* YPBleManager.podspec */,
 			);
 			name = "Podspec Metadata";
 			sourceTree = "<group>";
@@ -274,15 +256,6 @@
 				045072512268726D008B4C60 /* YPNordicDFU.m */,
 			);
 			path = NordicDFU;
-			sourceTree = "<group>";
-		};
-		04AB1D47227E8E1400B801E9 /* SOCDFUSDK */ = {
-			isa = PBXGroup;
-			children = (
-				04AB1D57227E9C8C00B801E9 /* libSOCDFUSDK.a */,
-				04AB1D56227E9C8C00B801E9 /* SOCDFUManager.h */,
-			);
-			path = SOCDFUSDK;
 			sourceTree = "<group>";
 		};
 		04FFB33123976A77004E26C5 /* SUOTA */ = {
@@ -310,6 +283,27 @@
 				A5F1E157C40F6D5DA2751736 /* Pods_BLESample.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B849E48827E2E8540037E823 /* VC */ = {
+			isa = PBXGroup;
+			children = (
+				04279D8A222E61C2001FC02C /* YPBlueViewController.h */,
+				04279D58222E61C2001FC02C /* YPBlueViewController.m */,
+				04279D57222E61C2001FC02C /* YPDeviceViewController.h */,
+				04279D85222E61C2001FC02C /* YPDeviceViewController.m */,
+				04279D8B222E61C2001FC02C /* YPUpgradeViewController.h */,
+				04279D84222E61C2001FC02C /* YPUpgradeViewController.m */,
+				04FEA48625FB142E00ED6F87 /* YPSUOTAViewController.h */,
+				04FEA48725FB142E00ED6F87 /* YPSUOTAViewController.m */,
+				04279D86222E61C2001FC02C /* FileTableViewController.h */,
+				04279D63222E61C2001FC02C /* FileTableViewController.m */,
+				04279D83222E61C2001FC02C /* YPCmdViewController.h */,
+				04279D8C222E61C2001FC02C /* YPCmdViewController.m */,
+				B8F8F49222E5521C00E7195B /* YPLoggerViewController.h */,
+				B8F8F49322E5521C00E7195B /* YPLoggerViewController.m */,
+			);
+			path = VC;
 			sourceTree = "<group>";
 		};
 		D7E150D1C1E725B17A49A9FC /* Pods */ = {
@@ -427,10 +421,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04984D5626009A5A001AE638 /* YPBleManager.podspec in Resources */,
 				15A8507B22A621FA00223C9E /* 1.mp3 in Resources */,
 				15A8507E22A656A100223C9E /* 5.mp3 in Resources */,
 				04279C2E222CC40E001FC02C /* LaunchScreen.storyboard in Resources */,
-				04429891256E3B4F00D7CF4D /* YPCategory.podspec in Resources */,
 				04279C2B222CC40E001FC02C /* Assets.xcassets in Resources */,
 				04279C26222CC40C001FC02C /* Main.storyboard in Resources */,
 			);
@@ -691,10 +685,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = NO;
-				DEVELOPMENT_TEAM = MK49SZ4EMK;
+				DEVELOPMENT_TEAM = MB8A8WEGM4;
 				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/BLESample/PrefixHeader.pch";
 				INFOPLIST_FILE = BLESample/Info.plist;
@@ -709,6 +704,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.sushi.BLESample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "BLESample/BLESample-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
@@ -722,10 +718,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = NO;
-				DEVELOPMENT_TEAM = MK49SZ4EMK;
+				DEVELOPMENT_TEAM = MB8A8WEGM4;
 				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/BLESample/PrefixHeader.pch";
 				INFOPLIST_FILE = BLESample/Info.plist;
@@ -740,6 +737,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.sushi.BLESample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "BLESample/BLESample-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 1;

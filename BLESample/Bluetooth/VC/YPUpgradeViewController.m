@@ -8,7 +8,8 @@
 
 #import "YPUpgradeViewController.h"
 #import "FileTableViewController.h"
-#import "SOCDFUManager.h"
+
+//#import "SOCDFUManager.h"
 
 #import <iOSDFULibrary/iOSDFULibrary-Swift.h>
 
@@ -16,8 +17,8 @@
 #import "YPNordicDFU.h"
 
 @interface YPUpgradeViewController ()<NordicDFUDelegate>
-@property (nonatomic) SOCDFUManager * dfuManager;
-@property (nonatomic) SOCDFUState currentDfuState;
+//@property (nonatomic) SOCDFUManager * dfuManager;
+//@property (nonatomic) SOCDFUState currentDfuState;
 
 @property (nonatomic) FileTableViewController *  fileVC;
 
@@ -70,7 +71,7 @@
 /** ============== **/
 
 - (void)initialData {
-    _dfuManager = [[SOCDFUManager alloc] init];
+//    _dfuManager = [[SOCDFUManager alloc] init];
     
     _rename = YES;
 }
@@ -303,10 +304,10 @@
 
 /** ============== **/
 - (void)addNotificationObserver {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bluetoothStateChanged:) name:NotificationWithBluetoothStateChanged object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dfuStateChanged:) name:NotificationWithDfuStateChanged object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dfuProgressChanged:) name:NotificationWithDfuProgressChanged object:nil];
-    
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bluetoothStateChanged:) name:NotificationWithBluetoothStateChanged object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dfuStateChanged:) name:NotificationWithDfuStateChanged object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dfuProgressChanged:) name:NotificationWithDfuProgressChanged object:nil];
+//
 }
 
 - (void)removeNotificationObserver {
@@ -333,55 +334,55 @@
     }
 }
 
-- (void)dfuStateChanged:(NSNotification *) noti
-{
-    NSString * text = @"";
-    switch ([noti.object integerValue]) {
-        case SOCDFUStateSearching:{
-            text = @"查找设备中...";
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                if (self.currentDfuState == SOCDFUStateSearching) {
-                    NSLog(@"查找设备超时！");
-                    [self.dfuManager stopScanDevice];
-                }
-            });
-            break;
-        }
-        case SOCDFUStateConnecting:{
-            text = @"连接设备中...";
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                if (self.currentDfuState == SOCDFUStateConnecting) {
-                    NSLog(@"设备连接超时！");
-                    [self.dfuManager stopConnectDevice];
-                }
-            });
-            break;
-        }
-        case SOCDFUStateStartUpload:
-            text = @"开始升级固件";
-            break;
-        case SOCDFUStateUploading:
-            text = @"升级固件中...";
-            break;
-        case SOCDFUStateComplete:
-            text = @"固件升级完成";
-            break;
-        case SOCDFUStateError:
-            text = @"固件升级失败！";
-            break;
-        default:
-            break;
-    }
-    [self textforTextViewByAppending: text];
-    
-}
-
-- (void)dfuProgressChanged:(NSNotification *) noti
-{
-    NSString * text = [NSString stringWithFormat:@"升级进度：%i", [noti.object intValue]];
-    NSLog(@"%@", text);
-    [self textforTextViewByAppending: text];
-}
+//- (void)dfuStateChanged:(NSNotification *) noti
+//{
+//    NSString * text = @"";
+//    switch ([noti.object integerValue]) {
+//        case SOCDFUStateSearching:{
+//            text = @"查找设备中...";
+//            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//                if (self.currentDfuState == SOCDFUStateSearching) {
+//                    NSLog(@"查找设备超时！");
+//                    [self.dfuManager stopScanDevice];
+//                }
+//            });
+//            break;
+//        }
+//        case SOCDFUStateConnecting:{
+//            text = @"连接设备中...";
+//            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//                if (self.currentDfuState == SOCDFUStateConnecting) {
+//                    NSLog(@"设备连接超时！");
+//                    [self.dfuManager stopConnectDevice];
+//                }
+//            });
+//            break;
+//        }
+//        case SOCDFUStateStartUpload:
+//            text = @"开始升级固件";
+//            break;
+//        case SOCDFUStateUploading:
+//            text = @"升级固件中...";
+//            break;
+//        case SOCDFUStateComplete:
+//            text = @"固件升级完成";
+//            break;
+//        case SOCDFUStateError:
+//            text = @"固件升级失败！";
+//            break;
+//        default:
+//            break;
+//    }
+//    [self textforTextViewByAppending: text];
+//    
+//}
+//
+//- (void)dfuProgressChanged:(NSNotification *) noti
+//{
+//    NSString * text = [NSString stringWithFormat:@"升级进度：%i", [noti.object intValue]];
+//    NSLog(@"%@", text);
+//    [self textforTextViewByAppending: text];
+//}
 
 
 #pragma mark - DFUInitiator Delegate

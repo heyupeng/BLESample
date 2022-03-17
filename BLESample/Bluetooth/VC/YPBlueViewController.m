@@ -12,6 +12,8 @@
 #import "YPCmdViewController.h"
 #import "ObjdectModel.h"
 
+#import "YPLoggerViewController.h"
+
 @interface YPBlueViewController ()<UITextFieldDelegate>
 {
     NSDictionary * _bleConfig;
@@ -181,7 +183,11 @@
      
      */
     for (UIView * view in self.navigationController.navigationBar.subviews) {
-        NSString * cls = @"_UI"; // @"_UINavigationBarLargeTitleView"; // @"_UIBarBackground"
+        NSString * cls = @"_UIBarBackground";
+        if ([NSStringFromClass(view.class) hasPrefix:cls]) {
+            view.backgroundColor = [UIColor colorWithRed:0x3d/255.0 green:0xB9/255.0 blue:0xBF/255.0 alpha:1];
+        }
+        cls = @"_UINavigationBarLargeTitleView";
         if ([NSStringFromClass(view.class) hasPrefix:cls]) {
             view.backgroundColor = [UIColor colorWithRed:0x3d/255.0 green:0xB9/255.0 blue:0xBF/255.0 alpha:1];
         }
@@ -435,8 +441,8 @@
                 [self.navigationItem.rightBarButtonItem setTitle:@"Scan"];
                 self.navigationItem.rightBarButtonItem.enabled = YES;
             }else {
-                [self.navigationItem.rightBarButtonItem setTitle:@"Open BlueTooth"];
-                self.navigationItem.rightBarButtonItem.enabled = NO;
+//                [self.navigationItem.rightBarButtonItem setTitle:@"Open Bluetooth"];
+//                self.navigationItem.rightBarButtonItem.enabled = NO;
             }
         }
         
@@ -526,7 +532,7 @@
     [device.RSSIRecords enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSDate * date = (NSDate *)[obj objectForKey:@"date"];
         NSTimeInterval time1 = [date timeIntervalSince1970];
-        [str appendFormat: @"[%@] %@ (%.4f s)\n", [date yp_format:@"hh:mm:ss.SSS"], [[obj objectForKey:@"rssi"] stringValue], time == 0 ? 0 : (time1 - time)];
+        [str appendFormat: @"[%@] %@ (%.4f s)\n", [date yp_format:@"HH:mm:ss.SSS"], [[obj objectForKey:@"rssi"] stringValue], time == 0 ? 0 : (time1 - time)];
         time = time1;
     }];
     
