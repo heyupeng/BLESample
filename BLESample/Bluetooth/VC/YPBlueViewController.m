@@ -141,20 +141,20 @@
     
     _bleManager = [YPBleManager share];
     
-    _bleManager.bleConfiguration.openConnectionTimer = YES;
-    _bleManager.bleConfiguration.connectionTimeoutPeriod = 5;
+    _bleManager.settings.openConnectionTimer = YES;
+    _bleManager.settings.connectionTimeoutPeriod = 5;
     
-    _bleManager.bleConfiguration.services = [self services];
-    _bleManager.bleConfiguration.RSSIValue = [[bleConfig objectForKey:@"RSSI"] intValue];
-    _bleManager.bleConfiguration.localName = [bleConfig objectForKey:@"localName"];
-    _bleManager.bleConfiguration.mac = [bleConfig objectForKey:@"mac"];
+    _bleManager.settings.services = [self services];
+    _bleManager.settings.RSSIValue = [[bleConfig objectForKey:@"RSSI"] intValue];
+    _bleManager.settings.localName = [bleConfig objectForKey:@"localName"];
+    _bleManager.settings.mac = [bleConfig objectForKey:@"mac"];
     
     NSString * ignoreLocalName = [bleConfig objectForKey:@"ignoreLocalName"];
-    _bleManager.bleConfiguration.ignoreLocalNames = ignoreLocalName.length > 0? [ignoreLocalName componentsSeparatedByString:@","] : nil;
+    _bleManager.settings.ignoreLocalNames = ignoreLocalName.length > 0? [ignoreLocalName componentsSeparatedByString:@","] : nil;
 //    _bleManager.bleConfiguration.withoutDataIntercept = YES;
 //    _bleManager.bleConfiguration.unnamedIntercept = YES;
     
-    _bleManager.bleConfiguration.logger = ^(NSString *message) {
+    _bleManager.settings.logger = ^(NSString *message) {
         [[YPLogger share] appendLog:message];
     };
 }
@@ -362,7 +362,7 @@
     
     [self setBleConfig:@{@"RSSI": @((int)slider.value)}];
     
-    _bleManager.bleConfiguration.RSSIValue = slider.value;
+    _bleManager.settings.RSSIValue = slider.value;
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)tf {
@@ -371,14 +371,14 @@
         
         [self setBleConfig:@{@"localName": localName}];
         
-        _bleManager.bleConfiguration.localName = localName;
+        _bleManager.settings.localName = localName;
     }
     else if (tf == _textFields[1]) {
         NSString * mac = _textFields[1].text? : @"";
         
         [self setBleConfig:@{@"mac": mac}];
         
-        _bleManager.bleConfiguration.mac = mac;
+        _bleManager.settings.mac = mac;
     }
     else if (tf == _textFields[2]) {
         NSString * ignoreName = _textFields[2].text? : @"";
@@ -386,7 +386,7 @@
         [self setBleConfig:@{@"ignoreLocalName": ignoreName}];
         
         NSArray * ignoreLocalNames = ignoreName ? [ignoreName componentsSeparatedByString:@","]: nil;
-        _bleManager.bleConfiguration.ignoreLocalNames = ignoreLocalNames;
+        _bleManager.settings.ignoreLocalNames = ignoreLocalNames;
     }
 }
 

@@ -24,8 +24,8 @@ NSData * CBAdvertisementDataGetValueWithKey(NSDictionary * advertisementData, NS
 
 @implementation AdvertisementDataHelper
 
-+ (instancetype)helperWithAdvertisementData:(NSDictionary *)advertisementData {
-    return [[AdvertisementDataHelper alloc] initWithAdvertisementData:advertisementData];
++ (instancetype)advertisementDataWith:(NSDictionary *)advertisementData {
+    return [[self alloc] initWithAdvertisementData: advertisementData];
 }
 
 - (instancetype)initWithAdvertisementData:(NSDictionary *)advertisementData {
@@ -338,10 +338,8 @@ NSData * CBAdvertisementDataGetValueWithKey(NSDictionary * advertisementData, NS
 @implementation YPBleDevice(BleAdvertisementData)
 
 - (AdvertisementDataHelper *)advertisementDataHelper {
-    AdvertisementDataHelper * helper = [[AdvertisementDataHelper alloc] initWithAdvertisementData:self.advertisementData];
-    return helper;
+    return [AdvertisementDataHelper advertisementDataWith:self.advertisementData];
 }
-
 - (BOOL)isConnectable {
     AdvertisementDataHelper * helper = [self advertisementDataHelper];
     return [helper isConnectable];

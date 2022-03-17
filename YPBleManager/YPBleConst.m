@@ -74,6 +74,34 @@ NSString * BLEOpErrorGetDetailDescription(BLEOpErrorCode error) {
     return nil;
 }
 
+NSString * BLEGetCBManagerStateDescription(CBManagerState state) {
+    NSString * desc;
+    switch (state) {
+        case CBManagerStatePoweredOff:
+            desc = @"Bluetooth is powered off";
+            break;
+        case CBManagerStatePoweredOn:
+            desc = @"Bluetooth is powered on and ready";
+            break;
+        case CBManagerStateResetting:
+            desc = @"Bluetooth is resetting";
+            break;
+        case CBManagerStateUnauthorized:
+            desc = @"Bluetooth is unauthorized";
+            break;
+        case CBManagerStateUnknown:
+            desc = @"Bluetooth is unknown";
+            break;
+        case CBManagerStateUnsupported:
+            desc = @"Bluetooth is unsupported";
+            break;
+        default:
+            desc = @"Unknown state";
+            break;
+    }
+    return desc;
+}
+
 /* Nordic UART Service */
 NSString * const NordicUARTServiceUUIDString = @"6E400001-B5A3-F393-E0A9-E50E24DCCA9E"; // 0x6E400001B5A3F393E0A9E50E24DCCA9E
 NSString * const NordicUARTTxCharacteristicUUIDString = @"6E400002-B5A3-F393-E0A9-E50E24DCCA9E"; // 0x6E400002B5A3F393E0A9E50E24DCCA9E

@@ -36,6 +36,8 @@
 
 - (instancetype)initWithAdvertisementData:(NSDictionary *)advertisementData;
 
++ (instancetype)advertisementDataWith:(NSDictionary *)advertisementData;
+
 @end
 
 // 设备广播发射频率记录

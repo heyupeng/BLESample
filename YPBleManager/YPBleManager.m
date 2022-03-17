@@ -14,7 +14,7 @@
 #import "CoreBluetooth+YPExtension.h"
 #import "NSData+YPHexString.h"
 
-@implementation YPBleConfiguration
+@implementation YPBtSettings
 
 - (instancetype)init {
     self = [super init];
@@ -24,6 +24,7 @@
 
 - (void)setup {
     _services = nil;
+    _allowDuplicates = YES;
     
     _RSSIValue = MAX_RSSI_VALUE;
     
@@ -74,8 +75,6 @@
 
 @end
 
-
-NSString * BLEGetCBManagerStateDescription(CBManagerState state);
 
 static YPBleManager *shareManager;
 
@@ -133,12 +132,16 @@ static YPBleManager *shareManager;
 }
 
 - (void)operationSetup {
-    _bleConfiguration = [[YPBleConfiguration alloc] init];
+    _settings = [[YPBtSettings alloc] init];
 }
 
 - (CBCentralManager *)createCenteralManager {
-    dispatch_queue_t myQue = dispatch_queue_create("CenteralManagerQueue", DISPATCH_QUEUE_SERIAL);
-    CBCentralManager * manager = [[CBCentralManager alloc] initWithDelegate:self queue:myQue];
+    dispatch_queue_t queue = dispatch_queue_create("com.queue.centeralManager", DISPATCH_QUEUE_SERIAL);
+    NSDictionary * ops = @{
+        CBCentralManagerOptionShowPowerAlertKey: @YES,
+        CBCentralManagerOptionRestoreIdentifierKey: @YES
+    };
+    CBCentralManager * manager = [[CBCentralManager alloc] initWithDelegate:self queue:queue options:ops];
     return manager;
 }
 
@@ -163,18 +166,6 @@ static YPBleManager *shareManager;
 }
 
 /**
- The execution function of the timer; some parameter is passed to this block when executed to aid in avoiding cyclical references
- @param timer timer scheduled on the current run loop in a run loop mode.
- @param worktime total time when the timer has been running
- @param repeats number of times the timer has been running
- */
-- (void)timer:(NSTimer *)timer didWorktime:(NSTimeInterval)worktime repeats:(NSInteger)repeats {
-    if(repeats%5 == 0) NSLog(@"Timer %.2f sec., repeats: %zi", worktime, repeats);
-    
-    [self scannerCountdown:self.countDownTime - worktime];
-}
-
-/**
  The execution function of the timer;
  @param timer timer scheduled on the current run loop in a run loop mode.
  */
@@ -182,44 +173,25 @@ static YPBleManager *shareManager;
     _timerWorkTime += timer.timeInterval;
     _timerRepeatTimes += 1;
     
-    [self timer:timer didWorktime:_timerWorkTime repeats:_timerRepeatTimes];
+    [self scannerCountdown:self.countDownTime - _timerWorkTime];
 }
 
 - (void)createScannerTimer {
-    [self invalidateTimer];
+    [self invalidateScanTimer];
     
     _timerWorkTime = 0;
     _timerRepeatTimes = 0;
-    _countDownTime = self.bleConfiguration.scanTimeoutPeriod;
+    _countDownTime = self.settings.scanTimeoutPeriod;
     
     NSTimer * timer;
-#if 1
-    timer = [NSTimer timerWithTimeInterval:1.0 target:self selector:@selector(timerAction:) userInfo:nil repeats:YES];
-#else
-    void (^block)(NSTimeInterval) = ^(NSTimeInterval remainingTime) {
-        [self scannerCountdown:remainingTime];
-    };
     
-    NSTimeInterval countdownTime = self.countDownTime;
-    __block NSTimeInterval worktime = 0;
-    __block NSInteger repeatTimes = 0;
-    timer = [NSTimer timerWithTimeInterval:1.0 repeats:YES block:^(NSTimer * _Nonnull timer) {
-        worktime += timer.timeInterval;
-        repeatTimes += 1;
-        
-        if (countdownTime - worktime < 0) {
-            [self invalidateTimer];
-        }
-        
-        block(countdownTime - worktime);
-    }];
-#endif
+    timer = [NSTimer timerWithTimeInterval:1.0 target:self selector:@selector(timerAction:) userInfo:nil repeats:YES];
     
     [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
     _scannerTimer = timer;
 }
 
-- (void)invalidateTimer {
+- (void)invalidateScanTimer {
     if (!_scannerTimer) return;
     if (_scannerTimer.valid) {
         [_scannerTimer invalidate];
@@ -236,7 +208,7 @@ static YPBleManager *shareManager;
         [self.bleDelegate bleManagerDidUpdateState:self];
     }
     
-    if (self.bleConfiguration.autoScanWhilePoweredOn && central.state == CBManagerStatePoweredOn) {
+    if (self.settings.autoScanWhilePoweredOn && central.state == CBManagerStatePoweredOn) {
         [self startScan];
     }
 }
@@ -295,8 +267,8 @@ static YPBleManager *shareManager;
     
     NSLog(@"%@", string);
     
-    if (self.bleConfiguration.logger) {
-        self.bleConfiguration.logger(string);
+    if (self.settings.logger) {
+        self.settings.logger(string);
     }
 }
 
@@ -342,7 +314,7 @@ static YPBleManager *shareManager;
 }
 
 - (BOOL)filterPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI {
-    return ![self.bleConfiguration filterUsingPeripheral:peripheral advertisementData:advertisementData RSSI:RSSI];
+    return ![self.settings filterUsingPeripheral:peripheral advertisementData:advertisementData RSSI:RSSI];
 }
 
 #pragma mark - CentralManager delegate
@@ -378,9 +350,9 @@ static YPBleManager *shareManager;
     }
 }
 
-//- (void)centralManager:(CBCentralManager *)central willRestoreState:(NSDictionary<NSString *,id> *)dict {
-//    NSLog(@"will Restore State: %@", dict.description);
-//}
+- (void)centralManager:(CBCentralManager *)central willRestoreState:(NSDictionary<NSString *,id> *)dict {
+    NSLog(@"will Restore State: %@", dict.description);
+}
 
 - (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary<NSString *, id> *)advertisementData RSSI:(NSNumber *)RSSI {
     
@@ -426,6 +398,8 @@ static YPBleManager *shareManager;
         // 1.连接意外中断
         NSLog(@"Disconnection Error: Code=%zi LocalizedDescription=%@", error.code, error.localizedDescription);
         [self didReceiveOpError:BLEOpErrorDisconnected];
+        // restore
+        [self connectDevice:_currentDevice];
         return;
     }
     else if (self.bleOpState == BLEOpConnecting) {
@@ -453,9 +427,9 @@ static YPBleManager *shareManager;
 #pragma mark - 自有连接定时器(dispatch)
 /// 开启自有连接定时器。
 - (void)openCustomTimerForConnecting:(YPBleDevice *)device {
-    if (!self.bleConfiguration.openConnectionTimer || self.bleConfiguration.connectionTimeoutPeriod <= 0) {return;}
+    if (!self.settings.openConnectionTimer || self.settings.connectionTimeoutPeriod <= 0) {return;}
     
-    NSInteger sec = self.bleConfiguration.connectionTimeoutPeriod;
+    NSInteger sec = self.settings.connectionTimeoutPeriod;
     dispatch_block_t block = ^{
         if (device.peripheral.state == CBPeripheralStateConnecting) {
             [self.manager cancelPeripheralConnection:device.peripheral];
@@ -478,21 +452,25 @@ static YPBleManager *shareManager;
 }
 
 #pragma mark - CentralManager 方法的二次封装
-- (void)startScan {
+- (void)scanWithServices:(nullable NSArray<CBUUID *> *)services options:(NSDictionary *)options discover:(nullable void(^)(CBPeripheral * periphral, NSDictionary * advertisementData, NSNumber * RSSI))discoverHandler {
+    [self logWithFormat:@"BLE Operation: Go to scan."];
+    
     if (self.manager.state != CBManagerStatePoweredOn) {
         [self didReceiveOpError:BLEOpErrorScanInterrupted];
         return;
     }
+    else if (_isScaning) {
+        [self logWithFormat:@"BLE Operation: It is scannig..."];
+        return;
+    }
     
     _discoverDevices = [NSMutableArray new];
-    _manager.delegate = self;
-    
     _isScaning = YES;
-    NSArray * services = self.bleConfiguration.services;
-    NSDictionary * options = @{CBCentralManagerScanOptionAllowDuplicatesKey:@YES};
-    [_manager scanForPeripheralsWithServices:services options: options];
     
-    [self logWithFormat:@"BLE Operation: Scanning..."];
+    _manager.delegate = self;
+    [_manager scanForPeripheralsWithServices:services options:options];
+    
+    [self logWithFormat:@"BLE Operation: Scanning ..."];
     [self updateBleOperationState:BLEOpScanning];
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -500,8 +478,19 @@ static YPBleManager *shareManager;
     });
 }
 
+- (void)startScan {
+    NSArray * services = self.settings.services;
+    BOOL allowDuplicates = self.settings.allowDuplicates;
+    NSDictionary * options = @{
+        CBCentralManagerScanOptionAllowDuplicatesKey:@(allowDuplicates),
+//        CBCentralManagerScanOptionSolicitedServiceUUIDsKey: @NO
+    };
+    
+    [self scanWithServices:services options:options discover:nil];
+}
+
 - (void)stopScan {
-    [self invalidateTimer];
+    [self invalidateScanTimer];
     
     if (!_isScaning) {return;}
     
@@ -515,6 +504,11 @@ static YPBleManager *shareManager;
 - (void)connectDevice:(YPBleDevice *)device {
     if (self.manager.state != CBManagerStatePoweredOn) {
         [self didReceiveOpError:BLEOpErrorDisconnected];
+        return;
+    }
+    else if (device.peripheral.state == CBPeripheralStateConnecting ||
+             _bleOpState == BLEOpConnecting) {
+        [self logWithFormat:@"BLE Operation: It is connecting ..."];
         return;
     }
     
@@ -545,7 +539,7 @@ static YPBleManager *shareManager;
 
 #pragma mark - dealloc
 - (void)dealloc {
-    [self invalidateTimer];
+    [self invalidateScanTimer];
     [self cancelConnectionTimerBlock];
     
     [self disconnectDevice:_currentDevice];
@@ -553,30 +547,4 @@ static YPBleManager *shareManager;
 
 @end
 
-NSString * BLEGetCBManagerStateDescription(CBManagerState state) {
-    NSString * desc;
-    switch (state) {
-        case CBManagerStatePoweredOff:
-            desc = @"Bluetooth is powered off";
-            break;
-        case CBManagerStatePoweredOn:
-            desc = @"Bluetooth is powered on and ready";
-            break;
-        case CBManagerStateResetting:
-            desc = @"Bluetooth is resetting";
-            break;
-        case CBManagerStateUnauthorized:
-            desc = @"Bluetooth is unauthorized";
-            break;
-        case CBManagerStateUnknown:
-            desc = @"Bluetooth is unknown";
-            break;
-        case CBManagerStateUnsupported:
-            desc = @"Bluetooth is unsupported";
-            break;
-        default:
-            desc = @"Unknown state";
-            break;
-    }
-    return desc;
-}
+
