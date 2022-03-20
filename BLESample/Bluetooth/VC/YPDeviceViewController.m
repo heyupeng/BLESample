@@ -284,7 +284,7 @@ NSString * CBUUIDGetDescription(CBUUID * UUID) {
         YPUpgradeViewController * viewController = [[YPUpgradeViewController alloc] init];
         viewController.bleManager = _bleManager;
         [self.navigationController pushViewController:viewController animated:YES];
-        [_device writeFFValue:[SOCCommander commandForSetFuncionWith:0]];
+        [_device writeHexValue:[SOCCommander commandForSetFuncionWith:0]];
         return;
     }
     if ([_device.peripheral yp_serviceWithUUID:[CBUUID  UUIDWithUInt16:SPOTA_SERVICE_UUID]]) {

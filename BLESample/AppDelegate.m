@@ -21,7 +21,9 @@
     // In iOS 13,on iPhone X line , while navigationController.navigationBar.prefersLargeTitles is YES, the statusBar backgroundColor is transparent.
     
     // 3DB9BF
-    self.window.rootViewController.view.backgroundColor = [UIColor colorWithRed:0x3d/255.0 green:0xB9/255.0 blue:0xBF/255.0 alpha:1];
+    UIColor * navTintColor = [UIColor colorWithRed:0x6/255.0 green:0xAA/255.0 blue:0xC9/255.0 alpha:1];
+//    [UIColor colorWithRed:0x3d/255.0 green:0xB9/255.0 blue:0xBF/255.0 alpha:1];
+    self.window.rootViewController.view.backgroundColor = navTintColor;
 
     return YES;
 }

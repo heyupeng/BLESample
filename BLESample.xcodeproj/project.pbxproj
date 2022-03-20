@@ -33,6 +33,8 @@
 		15A8507B22A621FA00223C9E /* 1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 15A8507A22A621FA00223C9E /* 1.mp3 */; };
 		15A8507C22A64BAD00223C9E /* CMDType.m in Sources */ = {isa = PBXBuildFile; fileRef = 15A8507722A6145B00223C9E /* CMDType.m */; };
 		15A8507E22A656A100223C9E /* 5.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 15A8507D22A656A000223C9E /* 5.mp3 */; };
+		B849E48A27E759850037E823 /* BTOptionsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B849E48927E759840037E823 /* BTOptionsView.xib */; };
+		B852B6EA28C6ED4500C07C08 /* UARTService.m in Sources */ = {isa = PBXBuildFile; fileRef = B852B6E928C6ED4500C07C08 /* UARTService.m */; };
 		B8F8F49422E5521C00E7195B /* YPLoggerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B8F8F49322E5521C00E7195B /* YPLoggerViewController.m */; };
 		F3BAF91295E8E70D5686937F /* Pods_BLESample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5F1E157C40F6D5DA2751736 /* Pods_BLESample.framework */; };
 /* End PBXBuildFile section */
@@ -110,6 +112,9 @@
 		42F56A2759F0007A6DA244B7 /* Pods-BLESample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BLESample.release.xcconfig"; path = "Pods/Target Support Files/Pods-BLESample/Pods-BLESample.release.xcconfig"; sourceTree = "<group>"; };
 		50CDBF392844C42E6255B02E /* Pods-BLESample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BLESample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BLESample/Pods-BLESample.debug.xcconfig"; sourceTree = "<group>"; };
 		A5F1E157C40F6D5DA2751736 /* Pods_BLESample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BLESample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B849E48927E759840037E823 /* BTOptionsView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BTOptionsView.xib; sourceTree = "<group>"; };
+		B852B6E828C6ED4500C07C08 /* UARTService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UARTService.h; sourceTree = "<group>"; };
+		B852B6E928C6ED4500C07C08 /* UARTService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UARTService.m; sourceTree = "<group>"; };
 		B8F8F49222E5521C00E7195B /* YPLoggerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YPLoggerViewController.h; sourceTree = "<group>"; };
 		B8F8F49322E5521C00E7195B /* YPLoggerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YPLoggerViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -226,6 +231,8 @@
 				04279D5A222E61C2001FC02C /* YPBleManager.m */,
 				04279D5C222E61C2001FC02C /* YPBleDevice.h */,
 				04279D60222E61C2001FC02C /* YPBleDevice.m */,
+				B852B6E828C6ED4500C07C08 /* UARTService.h */,
+				B852B6E928C6ED4500C07C08 /* UARTService.m */,
 			);
 			path = YPBleManager;
 			sourceTree = "<group>";
@@ -290,6 +297,7 @@
 			children = (
 				04279D8A222E61C2001FC02C /* YPBlueViewController.h */,
 				04279D58222E61C2001FC02C /* YPBlueViewController.m */,
+				B849E48927E759840037E823 /* BTOptionsView.xib */,
 				04279D57222E61C2001FC02C /* YPDeviceViewController.h */,
 				04279D85222E61C2001FC02C /* YPDeviceViewController.m */,
 				04279D8B222E61C2001FC02C /* YPUpgradeViewController.h */,
@@ -426,6 +434,7 @@
 				15A8507E22A656A100223C9E /* 5.mp3 in Resources */,
 				04279C2E222CC40E001FC02C /* LaunchScreen.storyboard in Resources */,
 				04279C2B222CC40E001FC02C /* Assets.xcassets in Resources */,
+				B849E48A27E759850037E823 /* BTOptionsView.xib in Resources */,
 				04279C26222CC40C001FC02C /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -495,6 +504,7 @@
 				04279DA0222E61C2001FC02C /* YPDeviceViewController.m in Sources */,
 				04279D8F222E61C2001FC02C /* YPBleConst.m in Sources */,
 				042958BE224DB10200496C8E /* ObjdectModel.m in Sources */,
+				B852B6EA28C6ED4500C07C08 /* UARTService.m in Sources */,
 				04279DA2222E61C2001FC02C /* YPCmdViewController.m in Sources */,
 				04279C23222CC40C001FC02C /* ViewController.m in Sources */,
 				04279C29222CC40C001FC02C /* BLESample.xcdatamodeld in Sources */,
@@ -689,7 +699,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = NO;
-				DEVELOPMENT_TEAM = MB8A8WEGM4;
+				DEVELOPMENT_TEAM = BBUHRNUU4N;
 				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/BLESample/PrefixHeader.pch";
 				INFOPLIST_FILE = BLESample/Info.plist;
@@ -702,7 +712,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/BLESample/Bluetooth/SOCDFUSDK",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.sushi.BLESample;
+				PRODUCT_BUNDLE_IDENTIFIER = com.peng.BLESample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "BLESample/BLESample-Bridging-Header.h";
@@ -722,7 +732,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = NO;
-				DEVELOPMENT_TEAM = MB8A8WEGM4;
+				DEVELOPMENT_TEAM = BBUHRNUU4N;
 				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/BLESample/PrefixHeader.pch";
 				INFOPLIST_FILE = BLESample/Info.plist;
@@ -735,7 +745,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/BLESample/Bluetooth/SOCDFUSDK",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.sushi.BLESample;
+				PRODUCT_BUNDLE_IDENTIFIER = com.peng.BLESample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "BLESample/BLESample-Bridging-Header.h";

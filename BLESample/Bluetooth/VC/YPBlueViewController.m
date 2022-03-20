@@ -14,6 +14,213 @@
 
 #import "YPLoggerViewController.h"
 
+@implementation UINavigationBar (BackgroundView_BuiltIn)
+
+- (void)setBuiltInBackgroundColor:(UIColor *)backgroundColor {
+    /**
+     UINavigationBar UI 层级结构
+     UINavigationBar ; 高度 height = 44；大标题风格高度 height = 96；
+        -- _UIBarBackground ; // 背景层。高度 height = 44 + safe.top (20 or 44)
+        -- _UINavigationBarLargeTitleView ; // 大标题层。origin.x = 44;
+        -- _UINavigationBarContentView ; // 导航栏层 (0 0; 375, 44)
+        -- UIView ;
+     
+     */
+    for (UIView * view in self.subviews) {
+        NSString * cls = @"_UIBarBackground";
+        if ([NSStringFromClass(view.class) hasPrefix:cls]) {
+            view.backgroundColor = backgroundColor;
+        }
+        cls = @"_UINavigationBarLargeTitleView";
+        if ([NSStringFromClass(view.class) hasPrefix:cls]) {
+            view.backgroundColor = backgroundColor;
+        }
+    }
+}
+@end
+
+@interface BTOptionsView : UIView
+
+@property (weak, nonatomic) IBOutlet UISlider *rssiSlider;
+
+@property (weak, nonatomic) IBOutlet UILabel *rssiLabel;
+
+@property (strong, nonatomic) IBOutletCollection(UITextField) NSArray *textFields;
+
+@property (strong, nonatomic) IBOutletCollection(UISwitch) NSArray *switchs;
+
+@end
+
+@implementation BTOptionsView
+
+- (void)awakeFromNib {
+    [super awakeFromNib];
+    
+    [self setup];
+}
+
+- (void)setup {
+    NSDictionary * bleConfig = [[NSUserDefaults standardUserDefaults] objectForKey:@"bleConfig"];
+    if (bleConfig) {
+        NSNumber * RSSI = [bleConfig objectForKey:@"Max.RSSI"];
+        if (RSSI) {
+            self.rssiSlider.value = RSSI.intValue;
+            self.rssiLabel.text = [NSString stringWithFormat:@"-%.0d dbm", RSSI.intValue];
+        }
+        
+        NSString * localName = [bleConfig objectForKey:@"localName"];
+        if (localName) {
+            [self.textFields[0] setText:localName];
+        }
+        
+        NSString * mac = [bleConfig objectForKey:@"mac"];
+        if (mac) {
+            [self.textFields[1] setText:localName];
+        }
+        
+        BOOL isOn = [[bleConfig objectForKey:@"unnamedIntercept"] boolValue];;
+        if (mac) {
+            [self.switchs[0] setOn:isOn];
+        }
+        
+        isOn = [[bleConfig objectForKey:@"withoutDataIntercept"] boolValue];;
+        if (mac) {
+            [self.switchs[1] setOn:isOn];
+        }
+    }
+}
+
+- (void)updateCacheWith:(NSDictionary *)ele {
+    NSDictionary * old = [[NSUserDefaults standardUserDefaults] objectForKey:@"bleConfig"];
+    NSMutableDictionary * new = [NSMutableDictionary new];
+    [new addEntriesFromDictionary:old];
+    [new addEntriesFromDictionary:ele];
+    
+    [NSUserDefaults.standardUserDefaults setObject:new forKey:@"bleConfig"];
+    [NSUserDefaults.standardUserDefaults synchronize];
+}
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    for (UITextField * tf in self.textFields) {
+        [tf resignFirstResponder];
+    }
+}
+
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+    UIView * view = [super hitTest:point withEvent:event];
+    if (![view isKindOfClass:[UITextField class]]) {
+        for (UITextField * tf in self.textFields) {
+            [tf resignFirstResponder];
+        }
+    }
+    return view;
+}
+- (IBAction)sliderValueChanged:(UISlider *)sender {
+    NSString * text = [NSString stringWithFormat:@"-%.0f dbm", sender.value];
+    self.rssiLabel.text = text;
+    
+    YPBleManager.share.settings.RSSIValue = sender.value;
+    
+    [self updateCacheWith:@{@"Max.RSSI": @(sender.value)}];
+}
+
+- (IBAction)EditingDidEnd:(UITextField *)sender {
+    NSString * text = sender.text? : @"";
+    NSUInteger index = [_textFields indexOfObject:sender];
+    
+    switch (index) {
+        case 0:
+            YPBleManager.share.settings.localName = text;
+            [self updateCacheWith:@{@"localName": text}];
+            break;
+        case 1:
+            YPBleManager.share.settings.mac = text;
+            [self updateCacheWith:@{@"mac": text}];
+        default:
+            break;
+    }
+    
+}
+
+- (IBAction)switchAction:(UISwitch *)sender {
+    switch (sender.tag) {
+        case 0:
+            YPBleManager.share.settings.unnamedIntercept = sender.on;
+            [self updateCacheWith:@{@"unnamedIntercept": @(sender.on)}];
+            break;
+        case 1:
+            YPBleManager.share.settings.withoutDataIntercept = sender.on;
+            [self updateCacheWith:@{@"withoutDataIntercept": @(sender.on)}];
+        default:
+            break;
+    }
+}
+
+@end
+
+@interface TableCellItem : NSObject
+
+@property (nonatomic, strong) NSString * title;
+@property (nonatomic, strong) NSString * subtitle;
+
++ (instancetype)itemWithDevice:(YPBleDevice *)device;
+- (instancetype)initWithDevice:(YPBleDevice *)device;
+
+@end
+
+@implementation TableCellItem
+
++ (instancetype)itemWithDevice:(YPBleDevice *)device {
+    return [[self alloc] initWithDevice:device];
+}
+
+- (instancetype)initWithDevice:(YPBleDevice *)device {
+    self = [super init];
+    
+    AdvertisementDataHelper * advHelper = [AdvertisementDataHelper advertisementDataWith:device.advertisementData];
+    
+    _title = [NSString stringWithFormat:@"%@ (%.0f dBm)", device.deviceName, device.RSSI.doubleValue];
+
+    NSString * localName = advHelper.localName;
+//    NSData * specificData = advHelper.specificData;
+        
+    // subtitle
+    NSMutableString * detailText = [[NSMutableString alloc] init];
+    [detailText appendFormat:@"UUID: %@ \
+                                 \nLocalName: %@ \
+                                 ",device.identifier, localName];
+    
+    if (advHelper.manufacturerData) {
+        NSString * companyID = advHelper.companysData.hexString.hexStringReverse;
+        NSString * spcific = advHelper.specificData.hexString;
+        [detailText appendFormat:@"\nCompany: <0x%@>", companyID];
+        [detailText appendFormat:@"\nSpecificData: %@", spcific];
+    }
+    
+    if (advHelper.serviceData) {
+        NSDictionary * serviceData = advHelper.serviceData;
+        [detailText appendFormat:@"\nServiceData:"];
+        for (CBUUID * uuid in serviceData.allKeys) {
+            NSData * value = serviceData[uuid];
+            NSString * str = [NSString stringWithFormat:@"\n %@ %@", uuid.UUIDString, value.hexString.hexStringReverse];
+            [detailText appendString:str];
+        }
+    }
+    
+    _subtitle = detailText;
+    
+    return self;
+}
+
+- (CGSize)textSizeWithContentSize:(CGSize)size {
+    CGRect textBound = [self.subtitle boundingRectWithSize:size options:1 attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:12]} context:nil];
+    return textBound.size;
+}
+
+@end
+
+#pragma mark - BlueViewController
+
 @interface YPBlueViewController ()<UITextFieldDelegate>
 {
     NSDictionary * _bleConfig;
@@ -28,6 +235,7 @@
 /// @[nameTF, macTF, nameInterceptTF]
 @property (nonatomic, strong) NSMutableArray<UITextField *> * textFields;
 
+@property (nonatomic, strong) BTOptionsView * optionView;
 @end
 
 @implementation YPBlueViewController
@@ -107,7 +315,11 @@
     
     [self addNotificationObserver];
     
-    [_bleManager bleEnabled];
+    [_bleManager checkBleEnabled:^(BOOL enabled, BLEOpErrorCode code) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self rightBarButtonAction:self.navigationItem.rightBarButtonItem];
+        });
+    }];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -144,15 +356,15 @@
     _bleManager.settings.openConnectionTimer = YES;
     _bleManager.settings.connectionTimeoutPeriod = 5;
     
-    _bleManager.settings.services = [self services];
+//    _bleManager.settings.services = [self services];
     _bleManager.settings.RSSIValue = [[bleConfig objectForKey:@"RSSI"] intValue];
     _bleManager.settings.localName = [bleConfig objectForKey:@"localName"];
     _bleManager.settings.mac = [bleConfig objectForKey:@"mac"];
     
     NSString * ignoreLocalName = [bleConfig objectForKey:@"ignoreLocalName"];
     _bleManager.settings.ignoreLocalNames = ignoreLocalName.length > 0? [ignoreLocalName componentsSeparatedByString:@","] : nil;
-//    _bleManager.bleConfiguration.withoutDataIntercept = YES;
-//    _bleManager.bleConfiguration.unnamedIntercept = YES;
+    _bleManager.settings.withoutDataIntercept = [bleConfig objectForKey:@"withoutDataIntercept"];
+    _bleManager.settings.unnamedIntercept = [bleConfig objectForKey:@"unnamedIntercept"];
     
     _bleManager.settings.logger = ^(NSString *message) {
         [[YPLogger share] appendLog:message];
@@ -171,27 +383,11 @@
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.view.backgroundColor = [UIColor whiteColor];
     
+    UIColor * navTintColor = [UIColor colorWithRed:0x6/255.0 green:0xAA/255.0 blue:0xC9/255.0 alpha:1];
 //    self.navigationController.navigationBar.backgroundColor = [UIColor colorWithRed:0x3d/255.0 green:0xB9/255.0 blue:0xBF/255.0 alpha:1];
-    self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0x3d/255.0 green:0xB9/255.0 blue:0xBF/255.0 alpha:1];
-    /**
-     UINavigationBar UI 层级结构
-     UINavigationBar ; 高度 height = 44；大标题风格高度 height = 96；
-        -- _UIBarBackground ; // 背景层。高度 height = 44 + safe.top (20 or 44)
-        -- _UINavigationBarLargeTitleView ; // 大标题层。origin.x = 44;
-        -- _UINavigationBarContentView ; // 导航栏层 (0 0; 375, 44)
-        -- UIView ;
-     
-     */
-    for (UIView * view in self.navigationController.navigationBar.subviews) {
-        NSString * cls = @"_UIBarBackground";
-        if ([NSStringFromClass(view.class) hasPrefix:cls]) {
-            view.backgroundColor = [UIColor colorWithRed:0x3d/255.0 green:0xB9/255.0 blue:0xBF/255.0 alpha:1];
-        }
-        cls = @"_UINavigationBarLargeTitleView";
-        if ([NSStringFromClass(view.class) hasPrefix:cls]) {
-            view.backgroundColor = [UIColor colorWithRed:0x3d/255.0 green:0xB9/255.0 blue:0xBF/255.0 alpha:1];
-        }
-    }
+    self.navigationController.navigationBar.barTintColor = navTintColor;
+    [self.navigationController.navigationBar setBuiltInBackgroundColor:navTintColor];
+    
     if (@available(iOS 13.0, *)) {
         self.view.backgroundColor = [UIColor colorWithDynamicProvider:^UIColor * _Nonnull(UITraitCollection * _Nonnull traitCollection) {
             if (traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
@@ -231,6 +427,19 @@
 }
 
 - (void)leftBarButtonAction:(UIBarButtonItem *)button {
+    if (!_optionView) {
+        NSArray * views = [NSBundle.mainBundle loadNibNamed:@"BTOptionsView" owner:nil options:nil];
+        _optionView = views[0];
+        _optionView.frame = self.view.bounds;
+        [self.view addSubview:_optionView];
+    }
+    if (!button) {
+        _optionView.hidden = YES;
+    } else {
+        _optionView.hidden = !_optionView.hidden;
+    }
+    
+    return;
     // tool bar
     static UIView * configView;
     
@@ -434,15 +643,16 @@
 //    NSLog(@"notificationAboutDiscoverDevice");
 //    YPBleDevice * device = (YPBleDevice *)[notification object];
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_async(dispatch_get_main_queue(), ^{
         NSString * name = notification.name;
         if ([name isEqualToString:YPBLEManager_DidUpdateState]) {
             if (self.bleManager.manager.state == CBManagerStatePoweredOn) {
                 [self.navigationItem.rightBarButtonItem setTitle:@"Scan"];
                 self.navigationItem.rightBarButtonItem.enabled = YES;
             }else {
-//                [self.navigationItem.rightBarButtonItem setTitle:@"Open Bluetooth"];
-//                self.navigationItem.rightBarButtonItem.enabled = NO;
+                [self.navigationItem.rightBarButtonItem setTitle:@"Open Bluetooth"];
+                self.navigationItem.rightBarButtonItem.enabled = NO;
             }
         }
         
@@ -473,40 +683,26 @@
         cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:tableViewCellDefaultIdentifier];
     }
     YPBleDevice * device = [_dataSource objectAtIndex:indexPath.row];
-    NSString * name = device.deviceName;
+    TableCellItem * item = [TableCellItem itemWithDevice:device];
     
-    NSDictionary * serviceData = [device.advertisementData objectForKey: CBAdvertisementDataServiceDataKey];
-    NSData * fe95 = [serviceData objectForKey:[CBUUID UUIDWithString:@"FE95"]];
-    NSString * ip = fe95.hexString;
+    NSString * detailText = item.subtitle;
+    NSInteger detailTextNumberOfLines = 10;
     
-    NSString * localName = device.localName;
-    
-    NSData * specificData = device.specificData;
-    NSString * specificDataHexString = specificData.hexString;
-    
-    cell.textLabel.text = [NSString stringWithFormat:@"%@ (%.0f dBm)", name, device.RSSI.doubleValue];
-    
-    NSInteger detailTextNumberOfLines = 5;
-    NSString * companyID = device.companysData.hexString.hexStringReverse;
-    if (companyID) companyID = [NSString stringWithFormat:@"<0x%@>", companyID];
-    NSString * detailText = [NSString stringWithFormat:@"UUID: %@ \
-                                 \nLocalName: %@ \
-                                 ",device.identifier, localName];
-    if (companyID)
-        detailText = [detailText stringByAppendingFormat:@"\nCompany: %@ \
-                  \nSpecificData: %@ \
-                  \nMac: %@", companyID, specificDataHexString, device.mac.hexString.uppercaseString];
-    else
-        if (fe95) detailText = [detailText stringByAppendingString:[NSString stringWithFormat:@"\nFE95: %@", fe95.debugDescription]];
-    
-    cell.detailTextLabel.numberOfLines = detailTextNumberOfLines;
+    cell.textLabel.text = item.title;
     cell.detailTextLabel.text = detailText;
+    cell.detailTextLabel.numberOfLines = detailTextNumberOfLines;
     cell.accessoryType = UITableViewCellAccessoryDetailButton;
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 20 * (1 + 5);
+    YPBleDevice * device = [_dataSource objectAtIndex:indexPath.row];
+    TableCellItem * item = [TableCellItem itemWithDevice:device];
+    
+    CGSize size = UIScreen.mainScreen.bounds.size;
+    size.height = 200;
+    size = [item textSizeWithContentSize:size];
+    return 20 * 3 + size.height;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

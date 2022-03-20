@@ -15,4 +15,6 @@
 #import "YPBleManager.h"
 #import "YPBleDevice.h"
 
+#import "UARTService.h"
+
 #endif /* YPBluetooth_h */

@@ -38,6 +38,7 @@ typedef NS_ENUM(NSInteger, BLEOpErrorCode) {
     BLEOpErrorNone = 0,
     BLEOpErrorUnsupported = 1,
     BLEOpErrorUnauthorized,
+    BLEOpErrorPoweredOff,
     BLEOpErrorNotFound,
     BLEOpErrorScanInterrupted, /* 检索中断。扫描时关闭蓝牙 */
     BLEOpErrorConnectionTimeout, /* 连接超时 */
@@ -47,7 +48,7 @@ typedef NS_ENUM(NSInteger, BLEOpErrorCode) {
 
 FOUNDATION_EXTERN NSString * BLEOpErrorGetDescription(BLEOpErrorCode error);
 FOUNDATION_EXTERN NSString * BLEOpErrorGetDetailDescription(BLEOpErrorCode error);
-FOUNDATION_EXTERN NSString * BLEGetCBManagerStateDescription(CBManagerState state);
+FOUNDATION_EXTERN NSString * CBManagerStateGetDescription(CBManagerState state);
 
 /* Nordic UART Service */
 FOUNDATION_EXTERN NSString * const NordicUARTServiceUUIDString;

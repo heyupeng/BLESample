@@ -273,13 +273,13 @@
 }
 
 //
-- (void)writeFFValue:(NSString *)value {
+- (void)writeHexValue:(NSString *)value {
     if (value.length == 0) return;
     
     NSString * log = [NSString stringWithFormat:@"\nWrite HexValue: %@", value];
     [self textforTextViewByAppending:log];
     
-    [_device writeFFValue:value];
+    [_device writeHexValue:value];
 }
 
 // mark - action
@@ -288,7 +288,7 @@
 }
 
 - (void)btnAction:(UIButton *)sender {
-    [self writeFFValue:_tf.text];
+    [self writeHexValue:_tf.text];
 }
 
 - (void)updateProgress:(double)progress {
@@ -380,7 +380,7 @@ int byteStart = 0;
     NSString * command = [SOCCommander commandWithType:@"000e" length:@"0005" appendData:append];
 //    command = [NSString stringWithFormat:@"0e00 0500 0000 f632 %@", append];
     
-    [_device writeFFValue:command];
+    [_device writeHexValue:command];
 }
 
 - (void)writeFileValue {
@@ -432,7 +432,7 @@ int byteStart = 0;
 
 - (void)writeFileEnd {
     NSString * command = [SOCCommander commandWithType:@"000f" length:@"0000" appendData:@""];
-    [_device writeFFValue:command];
+    [_device writeHexValue:command];
 }
 
 /*

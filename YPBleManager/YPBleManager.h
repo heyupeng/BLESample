@@ -61,9 +61,12 @@
 /// 连接时间。默认 10 sec。
 @property (nonatomic) NSInteger connectionTimeoutPeriod;
 
++ (instancetype)default;
+
 @end
 
 
+typedef void(^ BTCheckEnabledBlock)(BOOL enabled, BLEOpErrorCode code);
 typedef void(^ BTDiscoverBlock)(CBPeripheral * periphral, NSDictionary * advertisementData, NSNumber * RSSI);
 
 @interface YPBleManager : NSObject <CBCentralManagerDelegate>
@@ -74,7 +77,6 @@ typedef void(^ BTDiscoverBlock)(CBPeripheral * periphral, NSDictionary * adverti
 
 @property (nonatomic, weak) id<YPBleManagerDelegate> bleDelegate;
 
-/// 蓝牙是否可用。默认NO。{manager.state == CBManagerStatePoweredOn}时为YES。
 @property (nonatomic, readonly) BOOL bleEnabled;
 /// 是否正在检索状态。
 @property (nonatomic, readonly) BOOL isScaning;
@@ -88,6 +90,9 @@ typedef void(^ BTDiscoverBlock)(CBPeripheral * periphral, NSDictionary * adverti
 
 + (instancetype)share;
 + (void)destroy;
+
+/// 蓝牙是否可用。
+- (void)checkBleEnabled:(BTCheckEnabledBlock)checkEnabledBlock;
 
 - (void)startScan;
 - (void)stopScan;

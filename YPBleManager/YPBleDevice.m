@@ -11,6 +11,7 @@
 #import <objc/runtime.h>
 
 #import "YPBleConst.h"
+#import "UARTService.h"
 
 #import "CoreBluetooth+YPExtension.h"
 #import "NSData+YPHexString.h"
@@ -103,6 +104,12 @@ NSData * CBAdvertisementDataGetValueWithKey(NSDictionary * advertisementData, NS
 
 @end
 
+@interface YPBleDevice ()
+
+@property (nonatomic, strong) UARTService * uartService;
+
+@end
+
 @implementation YPBleDevice
 
 - (instancetype)initWithDevice:(CBPeripheral*)peripheral {
@@ -159,6 +166,9 @@ NSData * CBAdvertisementDataGetValueWithKey(NSDictionary * advertisementData, NS
 
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error {
     for (CBService *s in peripheral.services) {
+        if (s.isUART) {
+            _uartService = [UARTService service:s];
+        }
         [peripheral discoverCharacteristics:nil forService:s];
     }
     
@@ -179,6 +189,8 @@ NSData * CBAdvertisementDataGetValueWithKey(NSDictionary * advertisementData, NS
 //            [peripheral readValueForCharacteristic:characteristic];
         }
     }
+    
+    [_uartService didDiscoverCharacteristicsForService:service error:error];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:YPBLEDevice_DidDiscoverCharacteristics object:service];
 }
@@ -206,6 +218,8 @@ NSData * CBAdvertisementDataGetValueWithKey(NSDictionary * advertisementData, NS
     } else if (v == 0x2A19) {
         
     }
+    
+    [_uartService didUpdateValueForCharacteristic:characteristic error:error];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:YPBLEDevice_DidUpdateValue object:characteristic];
 }
@@ -296,17 +310,17 @@ NSData * CBAdvertisementDataGetValueWithKey(NSDictionary * advertisementData, NS
     return [self writeHexString:hexString forCharacteristic:characteristic type:CBCharacteristicWriteWithResponse];
 }
 
-- (BOOL)writeFFValue:(NSString *)FFString {
-    NSLog(@"Write Hex Value: %@", FFString);
+- (BOOL)writeHexValue:(NSString *)hexString {
+    NSLog(@"Write Hex Value: %@", hexString);
     CBUUID * characteristicUUID = [CBUUID UUIDWithString:NordicUARTTxCharacteristicUUIDString];
     CBUUID * serviceUUID = [CBUUID UUIDWithString:NordicUARTServiceUUIDString];
     
-    return [self writeHexString:FFString forCharacteristicUUID:characteristicUUID serviceUUID: serviceUUID type:CBCharacteristicWriteWithResponse];
+    return [self writeHexString:hexString forCharacteristicUUID:characteristicUUID serviceUUID: serviceUUID type:CBCharacteristicWriteWithResponse];
 }
 
-- (void)writeFFValue:(NSString *)FFString completion:(void (^)(BOOL))completion {
-    if (completion) completion([self writeFFValue:FFString]);
-    [self writeFFValue:FFString];
+- (void)writeHexValue:(NSString *)hexString completion:(void (^)(BOOL))completion {
+    if (completion) completion([self writeHexValue:hexString]);
+    [self writeHexValue:hexString];
 }
 
 - (void)readValueForCharacteristicUUID:(CBUUID*)characteristicUUID serviceUUID:(CBUUID*)serviceUUID {

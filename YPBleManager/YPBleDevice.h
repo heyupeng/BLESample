@@ -86,13 +86,13 @@
 - (void)writeValueWithoutResponse:(NSData *)data forCharacteristicUUID:(CBUUID*)characteristicUUID serviceUUID:(CBUUID*)serviceUUID;
 
 /// Write hex string Value to a characteristic that is NordicUARTTxCharacteristic
-/// @method writeFFValue
-/// @param FFString The hex string value to write.
+/// @method writeHexValue
+/// @param hexString The hex string value to write.
 /// @return Bool
 /// @discussion Writes <i>hex string value</i> to <i>NordicUARTTxCharacteristicUUIDString</i>'s characteristic value.
 ///             the <code>CBCharacteristicWriteWithResponse</code> type is specified.
-- (BOOL)writeFFValue:(NSString *)FFString;
+- (BOOL)writeHexValue:(NSString *)hexString;
 
-- (void)writeFFValue:(NSString *)FFString completion:(void(^)(BOOL success))completion;
+- (void)writeHexValue:(NSString *)hexString completion:(void(^)(BOOL success))completion;
 
 @end

@@ -74,7 +74,7 @@ NSString * BLEOpErrorGetDetailDescription(BLEOpErrorCode error) {
     return nil;
 }
 
-NSString * BLEGetCBManagerStateDescription(CBManagerState state) {
+NSString * CBManagerStateGetDescription(CBManagerState state) {
     NSString * desc;
     switch (state) {
         case CBManagerStatePoweredOff:
@@ -86,14 +86,14 @@ NSString * BLEGetCBManagerStateDescription(CBManagerState state) {
         case CBManagerStateResetting:
             desc = @"Bluetooth is resetting";
             break;
+        case CBManagerStateUnsupported:
+            desc = @"Bluetooth is unsupported";
+            break;
         case CBManagerStateUnauthorized:
             desc = @"Bluetooth is unauthorized";
             break;
         case CBManagerStateUnknown:
             desc = @"Bluetooth is unknown";
-            break;
-        case CBManagerStateUnsupported:
-            desc = @"Bluetooth is unsupported";
             break;
         default:
             desc = @"Unknown state";

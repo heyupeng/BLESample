@@ -73,6 +73,39 @@
     return [self filterUsingPeripheral:device.peripheral advertisementData:device.advertisementData RSSI:device.RSSI];
 }
 
++ (instancetype)default {
+    YPBtSettings * _settings = [[YPBtSettings alloc] init
+    ];
+    NSDictionary * bleConfig = [[NSUserDefaults standardUserDefaults] objectForKey:@"bleConfig"];
+    if (bleConfig) {
+        NSNumber * RSSI = [bleConfig objectForKey:@"Max.RSSI"];
+        if (RSSI) {
+            _settings.RSSIValue = RSSI.intValue;
+        }
+        
+        NSString * localName = [bleConfig objectForKey:@"localName"];
+        if (localName) {
+            _settings.localName = localName;
+        }
+        
+        NSString * mac = [bleConfig objectForKey:@"mac"];
+        if (mac) {
+            _settings.mac = mac;
+        }
+        
+        BOOL isOn = [[bleConfig objectForKey:@"unnamedIntercept"] boolValue];;
+        if (mac) {
+            _settings.unnamedIntercept = isOn;
+        }
+        
+        isOn = [[bleConfig objectForKey:@"withoutDataIntercept"] boolValue];;
+        if (mac) {
+            _settings.withoutDataIntercept = isOn;
+        }
+    }
+    return _settings;
+}
+
 @end
 
 
@@ -88,6 +121,8 @@ static YPBleManager *shareManager;
 
 @property (nonatomic) NSTimeInterval timerWorkTime; // 计时器运行时长记录器
 @property (nonatomic) NSInteger timerRepeatTimes; // 计时器循环次数
+
+@property (nonatomic, copy) BTCheckEnabledBlock checkEnabledBlock;
 
 @end
 
@@ -132,7 +167,7 @@ static YPBleManager *shareManager;
 }
 
 - (void)operationSetup {
-    _settings = [[YPBtSettings alloc] init];
+    _settings = [YPBtSettings default];
 }
 
 - (CBCentralManager *)createCenteralManager {
@@ -141,6 +176,7 @@ static YPBleManager *shareManager;
         CBCentralManagerOptionShowPowerAlertKey: @YES,
         CBCentralManagerOptionRestoreIdentifierKey: @YES
     };
+    
     CBCentralManager * manager = [[CBCentralManager alloc] initWithDelegate:self queue:queue options:ops];
     return manager;
 }
@@ -208,6 +244,11 @@ static YPBleManager *shareManager;
         [self.bleDelegate bleManagerDidUpdateState:self];
     }
     
+    if (_checkEnabledBlock) {
+        [self checkBleEnabled:_checkEnabledBlock];
+        _checkEnabledBlock = nil;
+    }
+    
     if (self.settings.autoScanWhilePoweredOn && central.state == CBManagerStatePoweredOn) {
         [self startScan];
     }
@@ -247,16 +288,34 @@ static YPBleManager *shareManager;
 }
 
 #pragma mark - func
-- (BOOL)bleEnabled {
+- (void)checkBleEnabled:(void(^)(BOOL enabled, BLEOpErrorCode code))handler {
     if (!self.manager) {
+        _checkEnabledBlock = handler;
         _manager = [self createCenteralManager];
-        sleep(1.0);
+        return;
     }
+    
     CBManagerState state = self.manager.state;
-    if (state == CBManagerStatePoweredOn) {
-        return YES;
+    switch (state) {
+        case CBManagerStatePoweredOn:
+            handler(YES, BLEOpErrorNone);
+            break;
+//        case CBManagerStateUnknown:
+//            break;
+//        case CBManagerStateResetting:
+//            break;
+        case CBManagerStateUnsupported:
+            handler(NO, BLEOpErrorUnsupported);
+            break;
+        case CBManagerStateUnauthorized:
+            handler(NO, BLEOpErrorUnauthorized);
+            break;
+        case CBManagerStatePoweredOff:
+            handler(NO, BLEOpErrorPoweredOff);
+            break;
+        default:
+            break;
     }
-    return NO;
 }
 
 - (void)logWithFormat:(NSString *)format, ... NS_FORMAT_FUNCTION(1,2){
@@ -313,13 +372,9 @@ static YPBleManager *shareManager;
     [self didUpdateOpState:state];
 }
 
-- (BOOL)filterPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI {
-    return ![self.settings filterUsingPeripheral:peripheral advertisementData:advertisementData RSSI:RSSI];
-}
-
 #pragma mark - CentralManager delegate
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central {
-    NSLog(@"Manager state: %@", BLEGetCBManagerStateDescription(central.state));
+    NSLog(@"Manager state: %@", CBManagerStateGetDescription(central.state));
     
     [self didUpdateState:central];
     
@@ -356,7 +411,9 @@ static YPBleManager *shareManager;
 
 - (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary<NSString *, id> *)advertisementData RSSI:(NSNumber *)RSSI {
     
-    if ([self filterPeripheral:peripheral advertisementData:advertisementData RSSI:RSSI]) {return;}
+    if (![self.settings filterUsingPeripheral:peripheral advertisementData:advertisementData RSSI:RSSI]) {
+        return;
+    }
     
     [self didDiscoverPeripheral:peripheral advertisementData:advertisementData RSSI:RSSI];
 }
